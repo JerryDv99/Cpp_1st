@@ -20,7 +20,7 @@ int main(void) // main ***
 	printf_s("*************************************\n");
 	printf_s("Let's Study C/C++ Game Programming!!!\n");
 	printf_s("*************************************\n");
-
+	
 	
 	return 0;
 }
