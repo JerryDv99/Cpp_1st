@@ -54,6 +54,6 @@ int main(void)
 
 	/*char str1[] = "ABCD";
 	printf_s("%s\t%d\n", str1, sizeof(str1));*/
-	//
+	
 	return 0;
 }
