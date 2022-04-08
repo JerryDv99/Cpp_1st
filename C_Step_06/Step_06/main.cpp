@@ -104,6 +104,10 @@ int main(void)
 	}
 	printf_s("2018 ³â %lf ´Þ·¯\n", d);*/
 
+	for (int i = 0; i < 10; i += 1)
+	{
+	printf_s("Hello%d\n",i);
+	}
 	for (int i = 0; i < 10; i++)
 	{
 		for (int j = 0; j < 10 - i; j++)
