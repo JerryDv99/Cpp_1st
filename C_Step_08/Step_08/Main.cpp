@@ -29,5 +29,7 @@ int main(void)
 	printf_s("pPointer1 : %d\n", *pPointer1);
 	iNumber1 = 100;
 	printf_s("pPointer2 : %d\n", *pPointer2);
+
+
 	return 0;
 }
