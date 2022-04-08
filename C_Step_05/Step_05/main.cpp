@@ -104,7 +104,7 @@ int main(void)
 		printf_s("숫자 3 입력\n\n");
 		break;
 	default:
-		printf_s("%c\n", Output(iNumber));
+		printf_s("%d\n", Output(iNumber));
 	}
 	
 	return 0;	
