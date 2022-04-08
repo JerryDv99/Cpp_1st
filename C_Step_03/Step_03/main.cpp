@@ -34,12 +34,12 @@ int main(void)
 
 	printf_s("%.2f\n", f);*/
 
-	//printf_s("%d\n", 3.14);			  // 1374389535
-	//printf_s("%d\n", 314);			  // 314
-	//printf_s("%d\n", 0x13a);		  // 314
+	//printf_s("%d\n", 3.14);		// 1374389535
+	//printf_s("%d\n", 314);		// 314
+	//printf_s("%d\n", 0x13a);		// 314
 	//								  
-	//printf_s("%x\n", 0x13a);		  // 13a
-	//printf_s("%X\n", 0X13A);		  // 13A
+	//printf_s("%x\n", 0x13a);		// 13a
+	//printf_s("%X\n", 0X13A);		// 13A
 
 	//printf_s("%d\n", 'A');		// 65
 	//printf_s("%c\n", 65);			// A
