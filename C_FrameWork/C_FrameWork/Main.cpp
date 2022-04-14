@@ -5,12 +5,14 @@
 #include <malloc.h>				// 동적할당
 #include <Windows.h>			// 딜레이
 
+
 const int PLAYER	= 0;		// 개발 편의를 위한 상수화
 const int ENEMY		= 1;
 
 const int MAX		= 2;
 
 int iChoice = 0;	// 사용자의 입력을 받아 상황을 나눌 변수
+
 
 typedef struct tagInfo			// 스탯 정보를 저장할 구조체 struct tagInfo (INFO)
 {
@@ -40,6 +42,7 @@ void InitializeObject(OBJECT* _Obj, int ObjectType);
 
 // 플레이어 이름을 입력받을 SetName() 함수를 선언
 char* SetName();
+
 
 
 int main(void)
@@ -186,15 +189,19 @@ int main(void)
 		}
 
 	}
+
 	Sleep(250);
 	printf_s("게임을 종료합니다. 수고하셨습니다\n");
 
 
-
+	free(Objects[PLAYER]);										// 동적 할당 해제
+	free(Objects[ENEMY]);
 
 
 	return 0;
 }
+
+
 
 void InitializeObject(OBJECT* _Obj, int ObjectType)		// OBJECT 구조체 포인터 타입 변수와 int 변수를 매개변수로 사용하는 함수 정의부
 {
@@ -239,5 +246,3 @@ char* SetName()											// 플레이어의 이름을 입력받고 char* 타입으로 반환할 함
 
 	return pName;										// char* 타입 pName 반환
 }
-
-
