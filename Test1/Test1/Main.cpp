@@ -5,6 +5,7 @@
 #include <time.h>
 #include <Windows.h>
 #include <stdlib.h>
+#include <cstdio>
 
 const int Scene_Logo = 0;
 const int Scene_Main = 1;
@@ -96,6 +97,7 @@ void ExitScene();
 void BossScene();
 
 void SetPosition(int _x, int _y, char* _str, int _Color = 15);
+void SetPositionI(int _x, int _y, int _value, int _Color = 15);
 void SetColor(int _Color);
 void HideCursor();
 
@@ -103,7 +105,7 @@ int main(void)
 {
 	HideCursor();
 
-	system("mode con:cols=120 lines=30");
+	system("mode con:cols=120 lines=40");
 
 	system("title 고길동 v0.3");
 
@@ -128,8 +130,8 @@ int main(void)
 	SetPosition(15, 10, (char*)"안녕");
 
 	//SceneManager(Player, Enemy1, Enemy2, Enemy3, Enemy4, Enemy5);
-	//PStatScene(Player);
-	//EStatScene(Enemy5);
+	PStatScene(Player);
+	EStatScene(Enemy5);
 
 	free(Player);
 	free(Enemy1);
@@ -239,7 +241,7 @@ void InitializeEnemy5(OBJECT* _Obj)
 {
 	_Obj->Name = (char*)"인성파탄공룡 X리";
 
-	_Obj->Info.HP = 2222;
+	_Obj->Info.HP = 2222	;
 	_Obj->Info.MP = 22;
 	_Obj->Info.ATK = 222;
 	_Obj->Info.DEF = 22;
@@ -486,11 +488,11 @@ void Tutorial(OBJECT* _Enemy)
 	system("cls");
 	int Width = 30;
 	int Height = 8;
-	SetPosition(Width, Height, (char*)"오랜만의 실전인 만큼 그 때의 감각을 떠올릴 필요가 있겠어");
+	SetPosition(Width, Height, (char*)"오랜만의 실전인 만큼 그 때의 감각을 떠올릴 필요가 있겠어", 15);
 	Sleep(500);
 	SetPosition(Width + 11, Height+1, ((char*)"야생의 "));
-	SetPosition(Width + 11 + strlen("야생의"), Height+1, _Enemy->Name);
-	SetPosition(Width + 11 + strlen("야생의") + strlen(_Enemy->Name), Height+1,"이(가) 나타났다!");
+	SetPosition(Width + 11 + strlen("야생의"), Height+1, _Enemy->Name, 11);
+	SetPosition(Width + 11 + strlen("야생의") + strlen(_Enemy->Name), Height+1,(char*)"이(가) 나타났다!", 15);
 
 	Sleep(300);
 	SetPosition(Width + 9, Height+2, (char*)"선빵필승! 속도가 빠른 쪽이 선공권을 가지지");
@@ -562,28 +564,46 @@ void BattleScene(OBJECT* _Player, OBJECT* _Enemy, int _buff)
 
 void PStatScene(OBJECT* _Player)
 {
-	int Width = 10;
-	int Height = 40;
+	int nWidth = 30;
+	int Width = 37;
+	int Height = 20;
+	SetPosition(nWidth, Height, (char*)"이  름");
 	SetPosition(Width, Height, _Player->Name);
-	SetPosition(Width, Height + 1, (char*)_Player->Info.HP);
-	SetPosition(Width, Height + 2, (char*)_Player->Info.MP);
-	SetPosition(Width, Height + 3, (char*)_Player->Info.ATK);
-	SetPosition(Width, Height + 4, (char*)_Player->Info.DEF);
-	SetPosition(Width, Height + 5, (char*)_Player->Info.Level);
-	SetPosition(Width, Height + 6, (char*)_Player->Info.Speed);
-}
+	SetPosition(nWidth + 1, Height + 1, (char*)"H  P");
+	SetPositionI(Width, Height + 1, _Player->Info.HP);
+	SetPosition(nWidth + 1, Height + 2, (char*)"M  P");
+	SetPositionI(Width, Height + 2, _Player->Info.MP);
+	SetPosition(nWidth, Height + 3, (char*)"공격력");
+	SetPositionI(Width, Height + 3, _Player->Info.ATK);
+	SetPosition(nWidth, Height + 4, (char*)"방어력");
+	SetPositionI(Width, Height + 4, _Player->Info.DEF);
+	SetPosition(nWidth, Height + 5, (char*)"레  벨");
+	SetPositionI(Width, Height + 5, _Player->Info.Level);
+	SetPosition(nWidth, Height + 6, (char*)"속  도");
+	SetPositionI(Width, Height + 6, _Player->Info.Speed);
+	SetPosition(Width + 20, Height + 3, (char*)"V  S");
+
+}			   
 
 void EStatScene(OBJECT* _Enemy)
 {
-	int Width = 50;
-	int Height = 40;
+	int nWidth = 75;
+	int Width = 82;
+	int Height = 20;
+	SetPosition(nWidth, Height, (char*)"이  름");
 	SetPosition(Width, Height, _Enemy->Name);
-	SetPosition(Width, Height + 1, (char*)_Enemy->Info.HP);
-	SetPosition(Width, Height + 2, (char*)_Enemy->Info.MP);
-	SetPosition(Width, Height + 3, (char*)_Enemy->Info.ATK);
-	SetPosition(Width, Height + 4, (char*)_Enemy->Info.DEF);
-	SetPosition(Width, Height + 5, (char*)_Enemy->Info.Level);
-	SetPosition(Width, Height + 6, (char*)_Enemy->Info.Speed);
+	SetPosition(nWidth + 1, Height + 1, (char*)"H  P");
+	SetPositionI(Width, Height + 1, _Enemy->Info.HP);
+	SetPosition(nWidth + 1, Height + 2, (char*)"M  P");
+	SetPositionI(Width, Height + 2, _Enemy->Info.MP);
+	SetPosition(nWidth, Height + 3, (char*)"공격력");
+	SetPositionI(Width, Height + 3, _Enemy->Info.ATK);
+	SetPosition(nWidth, Height + 4, (char*)"방어력");
+	SetPositionI(Width, Height + 4, _Enemy->Info.DEF);
+	SetPosition(nWidth, Height + 5, (char*)"레  벨");
+	SetPositionI(Width, Height + 5, _Enemy->Info.Level);
+	SetPosition(nWidth, Height + 6, (char*)"속  도");
+	SetPositionI(Width, Height + 6, _Enemy->Info.Speed);
 }
 
 void PlayerAtk(OBJECT* _Player, OBJECT* _Enemy)
@@ -900,6 +920,37 @@ int FailScene(OBJECT* _Player)
 
 void PlayerScene(OBJECT* _Player)
 {
+	int Width = 20;
+	int Height = 0;
+	system("cls");
+	SetPosition(Width, Height + 1, (char*)"");
+	SetPosition(Width, Height + 3, (char*)"");
+	SetPosition(Width, Height + 4, (char*)"");
+	SetPosition(Width, Height + 5, (char*)"");
+	SetPosition(Width, Height + 6, (char*)"");
+	SetPosition(Width, Height + 7, (char*)"");
+	SetPosition(Width, Height + 8, (char*)"");
+	SetPosition(Width, Height + 9, (char*)"");
+	SetPosition(Width, Height + 10, (char*)"");
+	SetPosition(Width, Height + 11, (char*)"");
+	SetPosition(Width, Height + 12, (char*)"");
+	SetPosition(Width, Height + 13, (char*)"");
+	SetPosition(Width, Height + 14, (char*)"");
+	SetPosition(Width, Height + 15, (char*)"");
+	SetPosition(Width, Height + 16, (char*)"");
+	SetPosition(Width, Height + 17, (char*)"");
+	SetPosition(Width, Height + 18, (char*)"");
+	SetPosition(Width, Height + 19, (char*)"");
+	SetPosition(Width, Height + 20, (char*)"");
+	SetPosition(Width, Height + 21, (char*)"");
+	SetPosition(Width, Height + 22, (char*)"");
+	SetPosition(Width, Height + 23, (char*)"");
+	SetPosition(Width, Height + 24, (char*)"");
+	SetPosition(Width, Height + 25, (char*)"");
+	SetPosition(Width, Height + 26, (char*)"");
+	SetPosition(Width, Height + 27, (char*)"");
+	SetPosition(Width, Height + 28, (char*)"");
+	SetPosition(Width, Height + 29, (char*)"");
 
 }
 
@@ -1018,6 +1069,22 @@ void SetPosition(int _x, int _y, char* _str, int _Color)
 	SetColor(_Color);
 
 	printf_s("%s", _str);
+}
+
+void SetPositionI(int _x, int _y, int _value, int _Color)
+{
+	COORD Pos = { _x, _y };
+
+	SetConsoleCursorPosition(GetStdHandle(STD_OUTPUT_HANDLE), Pos);
+	SetColor(_Color);
+
+	char Buffer[128] = "";
+	_itoa(_value, Buffer, 10);
+
+	char* pStr = (char*)malloc(strlen(Buffer));
+	strcpy(pStr, Buffer);
+
+	printf_s("%s", pStr);
 }
 
 void SetColor(int _Color)
