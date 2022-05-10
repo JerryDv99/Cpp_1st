@@ -84,7 +84,7 @@ void Parrying(OBJECT* _Player, OBJECT* _Enemy);
 void BattleScene(OBJECT* _Player, OBJECT* _Enemy, int _buff);
 void BattleResult(OBJECT* _Player, OBJECT* _Enemy);
 void PlayerLvUp(OBJECT* _Player);
-void PlayerScene(OBJECT* _Player);
+void PlayerScene();
 void EnemyScene(OBJECT* _Enemy);
 void PStatScene(OBJECT* _Player);
 void EStatScene(OBJECT* _Enemy);
@@ -105,7 +105,7 @@ int main(void)
 {
 	HideCursor();
 
-	system("mode con:cols=120 lines=40");
+	system("mode con:cols=120 lines=33");
 
 	system("title 고길동 v0.3");
 
@@ -119,19 +119,16 @@ int main(void)
 	OBJECT* Enemy3 = (OBJECT*)malloc(sizeof(OBJECT));
 	OBJECT* Enemy4 = (OBJECT*)malloc(sizeof(OBJECT));
 	OBJECT* Enemy5 = (OBJECT*)malloc(sizeof(OBJECT));
-
 	InitializeEnemy1(Enemy1);
 	InitializeEnemy2(Enemy2);
 	InitializeEnemy3(Enemy3);
 	InitializeEnemy4(Enemy4);
 	InitializeEnemy5(Enemy5);
 
-	SetPosition(10, 10, (char*)"ㄱ                                    ㄴ");
-	SetPosition(15, 10, (char*)"안녕");
-
+	//SetPosition(30, 21, (char*)"안녕", 14);
 	//SceneManager(Player, Enemy1, Enemy2, Enemy3, Enemy4, Enemy5);
-	PStatScene(Player);
-	EStatScene(Enemy5);
+	//ShopScene(Player, 4);
+	FailScene(Player);
 
 	free(Player);
 	free(Enemy1);
@@ -153,10 +150,10 @@ char* SetName()
 
 	if (strcmp(Buffer, "고길동") == 0)
 	{
-		SetPosition(35, 14, (char*)"그래, 내가 바로 고씨 집안 차남 고길동이다\n");
+		SetPosition(35, 14, (char*)"그래, 내가 바로 고씨 집안 차남 고길동이다");
 	}
 	else
-		SetPosition(25, 14, (char*)"내 이름을 왜 멋대로 정하지? 할아버지께서 지어주신 내 이름은 고길동이다\n");
+		SetPosition(25, 14, (char*)"내 이름을 왜 멋대로 정하지? 할아버지께서 지어주신 내 이름은 고길동이다");
 
 	Sleep(1500);
 	char* pName = (char*)malloc(7);
@@ -404,7 +401,7 @@ int MainScene()
 	SetPosition(Width, Height + 13, (char*)"                    ##          ################          ################          ############",14);
 	
 
-
+	Sleep(1000);
 	SetPosition(MWidth, MHeight - 1, (char*)"┌ㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡ┐",11);
 	SetPosition(MWidth, MHeight, (char*)"ㅣ                       ㅣ",11);
 	SetPosition(MWidth, MHeight + 1, (char*)"ㅣ       메     뉴       ㅣ",11);
@@ -452,7 +449,9 @@ void StageScene(OBJECT* _Player, OBJECT* _Enemy1, OBJECT* _Enemy2, OBJECT* _Enem
 
 	int i = 0;
 	srand(time(NULL));
+	PlayerScene();
 	Tutorial(_Enemy1);
+	PlayerScene();
 
 	BattleScene(_Player, _Enemy1, i);
 	if (rand() % 2 == 0)
@@ -485,14 +484,13 @@ void StageScene(OBJECT* _Player, OBJECT* _Enemy1, OBJECT* _Enemy2, OBJECT* _Enem
 
 void Tutorial(OBJECT* _Enemy)
 {
-	system("cls");
 	int Width = 30;
-	int Height = 8;
+	int Height = 22;
 	SetPosition(Width, Height, (char*)"오랜만의 실전인 만큼 그 때의 감각을 떠올릴 필요가 있겠어", 15);
 	Sleep(500);
 	SetPosition(Width + 11, Height+1, ((char*)"야생의 "));
-	SetPosition(Width + 11 + strlen("야생의"), Height+1, _Enemy->Name, 11);
-	SetPosition(Width + 11 + strlen("야생의") + strlen(_Enemy->Name), Height+1,(char*)"이(가) 나타났다!", 15);
+	SetPosition(Width + 11 + strlen("야생의 "), Height+1, _Enemy->Name, 12);
+	SetPosition(Width + 11 + strlen("야생의 ") + strlen(_Enemy->Name), Height+1,(char*)"이(가) 나타났다!", 15);
 
 	Sleep(300);
 	SetPosition(Width + 9, Height+2, (char*)"선빵필승! 속도가 빠른 쪽이 선공권을 가지지");
@@ -566,7 +564,7 @@ void PStatScene(OBJECT* _Player)
 {
 	int nWidth = 30;
 	int Width = 37;
-	int Height = 20;
+	int Height = 21;
 	SetPosition(nWidth, Height, (char*)"이  름");
 	SetPosition(Width, Height, _Player->Name);
 	SetPosition(nWidth + 1, Height + 1, (char*)"H  P");
@@ -589,7 +587,7 @@ void EStatScene(OBJECT* _Enemy)
 {
 	int nWidth = 75;
 	int Width = 82;
-	int Height = 20;
+	int Height = 21;
 	SetPosition(nWidth, Height, (char*)"이  름");
 	SetPosition(Width, Height, _Enemy->Name);
 	SetPosition(nWidth + 1, Height + 1, (char*)"H  P");
@@ -862,11 +860,22 @@ int Turn(OBJECT* _Player, OBJECT* _Enemy)
 
 void BattleResult(OBJECT* _Player, OBJECT* _Enemy)
 {
-	printf_s("전투 승리! %s은(는) 흙으로 돌아갔다\n", _Enemy->Name);
+	int Width = 30;
+	int Height = 22;
+
+	system("cls");
+	PlayerScene();
+
+	SetPosition(Width, Height, (char*)"전투 승리! ", 14);
+	SetPosition(Width + 12, Height, _Enemy->Name, 12);
+	SetPosition(Width + 30, Height, (char*)"은(는) 흙으로 돌아갔다 ", 14);
 
 	if ((_Player->Info.EXP += _Enemy->Info.EXP) < 100)
 	{
-		printf_s("경험치 %d 상승 ! 현재 경험치 %d\n", _Enemy->Info.EXP, _Player->Info.EXP);
+		SetPosition(Width, Height + 1, (char*)"경험치 ", 15);
+		SetPositionI(Width + 4, Height + 1, _Enemy->Info.EXP);
+		SetPosition(Width, Height + 1, (char*)"상승 ! 현재 경험치 : ", 15);
+		SetPositionI(Width + 4, Height + 1, _Player->Info.EXP);
 	}
 	else if ((_Player->Info.EXP += _Enemy->Info.EXP) >= 100)
 	{
@@ -875,7 +884,10 @@ void BattleResult(OBJECT* _Player, OBJECT* _Enemy)
 		{
 			PlayerLvUp(_Player);
 		}
-		printf_s("레벨 업! 현재 레벨 : %d Lv\n", _Player->Info.Level);
+		SetPosition(Width, Height + 1, (char*)"레벨 업! 현재 레벨 : ", 14);
+		SetPositionI(Width + 4, Height + 1, _Player->Info.Level); 
+		SetPosition(Width + 6, Height + 1, (char*)"Lv", 14);
+		
 		_Player->Info.EXP = ex;
 		printf_s("현재 경험치 : %dss\n", _Player->Info.EXP);
 	}
@@ -893,10 +905,13 @@ void PlayerLvUp(OBJECT* _Player)
 
 int FailScene(OBJECT* _Player)
 {
+	system("cls");
+	PlayerScene();
 	int i = 0;
-
-	printf_s("윽... 분하다\n");
-	printf_s("재도전 하시겠습니까? 1을 입력해 1000원을 내고 재도전 , 이외의 키 입력으로 게임 종료\n");
+	int Width = 50;
+	int Height = 23;
+	SetPosition(Width, Height, (char*)"윽... 분하다");
+	SetPosition(Width - 33, Height + 1, (char*)"재도전 하시겠습니까? 1을 입력해 1000원을 내고 재도전 , 이외의 키 입력으로 게임 종료 : ", 12);
 	scanf("%d", &i);
 
 	if (i == 1 && _Player->Info.Gold >= 1000)
@@ -906,52 +921,104 @@ int FailScene(OBJECT* _Player)
 	}
 	else if (_Player->Info.Gold < 1000)
 	{
-		printf_s("지불할 금액이 부족하네요");
-		printf_s("게임을 종료합니다.");
+		SetPosition(Width, Height + 2, (char*)"지불할 금액이 부족하네요", 14);
+		SetPosition(Width, Height + 3, (char*)"게임을 종료합니다.", 12);
 		exit(NULL);
 	}
 	else
 	{
-		printf_s("게임을 종료합니다.");
+		SetPosition(Width, Height, (char*)"게임을 종료합니다.", 12);
 		exit(NULL);
 	}
 	return i;
 }
 
-void PlayerScene(OBJECT* _Player)
+void PlayerScene()
 {
-	int Width = 20;
+	int Width = 5;
 	int Height = 0;
 	system("cls");
-	SetPosition(Width, Height + 1, (char*)"");
-	SetPosition(Width, Height + 3, (char*)"");
-	SetPosition(Width, Height + 4, (char*)"");
-	SetPosition(Width, Height + 5, (char*)"");
-	SetPosition(Width, Height + 6, (char*)"");
-	SetPosition(Width, Height + 7, (char*)"");
-	SetPosition(Width, Height + 8, (char*)"");
-	SetPosition(Width, Height + 9, (char*)"");
-	SetPosition(Width, Height + 10, (char*)"");
-	SetPosition(Width, Height + 11, (char*)"");
-	SetPosition(Width, Height + 12, (char*)"");
-	SetPosition(Width, Height + 13, (char*)"");
-	SetPosition(Width, Height + 14, (char*)"");
-	SetPosition(Width, Height + 15, (char*)"");
-	SetPosition(Width, Height + 16, (char*)"");
-	SetPosition(Width, Height + 17, (char*)"");
-	SetPosition(Width, Height + 18, (char*)"");
-	SetPosition(Width, Height + 19, (char*)"");
-	SetPosition(Width, Height + 20, (char*)"");
-	SetPosition(Width, Height + 21, (char*)"");
-	SetPosition(Width, Height + 22, (char*)"");
-	SetPosition(Width, Height + 23, (char*)"");
-	SetPosition(Width, Height + 24, (char*)"");
-	SetPosition(Width, Height + 25, (char*)"");
-	SetPosition(Width, Height + 26, (char*)"");
-	SetPosition(Width, Height + 27, (char*)"");
-	SetPosition(Width, Height + 28, (char*)"");
-	SetPosition(Width, Height + 29, (char*)"");
-
+	SetPosition(Width, Height + 1, (char*)"******************************************************************************", 11);
+	SetPosition(Width + strlen("******************************************************************************"), Height + 1, (char*)"***************", 15);
+	SetPosition(Width + strlen("******************************************************************************::::.......::::"), Height + 1, (char*)"*****************", 11);
+	SetPosition(Width, Height + 2, (char*)"*********", 11);
+	SetPosition(Width + 9, Height + 2, (char*)"****", 15);
+	SetPosition(Width + strlen("********....:"), Height + 2, (char*)"***************************************************************", 11);
+	SetPosition(Width + strlen("********....:***************************************************************"), Height + 2, (char*)"*******************", 15);
+	SetPosition(Width + strlen("********....:***************************************************************::::...........::::"), Height + 2, (char*)"***************", 11);
+	SetPosition(Width, Height + 3, (char*)"********", 11);
+	SetPosition(Width + 8, Height + 3, (char*)"*******", 15);
+	SetPosition(Width + strlen("********.... : "), Height + 3, (char*)"************************************************************", 11);
+	SetPosition(Width + strlen("********.... : ************************************************************"), Height + 3, (char*)"**********************", 15);
+	SetPosition(Width + strlen("********.... : ************************************************************::::...........::::***"), Height + 3, (char*)"*************", 11);
+	SetPosition(Width, Height + 4, (char*)"******", 11);
+	SetPosition(Width + 6, Height + 4, (char*)"***************", 15);
+	SetPosition(Width + strlen("****** : .......:: : "), Height + 4, (char*)"**************************************************", 11);
+	SetPosition(Width + strlen("****** : .......:: : **************************************************"), Height + 4, (char*)"*******************************", 15);
+	SetPosition(Width + strlen("****** : .......:: : **************************************************: .............:::::::::::: : "), Height + 4, (char*)"*********", 11);
+	SetPosition(Width, Height + 5, (char*)"***", 11);
+	SetPosition(Width + 3, Height + 5, (char*)"********************", 15);
+	SetPosition(Width + strlen("***::.......:::::::: : "), Height + 5, (char*)"*********************************************", 11);
+	SetPosition(Width + strlen("***::.......:::::::: : *********************************************"), Height + 5, (char*)"************************************", 15);
+	SetPosition(Width + strlen("***::.......:::::::: : *********************************************: ............:::::::::::::::::: : "), Height + 5, (char*)"*******", 11);
+	SetPosition(Width, Height + 6, (char*)"**", 11);
+	SetPosition(Width + 2, Height + 6, (char*)"********************", 15);
+	SetPosition(Width + strlen("**: .....:::::::::: : "), Height + 6, (char*)"*********************************************", 11);
+	SetPosition(Width + strlen("**: .....:::::::::: : *********************************************"), Height + 6, (char*)"*************************************", 15);
+	SetPosition(Width + strlen("**: .....:::::::::: : *********************************************: .......::::::::::::::::::::::::::::"), Height + 6, (char*)"******", 11);
+	SetPosition(Width, Height + 7, (char*)"*************************", 11);
+	SetPosition(Width + strlen("*************************"), Height + 7, (char*)"*************", 15);
+	SetPosition(Width + strlen("************************* ::......::::"), Height + 7, (char*)"*****************************", 11);
+	SetPosition(Width + strlen("************************* ::......::::*****************************"), Height + 7, (char*)"**********", 15);
+	SetPosition(Width + strlen("************************* ::......::::***************************** ::* :: : "), Height + 7, (char*)"*********************************", 11);
+	SetPosition(Width, Height + 8, (char*)"***********************", 11);
+	SetPosition(Width + strlen("***********************"), Height + 8, (char*)"*****************", 15);
+	SetPosition(Width + strlen("***********************: .......::::::::"), Height + 8, (char*)"*******************************************************************", 11);
+	SetPosition(Width + strlen("***********************: .......::::::::*******************************************************************"), Height + 8, (char*)"***", 15);
+	SetPosition(Width, Height + 9, (char*)"***************************", 11);
+	SetPosition(Width + strlen("***************************"), Height + 9, (char*)"**********", 15);
+	SetPosition(Width + strlen("*************************** :::::: : "), Height + 9, (char*)"******************************************************************", 11);
+	SetPosition(Width + strlen("*************************** :::::: : ******************************************************************"), Height + 9, (char*)"*******", 15);
+	SetPosition(Width, Height + 10, (char*)"**********");
+	SetPosition(Width + 10, Height + 10, (char*)"*********************************************************", 11);
+	SetPosition(Width + strlen(": ...:::: *********************************************************"), Height + 10, (char*)"********", 15);
+	SetPosition(Width + strlen(": ...:::: *********************************************************::..:: :"), Height + 10, (char*)"**************************", 11);
+	SetPosition(Width + strlen(": ...:::: *********************************************************::..:: : *************************"), Height + 10, (char*)"*********", 15);
+	SetPosition(Width, Height + 11, (char*)"**************");
+	SetPosition(Width + 13, Height + 11, (char*)"**************************************************", 11);
+	SetPosition(Width + strlen("....:::::::::**************************************************"), Height + 11, (char*)"******************", 15);
+	SetPosition(Width + strlen("....:::::::::**************************************************: ........:::::: :"), Height + 11, (char*)"*****************************", 11);
+	SetPosition(Width, Height + 12, (char*)"***********", 15); 
+	SetPosition(Width + 11, Height + 12, (char*)"***************************************************", 11);
+	SetPosition(Width + 62, Height + 12, (char*)"****************", 15);
+	SetPosition(Width + 78, Height + 12, (char*)"********************************", 11);
+	SetPosition(Width, Height + 13, (char*)"****", 15); 
+	SetPosition(Width + 4, Height + 13, (char*)"******************************************************************", 11);
+	SetPosition(Width + strlen("::::******************************************************************"), Height + 13, (char*)"****", 15);
+	SetPosition(Width + strlen("::::******************************************************************::::") , Height + 13, (char*)"************************************", 11);
+	SetPosition(Width, Height + 14, (char*)"VVVVVVVVVVVVVVVVVVVV", 10); 
+	SetPosition(Width + strlen("VVVVVVVVVVVVVVVVVVVV"), Height + 14, (char*)"******************************************************", 11);
+	SetPosition(Width + strlen("VVVVVVVVVVVVVVVVVVVV******************************************************"), Height + 14, (char*)"VVVVVFFIIIIIIIIIIIIIIIFIIIIIIIIIIIII", 10);
+	SetPosition(Width, Height + 15, (char*)"IIIIMMMMMMMMIIMFVFIMIIMIIIIVVVVV************* VVVVVVVVFFIIIIIIMIMMIMIMIMIIMIMIIIIIIIIMMMMIIIIMI* VVMMIIIIIIIII", 10);
+	SetPosition(Width, Height + 16, (char*)"MMMMMMMMMMMMMMMMIMMMMMMMIVFMMMMMMMMMMMMMMIVMMMMMMMMMMMMMMMMMFVIMMMMMMMIVVIMMMMMMMMMMMVVIMMMMMMMMMMMMMMMMMMMMMM", 10);
+	SetPosition(Width, Height + 17, (char*)"NNNNNVVVMNNNNNNNNNNNNNNNMIMNNNNNNNNNNNNNNNNNNNNNNNMIINNNNNNNIIMNNNNNNNNMMNNNNNNNNNNNNNNNNNNNNNNNMVVINNNNNNNNNN", 10);
+	SetPosition(Width, Height + 18, (char*)"NNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNMMNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNMFVMNNNNNNNMMNNNNNNNNNNN", 10);
+	SetPosition(Width, Height + 19, (char*)"$$$$$$$$$$$$NIN$$$$$$NFIN$$$$$$$$$$$$$NMN$$$$$$$$$$$$$$$$$$$$$$$$IVF$$$$$$$$$$$$NIN$$$$NNN$$$$$$$$$NIM$$$$$$$$", 10);
+	//SetPosition(Width, Height + 20, (char*)"$$$$$$$$$$$$$$$$$$$$$$N$$$$$$$$$$$$$$$MIM$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$N$$$$$$$$$$$$$$$$$$$$$$$$$$$$", 10);
+	SetPosition(Width + 5, Height + 20, (char*)"┌ㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡ┐", 15);
+	SetPosition(Width + 5, Height + 21, (char*)"ㅣ                                                                                                 ㅣ");
+	SetPosition(Width + 5, Height + 21, (char*)"ㅣ                                                                                                 ㅣ");
+	SetPosition(Width + 5, Height + 22, (char*)"ㅣ                                                                                                 ㅣ");
+	SetPosition(Width + 5, Height + 23, (char*)"ㅣ                                                                                                 ㅣ");
+	SetPosition(Width + 5, Height + 24, (char*)"ㅣ                                                                                                 ㅣ");
+	SetPosition(Width + 5, Height + 25, (char*)"ㅣ                                                                                                 ㅣ");
+	SetPosition(Width + 5, Height + 26, (char*)"ㅣ                                                                                                 ㅣ");
+	SetPosition(Width + 5, Height + 27, (char*)"ㅣ                                                                                                 ㅣ");
+	SetPosition(Width + 5, Height + 28, (char*)"ㅣ                                                                                                 ㅣ");
+	SetPosition(Width + 5, Height + 29, (char*)"ㅣ                                                                                                 ㅣ");
+	SetPosition(Width + 5, Height + 30, (char*)"ㅣ                                                                                                 ㅣ");
+	SetPosition(Width + 5, Height + 31, (char*)"ㅣ                                                                                                 ㅣ");
+	SetPosition(Width + 5, Height + 32, (char*)"└ㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡ┘");
 }
 
 
@@ -962,6 +1029,8 @@ void EnemyScene(OBJECT* _Enemy)
 
 void ShopScene(OBJECT* _Player, int _stg)
 {
+	system("cls");
+	PlayerScene();
 	int i = 0;
 
 	int atk = 30;
@@ -974,73 +1043,142 @@ void ShopScene(OBJECT* _Player, int _stg)
 	int w3 = 1000;
 	int w4 = 1000;
 
-	printf_s("다음 전투를 위해 이동하던 중 방랑상인 마이콜을 만났다");
-	printf_s("마이콜의 잡화상에 오신것을 환영합니다 길동아저씨, 같이 싸웠던 전우에겐 특별히 할인가로 드릴게요");
-	printf_s("마이콜의 잡화상 : ");
-	printf_s("1. 숯돌 : 공격력 %d 증가, %d원", _stg * atk, _stg * w1);
-	printf_s("2. 후라이팬 : 방어력 %d 증가, %d원", _stg * def, _stg * w2);
-	printf_s("3. 우황청심환 : 체력 %d 증가, %d원", _stg * hp, _stg * w3);
-	printf_s("4. 슬리퍼 : 속도 %d 증가, %d원", _stg * atk, _stg * w4);
-	printf_s("현재 소지금 : %d원, 구매를 원하지 않으면 1 ~ 4 이외의 키를 입력 : ", _Player->Info.Gold);
+	int Width = 13;
+	int eWidth = 40;
+	int Height = 22;
+
+	SetPosition(Width, Height - 1, (char*)"다음 전투를 위해 이동하던 중 방랑상인 마이콜을 만났다", 15);
+	SetPosition(Width, Height, (char*)"마이콜의 잡화상에 오신것을 환영합니다 길동 아저씨, 같이 싸웠던 전우시니 특별히 할인가로 드릴게요", 14);
+	SetPosition(Width, Height + 2, (char*)"마이콜의 잡화상 : ", 14);
+	SetPosition(eWidth, Height + 2, (char*)"1.  숯  돌   : 공격력 + ", 14);
+	SetPositionI(eWidth + 24, Height + 2, _stg * atk, 12);
+	SetPosition(eWidth + 29, Height + 2, (char*)", 가격 : ", 14);
+	SetPositionI(eWidth + 38, Height + 2, _stg * w1, 12);
+	SetPosition(eWidth, Height + 3, (char*)"2. 후라이팬  : 방어력 + ", 14);
+	SetPositionI(eWidth + 24, Height + 3, _stg * def, 12);
+	SetPosition(eWidth + 29, Height + 3, (char*)", 가격 : ", 14);
+	SetPositionI(eWidth + 38, Height + 3, _stg * w2, 12);
+	SetPosition(eWidth, Height + 4, (char*)"3.우황청심환 : 체  력 + ", 14);
+	SetPositionI(eWidth + 24, Height + 4, _stg * hp, 12);
+	SetPosition(eWidth + 29, Height + 4, (char*)", 가격 : ", 14);
+	SetPositionI(eWidth + 38, Height + 4, _stg * w3, 12);
+	SetPosition(eWidth, Height + 5, (char*)"4. 슬 리 퍼  : 속  도 + ", 14);
+	SetPositionI(eWidth + 24, Height + 5, _stg * spd, 12);
+	SetPosition(eWidth + 29, Height + 5, (char*)", 가격 : ", 14);
+	SetPositionI(eWidth + 38, Height + 5, _stg * w4, 12);
+	SetPosition(Width, Height + 7, (char*)"현재 소지금 : ", 15);
+	SetPositionI(Width + 14, Height + 7, _Player->Info.Gold ,14);
+	SetPosition(Width + 20, Height + 7, (char*)"원, 구매를 원하지 않으면 1 ~ 4 이외의 키를 입력 : ", 15);
+
+
 	scanf("%d", &i);
 	
 	if (i == 1)
 	{
-		_Player->Info.ATK += _stg * atk;
-		_Player->Info.Gold -= _stg * w1;
+		if (_Player->Info.Gold >= _stg * w1)
+		{
+			_Player->Info.ATK += _stg * atk;
+			_Player->Info.Gold -= _stg * w1;
+			SetPosition(Width, Height + 8, (char*)"감사합니다 호갱님!", 14);
+			SetPosition(Width, Height + 9, (char*)"뭔가 찜찜하다... 현재 소지금 : ", 15);
+			SetPositionI(Width + 32, Height + 9, _Player->Info.Gold, 14);
+		}
+		else
+		{
+			SetPosition(Width, Height + 8, (char*)"저런...돈이 부족하시군요? 나가실 문은 오른쪽입니다~", 12);
+			i = 0;
+		}
 	}
 	else if (i == 2)
 	{
-		_Player->Info.DEF += _stg * def;
-		_Player->Info.Gold -= _stg * w2;
+		if (_Player->Info.Gold >= _stg * w2)
+		{
+			_Player->Info.DEF += _stg * def;
+			_Player->Info.Gold -= _stg * w2;
+			SetPosition(Width, Height + 8, (char*)"감사합니다 호갱님!", 14);
+			SetPosition(Width, Height + 9, (char*)"뭔가 찜찜하다... 현재 소지금 : ", 15);
+			SetPositionI(Width + 32, Height + 9, _Player->Info.Gold, 14);
+		}
+		else
+		{
+			SetPosition(Width, Height + 8, (char*)"저런...돈이 부족하시군요? 나가실 문은 오른쪽입니다~", 12);
+			i = 0;
+		}
 	}
 	else if (i == 3)
 	{
-		_Player->Info.HP += _stg * hp;
-		_Player->Info.Gold -= _stg * w3;
+		if (_Player->Info.Gold >= _stg * w3)
+		{
+			_Player->Info.HP += _stg * hp;
+			_Player->Info.Gold -= _stg * w3;
+			SetPosition(Width, Height + 8, (char*)"감사합니다 호갱님!", 14);
+			SetPosition(Width, Height + 9, (char*)"뭔가 찜찜하다... 현재 소지금 : ", 15);
+			SetPositionI(Width + 32, Height + 9, _Player->Info.Gold, 14);
+		}
+		else
+		{
+			SetPosition(Width, Height + 8, (char*)"저런...돈이 부족하시군요? 나가실 문은 오른쪽입니다~", 12);
+			i = 0;
+		}
 	}
 	else if (i == 4)
 	{
-		_Player->Info.Speed += _stg * spd;
-		_Player->Info.Gold -= _stg * w4;
+		if (_Player->Info.Gold >= _stg * w4)
+		{
+			_Player->Info.Speed += _stg * spd;
+			_Player->Info.Gold -= _stg * w4;
+			SetPosition(Width, Height + 8, (char*)"감사합니다 호갱님!", 14);
+			SetPosition(Width, Height + 9, (char*)"뭔가 찜찜하다... 현재 소지금 : ", 15);
+			SetPositionI(Width + 32, Height + 9, _Player->Info.Gold, 14);
+		}
+		else
+		{
+			SetPosition(Width, Height + 8, (char*)"저런...돈이 부족하시군요? 나가실 문은 오른쪽입니다~", 12);
+			i = 0;
+		}
 	}
 	else
-		i = 0;
+	{
+		SetPosition(Width, Height + 8, (char*)"에이 ~ 이 바닥에서 쿨거래는 기본이에요 형씨 ! ", 14);
+		SetPosition(Width, Height + 9, (char*)"물건의 상태가 좋지 않아 거래를 취소하고 발걸음을 옮겼다", 15);
+	}
 
-	printf_s("감사합니다 호갱님!");
-	printf_s("뭔가 찜찜하다... 현재 소지금 : %d원", _Player->Info.Gold);
-
+	
+	Sleep(1500);
 }
 
 int BuffScene()
 {
 	system("cls");
+	PlayerScene();
 	int i = 0;
 	int lp = 1;
 	int Width = 39;
+	int Height = 21;
 
 	while (lp)
 	{
-		SetPosition(Width, 7, (char*)"전투를 끝마친 당신을 희동이가 반겨준다");
-		SetPosition(Width, 9, (char*)"희동이의 응원 : ");
-		SetPosition(Width, 11, (char*)"1. 다음 전투에서 공격력 30% 증가 버프");
-		SetPosition(Width, 13, (char*)"2. 다음 전투에서 방어력 30% 증가 버프");
-		SetPosition(Width, 15, (char*)"3. 다음 전투에서 속도 10 증가 버프");
-		SetPosition(Width, 17, (char*)"버프 선택 : ");
+		SetPosition(Width, Height, (char*)"전투를 끝마친 당신을 희동이가 반겨준다");
+		SetPosition(Width, Height + 1, (char*)"희동이의 응원 : ");
+		SetPosition(Width, Height + 3, (char*)"1. 다음 전투에서 공격력 30% 증가 버프", 14);
+		SetPosition(Width, Height + 4, (char*)"2. 다음 전투에서 방어력 30% 증가 버프", 14);
+		SetPosition(Width, Height + 5, (char*)"3. 다음 전투에서 속도 10 증가 버프", 14);
+		SetPosition(Width, Height + 7, (char*)"버프 선택 : ");
 		scanf("%d", &i);
-		if (i < 0 || i > 4)
+		if (i < 1 || i > 4)
 		{
-			SetPosition(Width + 9, 19, (char*)"다시 선택하세요");
+			SetPosition(Width + 15, Height + 7, (char*)"다시 선택하세요", 12);
 			i = 0;
 		}
 		else
 		{
-			system("cls");
-			SetPosition(Width + 11, 11, (char*)"고모부 힘내!");
-			SetPosition(Width + 3, 15, (char*)"희동이의 응원에 힘이 솟는다");
+			SetPosition(Width + 11, Height + 8, (char*)"고모부 힘내!", 15);
+			SetPosition(Width + 3, Height + 9, (char*)"희동이의 응원에 힘이 솟는다", 11);
 			lp = 0;
 		}
 	}
+
+	Sleep(2000);
 	
 	return i;
 }
