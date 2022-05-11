@@ -196,7 +196,7 @@ void InitializeEnemy2(OBJECT* _Obj)
 
 	_Obj->Info.HP = 400;
 	_Obj->Info.MP = 0;
-	_Obj->Info.ATK = 30;
+	_Obj->Info.ATK = 50;
 	_Obj->Info.DEF = 5;
 	_Obj->Info.Level = 3;
 	_Obj->Info.Speed = 3;
@@ -210,7 +210,7 @@ void InitializeEnemy3(OBJECT* _Obj)
 
 	_Obj->Info.HP = 1000;
 	_Obj->Info.MP = 5;
-	_Obj->Info.ATK = 100;
+	_Obj->Info.ATK = 150;
 	_Obj->Info.DEF = 50;
 	_Obj->Info.Level = 9;
 	_Obj->Info.Speed = 10;
