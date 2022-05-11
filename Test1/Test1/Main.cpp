@@ -605,7 +605,7 @@ void EStatScene(OBJECT* _Enemy)
 
 void PlayerAtk(OBJECT* _Player, OBJECT* _Enemy)
 {
-	int Width = 37;
+	int Width = 32;
 	int Height = 21;
 	
 	system("cls");
@@ -633,7 +633,7 @@ void PlayerAtk(OBJECT* _Player, OBJECT* _Enemy)
 
 void EnemyAtk(OBJECT* _Enemy, OBJECT* _Player)
 {
-	int Width = 37;
+	int Width = 32;
 	int Height = 21;
 
 	system("cls");
