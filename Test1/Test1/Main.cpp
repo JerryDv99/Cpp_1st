@@ -757,7 +757,7 @@ int Turn(OBJECT* _Player, OBJECT* _Enemy)
 			{
 				system("cls");
 				PlayerScene();
-				SetPosition((120 / 2) - (strlen("이 녀석은 존재해선 안되는 생물이다") / 2), Height + 2, (char*)"이 녀석은 존재해선 안되는 생물이다", 11);
+				SetPosition((120 / 2) - (strlen("저 녀석은 존재해선 안되는 생물이다") / 2), Height + 2, (char*)"저 녀석은 존재해선 안되는 생물이다", 11);
 				Sleep(1000);
 				SetPosition((120 / 2) - (strlen("내 손으로 마무리 짓겠어") / 2), Height + 4, (char*)"내 손으로 마무리 짓겠어", 11);
 				Sleep(1000);
