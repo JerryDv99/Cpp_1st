@@ -1047,7 +1047,7 @@ void BattleResult(OBJECT* _Player, OBJECT* _Enemy)
 	SetPosition(32, Height + 6, _Enemy->Name, 12);
 	SetPosition(32 + strlen(_Enemy->Name), Height + 6, (char*)"이(가) 가지고 있던 ", 15);
 	SetPositionI(32 + strlen(_Enemy->Name) + strlen("이(가) 가지고 있던 "), Height + 6, _Enemy->Info.Gold, 14);
-	SetPosition(32 + strlen(_Enemy->Name) + strlen("이(가) 가지고 있던 ") + sizeof(_Enemy->Info.Gold), Height + 6,(char*)"원을 전리품으로 챙겼다");
+	SetPosition(34 + strlen(_Enemy->Name) + strlen("이(가) 가지고 있던 ") + sizeof(_Enemy->Info.Gold), Height + 6,(char*)"원을 전리품으로 챙겼다");
 	Sleep(500);
 	SetPosition(50, Height + 8, (char*)"현재 소지금 : ");
 	SetPositionI(64, Height + 8, _Player->Info.Gold, 14);
