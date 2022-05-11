@@ -180,40 +180,40 @@ void InitializeEnemy1(OBJECT* _Obj)
 {
 	_Obj->Name = (char*)"쌍문동 촉법소년";
 
-	_Obj->Info.HP = 15;
+	_Obj->Info.HP = 100;
 	_Obj->Info.MP = 0;
-	_Obj->Info.ATK = 3;
-	_Obj->Info.DEF = 1;
+	_Obj->Info.ATK = 20;
+	_Obj->Info.DEF = 10;
 	_Obj->Info.Level = 1;
 	_Obj->Info.Speed = 1;
 	_Obj->Info.EXP = 100;
-	_Obj->Info.Gold = 1000;
+	_Obj->Info.Gold = 2000;
 }
 
 void InitializeEnemy2(OBJECT* _Obj)
 {
 	_Obj->Name = (char*)"해골 사냥꾼";
 
-	_Obj->Info.HP = 40;
+	_Obj->Info.HP = 400;
 	_Obj->Info.MP = 0;
-	_Obj->Info.ATK = 10;
-	_Obj->Info.DEF = 10;
+	_Obj->Info.ATK = 30;
+	_Obj->Info.DEF = 5;
 	_Obj->Info.Level = 3;
 	_Obj->Info.Speed = 3;
 	_Obj->Info.EXP = 300;
-	_Obj->Info.Gold = 2000;
+	_Obj->Info.Gold = 5000;
 }
 
 void InitializeEnemy3(OBJECT* _Obj)
 {
 	_Obj->Name = (char*)"흑마법사 도X너";
 
-	_Obj->Info.HP = 100;
+	_Obj->Info.HP = 1000;
 	_Obj->Info.MP = 5;
-	_Obj->Info.ATK = 30;
-	_Obj->Info.DEF = 5;
+	_Obj->Info.ATK = 100;
+	_Obj->Info.DEF = 50;
 	_Obj->Info.Level = 9;
-	_Obj->Info.Speed = 3;
+	_Obj->Info.Speed = 10;
 	_Obj->Info.EXP = 1000;
 	_Obj->Info.Gold = 10000;
 }
@@ -222,13 +222,13 @@ void InitializeEnemy4(OBJECT* _Obj)
 {
 	_Obj->Name = (char*)"해골 킹";
 
-	_Obj->Info.HP = 300;
+	_Obj->Info.HP = 3000;
 	_Obj->Info.MP = 5;
-	_Obj->Info.ATK = 50;
-	_Obj->Info.DEF = 10;
+	_Obj->Info.ATK = 250;
+	_Obj->Info.DEF = 50;
 	_Obj->Info.Level = 30;
-	_Obj->Info.Speed = 10;
-	_Obj->Info.EXP = 1500;
+	_Obj->Info.Speed = 30;
+	_Obj->Info.EXP = 2000;
 	_Obj->Info.Gold = 30000;
 }
 
@@ -239,7 +239,7 @@ void InitializeEnemy5(OBJECT* _Obj)
 	_Obj->Info.HP = 2222;
 	_Obj->Info.MP = 22;
 	_Obj->Info.ATK = 222;
-	_Obj->Info.DEF = 22;
+	_Obj->Info.DEF = 222;
 	_Obj->Info.Level = 222;
 	_Obj->Info.Speed = 222;
 	_Obj->Info.EXP = 2222;
@@ -1047,7 +1047,7 @@ void BattleResult(OBJECT* _Player, OBJECT* _Enemy)
 	SetPosition(32, Height + 6, _Enemy->Name, 12);
 	SetPosition(32 + strlen(_Enemy->Name), Height + 6, (char*)"이(가) 가지고 있던 ", 15);
 	SetPositionI(32 + strlen(_Enemy->Name) + strlen("이(가) 가지고 있던 "), Height + 6, _Enemy->Info.Gold, 14);
-	SetPosition(34 + strlen(_Enemy->Name) + strlen("이(가) 가지고 있던 ") + sizeof(_Enemy->Info.Gold), Height + 6,(char*)"원을 전리품으로 챙겼다");
+	SetPosition(33 + strlen(_Enemy->Name) + strlen("이(가) 가지고 있던 ") + sizeof(_Enemy->Info.Gold), Height + 6,(char*)"원을 전리품으로 챙겼다");
 	Sleep(500);
 	SetPosition(50, Height + 8, (char*)"현재 소지금 : ");
 	SetPositionI(64, Height + 8, _Player->Info.Gold, 14);
@@ -1198,10 +1198,10 @@ void ShopScene(OBJECT* _Player, int _stg)
 	int hp = 50;
 	int spd = 5;
 
-	int w1 = 2000;
-	int w2 = 1500;
-	int w3 = 1500;
-	int w4 = 1000;
+	int w1 = 3000;
+	int w2 = 2500;
+	int w3 = 2500;
+	int w4 = 2000;
 
 	int Width = 13;
 	int eWidth = 40;
@@ -1403,12 +1403,12 @@ void EndingScene(OBJECT* _Player, int _count)
 	Sleep(1000);
 	SetPosition(60 - (strlen("벌써부터 마음이 안정되는 기분이군...") / 2), Height + 8, (char*)"벌써부터 마음이 안정되는 기분이군...", 11);
 	Sleep(1000);
-	SetPosition(54 , Height + 10, (char*)"총 플레이타임 : ", 15);
-	SetPositionI(54 + strlen("총 플레이타임 : "), Height + 10, _count / 1000000, 14);
-	SetPosition(54 + strlen("총 플레이타임 : ") + sizeof(_count / 1000000), Height + 10,(char*)"초", 15);
+	SetPosition(51 , Height + 10, (char*)"총 플레이타임 : ", 15);
+	SetPositionI(51 + strlen("총 플레이타임 : "), Height + 10, _count / 1000000, 14);
+	SetPosition(51 + strlen("총 플레이타임 : ") + sizeof(_count / 1000000), Height + 10,(char*)"초", 15);
 	Sleep(1000);
 	SetPosition(54 , Height + 12, (char*)"최고 레벨 : ", 15);
-	SetPositionI(54 + strlen("최고 레벨 : "), Height + 12, _Player->Info.Level);
+	SetPositionI(54 + strlen("최고 레벨 : "), Height + 12, _Player->Info.Level, 14);
 	Sleep(1000);
 
 	SceneState++;
