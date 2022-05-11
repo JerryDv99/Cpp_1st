@@ -69,7 +69,7 @@ void InitializeEnemy3(OBJECT* _Obj);
 void InitializeEnemy4(OBJECT* _Obj);
 void InitializeEnemy5(OBJECT* _Obj);
 
-void SceneManager(OBJECT* _Player, OBJECT* _Enemy1, OBJECT* _Enemy2, OBJECT* _Enemy3, OBJECT* _Enemy4, OBJECT* _Enemy5);
+void SceneManager(OBJECT* _Player, OBJECT* _Enemy1, OBJECT* _Enemy2, OBJECT* _Enemy3, OBJECT* _Enemy4, OBJECT* _Enemy5, int _count);
 
 void LogoScene();
 int MainScene();
@@ -85,13 +85,12 @@ void BattleScene(OBJECT* _Player, OBJECT* _Enemy, int _buff);
 void BattleResult(OBJECT* _Player, OBJECT* _Enemy);
 void PlayerLvUp(OBJECT* _Player);
 void PlayerScene();
-void EnemyScene(OBJECT* _Enemy);
 void PStatScene(OBJECT* _Player);
 void EStatScene(OBJECT* _Enemy);
 
 void ShopScene(OBJECT* _Player, int _str);
 int BuffScene();
-void EndingScene();
+void EndingScene(OBJECT* _Player, int _count);
 int FailScene(OBJECT* _Player);
 void ExitScene();
 void BossScene();
@@ -125,17 +124,17 @@ int main(void)
 	InitializeEnemy4(Enemy4);
 	InitializeEnemy5(Enemy5);
 
+	DWORD dwTime = GetTickCount();
 	//SetPosition(30, 21, (char*)"안녕", 14);
-	//SceneManager(Player, Enemy1, Enemy2, Enemy3, Enemy4, Enemy5);
-	Turn(Player, Enemy3);
-
+	SceneManager(Player, Enemy1, Enemy2, Enemy3, Enemy4, Enemy5, dwTime);
+	Sleep(10000);
 	free(Player);
 	free(Enemy1);
 	free(Enemy2);
 	free(Enemy3);
 	free(Enemy4);
 	free(Enemy5);
-
+	
 	return 0;
 }
 
@@ -144,15 +143,15 @@ char* SetName()
 
 	char Buffer[128] = "";
 
-	SetPosition(42, 12, (char*)"당신의 이름은... : ");
+	SetPosition(44, 12, (char*)"당신의 이름은... : ");
 	scanf("%s", Buffer);
 
 	if (strcmp(Buffer, "고길동") == 0)
 	{
-		SetPosition(35, 14, (char*)"그래, 내가 바로 고씨 집안 차남 고길동이다");
+		SetPosition(60 - (strlen("그래, 내가 바로 고씨 집안 차남 고길동이다")/2), 14, (char*)"그래, 내가 바로 고씨 집안 차남 고길동이다", 11);
 	}
 	else
-		SetPosition(25, 14, (char*)"내 이름을 왜 멋대로 정하지? 할아버지께서 지어주신 내 이름은 고길동이다");
+		SetPosition(60 - (strlen("내 이름을 왜 멋대로 정하지? 할아버지께서 지어주신 내 이름은 고길동이다")/2), 14, (char*)"내 이름을 왜 멋대로 정하지? 할아버지께서 지어주신 내 이름은 고길동이다", 11);
 
 	Sleep(1500);
 	char* pName = (char*)malloc(7);
@@ -237,17 +236,17 @@ void InitializeEnemy5(OBJECT* _Obj)
 {
 	_Obj->Name = (char*)"인성파탄공룡 X리";
 
-	_Obj->Info.HP = 2222	;
+	_Obj->Info.HP = 2222;
 	_Obj->Info.MP = 22;
 	_Obj->Info.ATK = 222;
 	_Obj->Info.DEF = 22;
 	_Obj->Info.Level = 222;
-	_Obj->Info.Speed = 22;
+	_Obj->Info.Speed = 222;
 	_Obj->Info.EXP = 2222;
 	_Obj->Info.Gold = 222222;
 }
 
-void SceneManager(OBJECT* _Player, OBJECT* _Enemy1, OBJECT* _Enemy2, OBJECT* _Enemy3, OBJECT* _Enemy4, OBJECT* _Enemy5)
+void SceneManager(OBJECT* _Player, OBJECT* _Enemy1, OBJECT* _Enemy2, OBJECT* _Enemy3, OBJECT* _Enemy4, OBJECT* _Enemy5, int _count)
 {
 	switch (SceneState)
 	{
@@ -265,7 +264,7 @@ void SceneManager(OBJECT* _Player, OBJECT* _Enemy1, OBJECT* _Enemy2, OBJECT* _En
 		StageScene(_Player, _Enemy1, _Enemy2, _Enemy3, _Enemy4, _Enemy5);
 
 	case Scene_Ending:
-		EndingScene();
+		EndingScene(_Player, _count);
 
 	case Scene_Exit:
 		ExitScene();
@@ -393,7 +392,7 @@ int MainScene()
 	SetPosition(Width, Height + 6, (char*)"  ###      ### #######        ###  ###        ##       ####             ##               ##",14);
 	SetPosition(Width, Height + 7, (char*)"     ######         ##      ###      ###      ##      ##                ##    ########################",14);
 	SetPosition(Width, Height + 8, (char*)"                                              ##",14);
-	SetPosition(Width, Height + 9 , (char*)"      ################                       ##          ################          ############",14);
+	SetPosition(Width, Height + 9 , (char*)"      ################          ##            ##         ################           ############",14);
 	SetPosition(Width, Height + 10, (char*)"                    ##          ##                                     ##         ###          ###   ",14);
 	SetPosition(Width, Height + 11, (char*)"                    ##          ##                        ###############         ##            ##   ",14);
 	SetPosition(Width, Height + 12, (char*)"                    ##          ##                        ##                      ###          ###",14);
@@ -423,21 +422,21 @@ void StoryScene()
 	system("cls");
 	int Height = 5;
 
-	SetPosition(49, Height, (char*)"'고길동 밥줘'",15);
+	SetPosition((120 / 2) - (strlen("'고길동 밥줘'") / 2), Height, (char*)"'고길동 밥줘'",15);
 	Sleep(800);
-	SetPosition(21, Height + 2, (char*)"몇 년 전 딸아이가 주워온 그 녀석, 처음엔 불쌍해서 며칠 재워준단 생각이었지만");
+	SetPosition((120 / 2) - (strlen("몇 년 전 딸아이가 주워온 그 녀석, 처음엔 불쌍해서 며칠 재워준단 생각이었지만") / 2), Height + 2, (char*)"몇 년 전 딸아이가 주워온 그 녀석, 처음엔 불쌍해서 며칠 재워준단 생각이었지만");
 	Sleep(800);
-	SetPosition(11, Height + 4, (char*)"오자마자 집안의 물건을 다 부수더니 떠나긴 커녕 점점 패거리까지 늘었고 갈수록 패악질이 심해졌다.");
+	SetPosition((120 / 2) - (strlen("오자마자 집안의 물건을 다 부수더니 떠나긴 커녕 점점 패거리까지 늘었고 갈수록 패악질이 심해졌다.") / 2), Height + 4, (char*)"오자마자 집안의 물건을 다 부수더니 떠나긴 커녕 점점 패거리까지 늘었고 갈수록 패악질이 심해졌다.");
 	Sleep(800);
-	SetPosition(19, Height + 6, (char*)"'저...둘X야 이제 좀 나가주면 안되겠니?' '아잇! 초능력 맛 좀 볼래? 처신 잘 하라고'");
+	SetPosition((120 / 2) - (strlen("'저...둘X야 이제 좀 나가주면 안되겠니?' '아잇! 초능력 맛 좀 볼래? 처신 잘 하라고'") / 2), Height + 6, (char*)"'저...둘X야 이제 좀 나가주면 안되겠니?' '아잇! 초능력 맛 좀 볼래? 처신 잘 하라고'");
 	Sleep(800);
-	SetPosition(36, Height + 8, (char*)"이젠 나를 가정부 이하의 취급을 하는 녀석들...");
+	SetPosition((120 / 2) - (strlen("이젠 나를 가정부 이하의 취급을 하는 녀석들...") / 2), Height + 8, (char*)"이젠 나를 가정부 이하의 취급을 하는 녀석들...");
 	Sleep(800);
-	SetPosition(19, Height + 10, (char*)"기나긴 모멸과 핍박, 이제 인내의 시간은 끝났다. 창고로 가 봉인해둔 검을 집어든다.");
+	SetPosition((120 / 2) - (strlen("기나긴 모멸과 핍박, 이제 인내의 시간은 끝났다. 창고로 가 봉인해둔 검을 집어든다.") / 2), Height + 10, (char*)"기나긴 모멸과 핍박, 이제 인내의 시간은 끝났다. 창고로 가 봉인해둔 검을 집어든다.");
 	Sleep(800);
-	SetPosition(37, Height + 12, (char*)"아아... 이 서늘하고도 묵직한 감각... 2년만이군");
+	SetPosition((120 / 2) - (strlen("아아... 이 서늘하고도 묵직한 감각... 2년만이군") / 2), Height + 12, (char*)"아아... 이 서늘하고도 묵직한 감각... 2년만이군");
 	Sleep(800);
-	SetPosition(44, Height + 16, (char*)"'검성' 고길동으로 돌아갈 때다", 12);
+	SetPosition((120 / 2) - (strlen("'검성' 고길동으로 돌아갈 때다") / 2), Height + 16, (char*)"'검성' 고길동으로 돌아갈 때다", 12);
 	Sleep(3000);
 
 	SceneState++;
@@ -476,7 +475,7 @@ void StageScene(OBJECT* _Player, OBJECT* _Enemy1, OBJECT* _Enemy2, OBJECT* _Enem
 	else
 		i = BuffScene();
 
-
+	BossScene();
 	BattleScene(_Player, _Enemy5, i);
 	SceneState++;
 }
@@ -485,20 +484,21 @@ void Tutorial(OBJECT* _Enemy)
 {
 	int Width = 30;
 	int Height = 22;
-	SetPosition(Width, Height, (char*)"오랜만의 실전인 만큼 그 때의 감각을 떠올릴 필요가 있겠어", 15);
+	SetPosition((120 / 2) - (strlen("오랜만의 실전인 만큼 그 때의 감각을 떠올릴 필요가 있겠어") / 2), Height, (char*)"오랜만의 실전인 만큼 그 때의 감각을 떠올릴 필요가 있겠어", 15);
 	Sleep(500);
-	SetPosition(Width + 11, Height+1, ((char*)"야생의 "));
-	SetPosition(Width + 11 + strlen("야생의 "), Height+1, _Enemy->Name, 12);
-	SetPosition(Width + 11 + strlen("야생의 ") + strlen(_Enemy->Name), Height+1,(char*)"이(가) 나타났다!", 15);
+	SetPosition(Width + 11, Height + 2, ((char*)"야생의 "));
+	SetPosition(Width + 11 + strlen("야생의 "), Height + 2, _Enemy->Name, 12);
+	SetPosition(Width + 11 + strlen("야생의 ") + strlen(_Enemy->Name), Height + 2,(char*)"이(가) 나타났다!", 15);
 
-	Sleep(300);
-	SetPosition(Width + 9, Height+2, (char*)"선빵필승! 속도가 빠른 쪽이 선공권을 가지지");
 	Sleep(500);
-	SetPosition(Width - 3, Height+3, (char*)"속도가 느려도 일반 공격 대신 스킬을 사용하면 먼저 공격할 수 있다");
+	SetPosition((120 / 2) - (strlen("선빵필승! 속도가 빠른 쪽이 선공권을 가지지") / 2), Height+4, (char*)"선빵필승! 속도가 빠른 쪽이 선공권을 가지지", 11);
 	Sleep(500);
-	SetPosition(Width - 17, Height+4, (char*)"스킬을 사용하기 위해 필요한 마나는 5를 가지고 시작하며, 매 턴이 끝나면 2의 마나를 추가로 얻는다");
+	SetPosition((120 / 2) - (strlen("속도가 느려도 일반 공격 대신 스킬을 사용하면 먼저 공격할 수 있다") / 2), Height+5, (char*)"속도가 느려도 일반 공격 대신 스킬을 사용하면 먼저 공격할 수 있다", 12);
 	Sleep(500);
-	SetPosition(Width + 21, Height+5, (char*)"자~ 드가자!");
+	SetPosition((120 / 2) - (strlen("스킬을 사용하기 위해 필요한 마나는 5를 가지고 시작하며, 매 턴이 끝나면 2의 마나를 추가로 얻는다") / 2), Height+6, (char*)"스킬을 사용하기 위해 필요한 마나는 5를 가지고 시작하며, 매 턴이 끝나면 2의 마나를 추가로 얻는다", 11);
+	Sleep(500);
+	SetPosition((120 / 2) - (strlen("자~ 드가자 !") / 2), Height+8, (char*)"자~ 드가자 !");
+	Sleep(3000);
 }
 
 void BattleScene(OBJECT* _Player, OBJECT* _Enemy, int _buff) 
@@ -615,17 +615,17 @@ void PlayerAtk(OBJECT* _Player, OBJECT* _Enemy)
 	{
 		int dmg = _Player->Info.ATK - _Enemy->Info.DEF;
 		SetPosition(Width, Height + 5, _Player->Name, 11);
-		SetPosition(Width + 8, Height + 5, (char*)"의 공격! ");
-		SetPosition(Width + 20, Height + 5, _Enemy->Name, 12);
-		SetPosition(Width + 37, Height + 5, (char*)"은 ");
-		SetPositionI(Width + 40, Height + 5, dmg, 12);
-		SetPosition(Width + 44, Height + 5, (char*)"의 데미지를 입었다 ! ");
+		SetPosition(Width + strlen(_Player->Name), Height + 5, (char*)"의 공격! ");
+		SetPosition(Width + strlen(_Player->Name) + strlen("의 공격! "), Height + 5, _Enemy->Name, 12);
+		SetPosition(Width + strlen(_Player->Name) + strlen("의 공격! ") + strlen(_Enemy->Name), Height + 5, (char*)"은(는) ");
+		SetPositionI(Width + strlen(_Player->Name) + strlen("의 공격! ") + strlen(_Enemy->Name) + strlen("은(는) "), Height + 5, dmg, 12);
+		SetPosition(Width + strlen(_Player->Name) + strlen("의 공격! ") + strlen(_Enemy->Name) + strlen("은(는) ") + sizeof(dmg), Height + 5, (char*)"의 데미지를 입었다 !");
 		_Enemy->Info.HP -= dmg;
 	}
 	else
 	{
 		SetPosition(Width, Height + 5, _Player->Name, 11);
-		SetPosition(Width + 9, Height + 5, (char*)"의 공격은 그리 효과적이지 못했다, 1의 데미지를 입혔다", 15);
+		SetPosition(Width + strlen(_Player->Name), Height + 5, (char*)"의 공격은 그리 효과적이지 못했다, 1의 데미지를 입혔다", 15);
 		_Enemy->Info.HP -= 1;
 	}
 	Sleep(1000);
@@ -643,18 +643,19 @@ void EnemyAtk(OBJECT* _Enemy, OBJECT* _Player)
 	{
 		int dmg = _Enemy->Info.ATK - _Player->Info.DEF;
 		SetPosition(Width, Height + 5, _Enemy->Name, 12);
-		SetPosition(Width + 17, Height + 5, (char*)"의 공격! ");
-		SetPosition(Width + 29, Height + 5, _Player->Name, 11);
-		SetPosition(Width + 38, Height + 5, (char*)"은 ");
-		SetPositionI(Width + 41, Height + 5, dmg, 12);
-		SetPosition(Width + 45, Height + 5, (char*)"의 데미지를 입었다 ! ");
+		SetPosition(Width + strlen(_Enemy->Name), Height + 5, (char*)"의 공격! ");
+		SetPosition(Width + strlen(_Enemy->Name) + strlen("의 공격! "), Height + 5, _Player->Name, 11);
+		SetPosition(Width + strlen(_Enemy->Name) + strlen("의 공격! ") + strlen(_Player->Name), Height + 5, (char*)"은(는) ");
+		SetPositionI(Width + strlen(_Enemy->Name) + strlen("의 공격! ") + strlen(_Player->Name) + strlen("은(는) "), Height + 5, dmg, 12);
+		SetPosition(Width + strlen(_Enemy->Name) + strlen("의 공격! ") + strlen(_Player->Name) + strlen("은(는) ") + sizeof(dmg), Height + 5, (char*)"의 데미지를 입었다 !");
+
 		_Player->Info.HP -= dmg;
 	}
 	else
 	{
 		SetPosition(Width, Height + 5, _Enemy->Name, 12);
-		SetPosition(Width + 9, Height + 5, (char*)"의 공격은 그리 효과적이지 못했다, 1의 데미지를 입혔다", 15);
-		_Enemy->Info.HP -= 1;
+		SetPosition(Width + strlen(_Enemy->Name), Height + 5, (char*)"의 공격은 그리 효과적이지 못했다, 1의 데미지를 입혔다", 15);
+		_Player->Info.HP -= 1;
 	}
 	Sleep(1000);
 }
@@ -665,7 +666,7 @@ void PlayerSkill(OBJECT* _Player, OBJECT* _Enemy, int _skill)
 	int s1 = _Player->Info.ATK * 2;
 	int s3 = _Player->Info.ATK * 20;
 
-	int Width = 40;
+	int Width = 38;
 	int Height = 21;
 
 	system("cls");
@@ -674,30 +675,30 @@ void PlayerSkill(OBJECT* _Player, OBJECT* _Enemy, int _skill)
 	switch (_skill)
 	{
 	case 1:
-		SetPosition(Width + 15, Height + 3, (char*)"하세기!", 14);
+		SetPosition((120 / 2) - (strlen("하세기!") / 2), Height + 3, (char*)"하세기!", 14);
 		Sleep(1000);
 		SetPosition(Width, Height + 6, _Enemy->Name, 12);
-		SetPosition(Width + 16, Height + 6, (char*)"에게", 15);
-		SetPositionI(Width + 21, Height + 6, s1 - _Enemy->Info.DEF, 12);
-		SetPosition(Width + 25, Height + 6, (char*)"의 데미지를 입혔다 !", 15);
-		_Enemy->Info.HP -= s1;
+		SetPosition(Width + strlen(_Enemy->Name), Height + 6, (char*)"에게 ", 15);
+		SetPositionI(Width + strlen(_Enemy->Name) + strlen("에게 "), Height + 6, s1 - _Enemy->Info.DEF, 12);
+		SetPosition(Width + strlen(_Enemy->Name) + strlen("에게 ") + sizeof(s1 - _Enemy->Info.DEF), Height + 6, (char*)"의 데미지를 입혔다 !", 15);
+		_Enemy->Info.HP -= s1 - _Enemy->Info.DEF;
 		_Player->Info.MP -= 1;
 		break;
 	case 2:
-		SetPosition(Width + 15, Height + 3, (char*)"그래 !", 14);
+		SetPosition((120 / 2) - (strlen("그래 !") /2), Height + 3, (char*)"그래 !", 14);
 		SetPosition(Width + 6, Height + 6, _Player->Name, 11);
-		SetPosition(Width + 15, Height + 6, (char*)"이 방어자세를 취했다");
+		SetPosition(Width + 6 + strlen(_Player->Name), Height + 6, (char*)"이 방어자세를 취했다");
 		_Player->Info.MP -= 3;
 		break;
 	case 3:
-		SetPosition(Width + 10, Height + 3, (char*)"류승룡 기모찌 !", 14);
+		SetPosition((120 / 2) - (strlen("울어라 지옥참마도 !") / 2), Height + 3, (char*)"울어라 지옥참마도 !", 12);
 		Sleep(1000);
 		SetPosition(Width, Height + 6, _Enemy->Name, 12); 
-		SetPosition(Width + 16, Height + 6, (char*)"에게", 15);
-		SetPositionI(Width + 21, Height + 6, s3 - _Enemy->Info.DEF, 12);
-		SetPosition(Width + 25, Height + 6, (char*)"의 데미지를 입혔다 !", 15);
+		SetPosition(Width + strlen(_Enemy->Name), Height + 6, (char*)"에게 ", 15);
+		SetPositionI(Width + strlen(_Enemy->Name) + strlen("에게 "), Height + 6, s3 - _Enemy->Info.DEF, 12);
+		SetPosition(Width + strlen(_Enemy->Name) + strlen("에게 ") + sizeof(s3 - _Enemy->Info.DEF), Height + 6, (char*)"의 데미지를 입혔다 !", 15);
 
-		_Enemy->Info.HP -= s3;
+		_Enemy->Info.HP -= s3 - _Enemy->Info.DEF;
 		_Player->Info.MP -= 8;
 		break;
 	}
@@ -708,18 +709,20 @@ void Parrying(OBJECT* _Player, OBJECT* _Enemy)
 {
 	int s2 = _Player->Info.ATK;
 
-	int Width = 27;
+	int Width = 30;
 	int Height = 21;
 
 	system("cls");
 	PlayerScene();
 
 	SetPosition(Width, Height + 3, _Enemy->Name, 12);
-	SetPosition(Width + 16, Height + 3, (char*)"이(가) 공격했지만 ", 15);
-	SetPosition(Width + 35, Height + 3, _Player->Name, 11);
-	SetPosition(Width + 43, Height + 3, (char*)"은 튕겨내고 반격했다 !", 15);
-	SetPosition(Width + 30, Height + 7, (char*)" - ", 12);
-	SetPositionI(Width + 32, Height + 7, s2 - _Enemy->Info.DEF, 12);
+	SetPosition(Width + strlen(_Enemy->Name), Height + 3, (char*)"이(가) 공격했지만 ", 15);
+	Sleep(500);
+	SetPosition(Width + strlen(_Enemy->Name) + strlen("이(가) 공격했지만 "), Height + 3, _Player->Name, 11);
+	SetPosition(Width + strlen(_Enemy->Name) + strlen("이(가) 공격했지만 ") + strlen(_Player->Name), Height + 3, (char*)"은 튕겨내고 반격했다 !", 15);
+	Sleep(500);
+	SetPosition(Width + 26, Height + 6, (char*)" - ", 12);
+	SetPositionI(Width + 28, Height + 6, s2 - _Enemy->Info.DEF, 12);
 	_Enemy->Info.HP -= _Player->Info.ATK;
 	Sleep(1000);
 }
@@ -730,7 +733,7 @@ int Turn(OBJECT* _Player, OBJECT* _Enemy)
 	int j = 0;
 	int loop = 1;
 	int turn = 1;
-	int exit;
+	int exit = 0;
 	int Width = 40;
 	int Height = 21;
 
@@ -742,8 +745,8 @@ int Turn(OBJECT* _Player, OBJECT* _Enemy)
 
 	while (loop)
 	{
-		SetPosition(Width + 8, Height + 8, (char*)"1.공격 2.스킬 3.도망", 14);
-		SetPosition(Width + 8, Height + 9, (char*)"나의 선택 : ", 14);
+		SetPosition((120 / 2) - (strlen("1. 공격 2. 스킬 3. 도망") / 2), Height + 8, (char*)"1. 공격 2. 스킬 3. 도망", 14);
+		SetPosition((120 / 2) - (strlen("나의 선택 : ") / 2), Height + 9, (char*)"나의 선택 : ", 14);
 		scanf("%d", &i);
 
 		switch (i)
@@ -754,19 +757,23 @@ int Turn(OBJECT* _Player, OBJECT* _Enemy)
 			{
 				system("cls");
 				PlayerScene();
-				SetPosition(Width + 3, Height + 2, (char*)"이 녀석은 존재해선 안되는 생물이다");
+				SetPosition((120 / 2) - (strlen("이 녀석은 존재해선 안되는 생물이다") / 2), Height + 2, (char*)"이 녀석은 존재해선 안되는 생물이다", 11);
 				Sleep(1000);
-				SetPosition(Width + 8, Height + 4, (char*)"내 손으로 마무리 짓겠어");
+				SetPosition((120 / 2) - (strlen("내 손으로 마무리 짓겠어") / 2), Height + 4, (char*)"내 손으로 마무리 짓겠어", 11);
+				Sleep(1000);
 				i = 1;
 			}
 			else if (rand() % 2 == 0 && _Player->Info.Gold >= 1000) 
 			{
 				system("cls");
 				PlayerScene();
-				SetPosition(Width - 13, Height + 2, (char*)"바닥에 동전을 뿌려 적의 주의를 끄는데 성공했지만 1000원을 잃었다 ㅠㅠ");
+				SetPosition((120 / 2) - (strlen("바닥에 동전을 뿌려 적의 주의를 끄는데 성공했지만 1000원을 잃었다 ㅠㅠ") /2), 
+					Height + 2, (char*)"바닥에 동전을 뿌려 적의 주의를 끄는데 성공했지만 1000원을 잃었다 ㅠㅠ", 12);
+				Sleep(1000);
 				_Player->Info.Gold -= 1000;
 				SetPosition(Width + 5, Height + 4, (char*)"현재 수중에 남은 돈 : ");
 				SetPositionI(Width + 27, Height + 4,_Player->Info.Gold, 14);
+				Sleep(1000);
 				exit = 1;
 				loop = 0;
 				break;
@@ -776,140 +783,211 @@ int Turn(OBJECT* _Player, OBJECT* _Enemy)
 				system("cls");
 				PlayerScene();
 				SetPosition(Width + 7, Height + 4, (char*)"아뿔싸, 들켜버렸군...");
+				Sleep(1000);
 				SetPosition(Width - 3, Height + 6, _Player->Name, 11);
 				SetPosition(Width + 6, Height + 6, (char*)"은 하는 수 없이 전투태세를 취했다");
+				Sleep(1000);
+				system("cls");
+				PlayerScene();
 				i = 1;
 			}
 		case 1:
 			if (_Player->Info.Speed > _Enemy->Info.Speed)
 			{
-				printf_s("%d턴\n", turn);
-				printf_s("%s의 선제공격 !\n", _Player->Name);
+				SetPositionI(57, Height + 5, turn, 14);
+				SetPosition(59, Height + 5, (char*)"턴");
+				Sleep(500);
+				SetPosition(Width + 6, Height + 6, _Player->Name, 11);
+				SetPosition(Width + 6 + strlen(_Player->Name), Height + 6, (char*)"의 선제공격 !");
 
 				PlayerAtk(_Player, _Enemy);
+				Sleep(1000);
 				if(_Enemy->Info.HP >= 0)
 					EnemyAtk(_Enemy, _Player);
 
+				Sleep(1000);
 				_Player->Info.MP += 2;
 				_Enemy->Info.MP += 2;
+
+				system("cls");
+				PlayerScene();
 				PStatScene(_Player);
 				EStatScene(_Enemy);
-				exit = 0;
+				Sleep(1000);
 				turn++;
 				break;
 			}
 			else if (_Player->Info.Speed < _Enemy->Info.Speed)
 			{
-				printf_s("%d턴\n", turn);
-				printf_s("%s의 선제공격 !\n", _Enemy->Name);
+				SetPositionI(57, Height + 5, turn, 14);
+				SetPosition(59, Height + 5, (char*)"턴");
+				Sleep(500);
+				SetPosition(Width + 6, Height + 6, _Enemy->Name, 12);
+				SetPosition(Width + 6 + strlen(_Enemy->Name), Height + 6, (char*)"의 선제공격 !");
 
 				EnemyAtk(_Enemy, _Player);
+				Sleep(1000);
 				if(_Player->Info.HP >= 0)
 					PlayerAtk(_Player, _Enemy);
 
+				Sleep(1000);
 				_Player->Info.MP += 2;
 				_Enemy->Info.MP += 2;
+
+				system("cls");
+				PlayerScene();
 				PStatScene(_Player);
 				EStatScene(_Enemy);
-				exit = 0;
+				Sleep(1000);
 				turn++;
 				break;
 			}
 			else
 			{
 				srand(time(NULL));
-				printf_s("둘의 실력이 비슷해 동전 던지기로 선공을 결정하기로 했다\n");
+				SetPosition((120 / 2) - (strlen("둘의 실력이 비슷해 동전 던지기로 선공을 결정하기로 했다") / 2), Height + 10, (char*)"둘의 실력이 비슷해 동전 던지기로 선공을 결정하기로 했다", 14);
+				Sleep(1000);
 				if (rand() % 2 == 0)
 				{
-					printf_s("%d턴\n", turn);
-					printf_s("%s의 선제공격 !\n", _Player->Name);
+					SetPositionI(57, Height + 5, turn, 14);
+					SetPosition(59, Height + 5, (char*)"턴");
+					SetPosition(Width + 6, Height + 6, _Player->Name, 11);
+					SetPosition(Width + 6 + strlen(_Player->Name), Height + 6, (char*)"의 선제공격 !");
 
 					PlayerAtk(_Player, _Enemy);
+					Sleep(1000);
 					if (_Enemy->Info.HP >= 0)
 						EnemyAtk(_Enemy, _Player);
 
+					Sleep(1000);
 					_Player->Info.MP += 2;
 					_Enemy->Info.MP += 2;
+
+					system("cls");
+					PlayerScene();
 					PStatScene(_Player);
 					EStatScene(_Enemy);
-
-					exit = 0;
+					Sleep(1000);
 					turn++;
 					break;
 				}
 				else
 				{
-					printf_s("%d턴\n", turn);
-					printf_s("%s의 선제공격 !\n", _Enemy->Name);
+					SetPositionI(57, Height + 5, turn, 14);
+					SetPosition(59, Height + 5, (char*)"턴");
+					SetPosition(Width + 6, Height + 6, _Enemy->Name, 12);
+					SetPosition(Width + 6 + strlen(_Enemy->Name) , Height + 6, (char*)"의 선제공격 !");
 
 					EnemyAtk(_Enemy, _Player);
+					Sleep(1000);
 					if(_Player->Info.HP >= 0)
 						PlayerAtk(_Player, _Enemy);
 
+					Sleep(1000);
 					_Player->Info.MP += 2;
 					_Enemy->Info.MP += 2;
+
+					system("cls");
+					PlayerScene();
 					PStatScene(_Player);
 					EStatScene(_Enemy);
-
-					exit = 0;
+					Sleep(1000);
 					turn++;
 					break;
 				}
 			}
-			loop = 0;
 			break;
 		case 2:
-			printf_s("1. 1스킬 : 적에게 200%% 의 데미지, 소모 마나 1\n");
-			printf_s("2. 2스킬 : 적의 다음 공격을 튕겨내고 100%%의 방어 무시 데미지, 소모 마나 3\n");
-			printf_s("3. 3스킬 : 필살기를 사용해 2000%% 데미지, 소모 마나 8\n");
-			printf_s("이외의 아무 키 : 취소\n");
+			system("cls");
+			PlayerScene();
+			SetPosition(Width - 16, Height + 2, (char*)"1. 1스킬 : 적에게 200%% 의 데미지, 소모 마나 1", 14);
+			Sleep(200);
+			SetPosition(Width - 16, Height + 3, (char*)"2. 2스킬 : 적의 다음 공격을 튕겨내고 100%%의 방어 무시 데미지, 소모 마나 3", 14);
+			Sleep(200);
+			SetPosition(Width - 16, Height + 4, (char*)"3. 3스킬 : 필살기를 사용해 2000%% 데미지, 소모 마나 8", 14);
+			Sleep(200);
+			SetPosition(Width + 6, Height + 6, (char*)"이외의 아무 키 : 취소");
 			scanf("%d", &j);
 			if (j > 0 && j <= 3)
 			{
 				if (_Player->Info.MP >= 1 && j == 1)
 				{
-					printf_s("%d턴\n", turn);
+					system("cls");
+					PlayerScene();
+					SetPositionI(57, Height + 5, turn, 14);
+					SetPosition(59, Height + 5, (char*)"턴");
+					Sleep(1000);
 					PlayerSkill(_Player, _Enemy, j);
-					if (_Enemy->Info.HP >= 0)
+					Sleep(1000);
+					if (_Enemy->Info.HP > 0)
 						EnemyAtk(_Enemy, _Player);
+
+					Sleep(1000);
 					_Player->Info.MP += 2;
 					_Enemy->Info.MP += 2;
+
+					system("cls");
+					PlayerScene();
 					PStatScene(_Player);
 					EStatScene(_Enemy);
-
+					Sleep(1000);
 					turn++;
-					loop = 0;
 				}
 				else if (_Player->Info.MP >= 3 && j == 2)
 				{
-					printf_s("%d턴\n", turn);
+					system("cls");
+					PlayerScene();
+					SetPositionI(57, Height + 5, turn, 14);
+					SetPosition(59, Height + 5, (char*)"턴");
+					Sleep(1000);
+
 					PlayerSkill(_Player, _Enemy, j);
+					Sleep(1000);
 					Parrying(_Player, _Enemy);
+					Sleep(1000);
 					_Player->Info.MP += 2;
 					_Enemy->Info.MP += 2;
+
+					system("cls");
+					PlayerScene();
 					PStatScene(_Player);
 					EStatScene(_Enemy);
-
+					Sleep(1000);
 					turn++;
-					loop = 0;
 				}
 				else if (_Player->Info.MP >= 8 && j == 3)
 				{
-					printf_s("%d턴\n", turn);
+					system("cls");
+					PlayerScene();
+					SetPositionI(57, Height + 5, turn, 14);
+					SetPosition(59, Height + 5, (char*)"턴");
+					Sleep(1000);
+
 					PlayerSkill(_Player, _Enemy, j);
-					if (_Enemy->Info.HP >= 0)
+					Sleep(1000);
+					if (_Enemy->Info.HP > 0)
 						EnemyAtk(_Enemy, _Player);
+					Sleep(1000);
 					_Player->Info.MP += 2;
 					_Enemy->Info.MP += 2;
+
+					system("cls");
+					PlayerScene();
 					PStatScene(_Player);
 					EStatScene(_Enemy);
-
+					Sleep(1000);
 					turn++;
-					loop = 0;
 				}
 				else
 				{
-					printf_s("마나가 부족합니다. 다시 선택하세요\n");
+					system("cls");
+					PlayerScene();
+					SetPosition((120 / 2) - (strlen("마나가 부족합니다. 다시 선택하세요") / 2), Height + 3, (char*)"마나가 부족합니다. 다시 선택하세요");
+					Sleep(500);
+					system("cls");
+					PlayerScene();
+					PStatScene(_Player);
+					EStatScene(_Enemy);
 					break;
 				}
 			}
@@ -930,22 +1008,23 @@ int Turn(OBJECT* _Player, OBJECT* _Enemy)
 
 void BattleResult(OBJECT* _Player, OBJECT* _Enemy)
 {
-	int Width = 30;
 	int Height = 22;
 
 	system("cls");
 	PlayerScene();
 
-	SetPosition(Width, Height, (char*)"전투 승리! ", 14);
-	SetPosition(Width + 12, Height, _Enemy->Name, 12);
-	SetPosition(Width + 30, Height, (char*)"은(는) 흙으로 돌아갔다 ", 14);
+	SetPosition(39, Height, (char*)"전투 승리! ", 14);
+	SetPosition(39 + strlen("전투 승리! "), Height, _Enemy->Name, 12);
+	SetPosition(39 + strlen("전투 승리! ") + strlen(_Enemy->Name), Height, (char*)"은(는) 흙으로 돌아갔다 ", 14);
+	Sleep(1000);
 
 	if ((_Player->Info.EXP += _Enemy->Info.EXP) < 100)
 	{
-		SetPosition(Width, Height + 2, (char*)"경험치 ", 15);
-		SetPositionI(Width + 8, Height + 2, _Enemy->Info.EXP);
-		SetPosition(Width + 12, Height + 2, (char*)"상승 ! 현재 경험치 : ", 15);
-		SetPositionI(Width + 35, Height + 2, _Player->Info.EXP);
+		SetPosition(40, Height + 2, (char*)"경험치 ", 15);
+		SetPositionI(48, Height + 2, _Enemy->Info.EXP);
+		SetPosition(48 + sizeof(_Enemy->Info.EXP), Height + 2, (char*)"상승 ! 현재 경험치 : ", 15);
+		SetPositionI(48 + sizeof(_Enemy->Info.EXP) + strlen("상승 ! 현재 경험치 : "), Height + 2, _Player->Info.EXP);
+		Sleep(1000);
 	}
 	else if ((_Player->Info.EXP += _Enemy->Info.EXP) >= 100)
 	{
@@ -954,14 +1033,26 @@ void BattleResult(OBJECT* _Player, OBJECT* _Enemy)
 		{
 			PlayerLvUp(_Player);
 		}
-		SetPosition(Width, Height + 2, (char*)"레벨 업! 현재 레벨 : ", 14);
-		SetPositionI(Width + 21, Height + 2, _Player->Info.Level, 11); 
-		SetPosition(Width + 25, Height + 2, (char*)"Lv", 14);
+		SetPosition(46, Height + 2, (char*)"레벨 업! 현재 레벨 : ", 14);
+		SetPositionI(46 + strlen("레벨 업! 현재 레벨 : "), Height + 2, _Player->Info.Level, 11);
+		SetPosition(46 + strlen("레벨 업! 현재 레벨 : ") + sizeof(_Player->Info.Level), Height + 2, (char*)"Lv", 14);
+		Sleep(1000);
 		
 		_Player->Info.EXP = ex;
-		SetPosition(Width, Height + 4, (char*)"현재 경험치 : ", 15);
-		SetPositionI(Width + 14, Height + 4, _Player->Info.EXP);
+		SetPosition(52, Height + 4, (char*)"현재 경험치 : ", 15);
+		SetPositionI(52 + strlen("현재 경험치 : "), Height + 4, _Player->Info.EXP);
+		Sleep(1000);
 	}
+	_Player->Info.Gold += _Enemy->Info.Gold;
+	SetPosition(32, Height + 6, _Enemy->Name, 12);
+	SetPosition(32 + strlen(_Enemy->Name), Height + 6, (char*)"이(가) 가지고 있던 ", 15);
+	SetPositionI(32 + strlen(_Enemy->Name) + strlen("이(가) 가지고 있던 "), Height + 6, _Enemy->Info.Gold, 14);
+	SetPosition(32 + strlen(_Enemy->Name) + strlen("이(가) 가지고 있던 ") + sizeof(_Enemy->Info.Gold), Height + 6,(char*)"원을 전리품으로 챙겼다");
+	Sleep(500);
+	SetPosition(50, Height + 8, (char*)"현재 소지금 : ");
+	SetPositionI(64, Height + 8, _Player->Info.Gold, 14);
+
+	Sleep(2000);
 }
 
 void PlayerLvUp(OBJECT* _Player)	
@@ -981,8 +1072,9 @@ int FailScene(OBJECT* _Player)
 	int i = 0;
 	int Width = 50;
 	int Height = 23;
-	SetPosition(Width, Height, (char*)"윽... 분하다");
-	SetPosition(Width - 33, Height + 1, (char*)"재도전 하시겠습니까? 1을 입력해 1000원을 내고 재도전 , 이외의 키 입력으로 게임 종료 : ", 12);
+	SetPosition((120 / 2) - (strlen("윽... 분하다") / 2), Height, (char*)"윽... 분하다", 11);
+	Sleep(1000);
+	SetPosition((120 / 2) - (strlen("재도전 하시겠습니까? 1을 입력해 1000원을 내고 재도전 , 이외의 키 입력으로 게임 종료 : ") / 2), Height + 1, (char*)"재도전 하시겠습니까? 1을 입력해 1000원을 내고 재도전 , 이외의 키 입력으로 게임 종료 : ", 12);
 	scanf("%d", &i);
 
 	if (i == 1 && _Player->Info.Gold >= 1000)
@@ -992,13 +1084,16 @@ int FailScene(OBJECT* _Player)
 	}
 	else if (_Player->Info.Gold < 1000)
 	{
-		SetPosition(Width, Height + 2, (char*)"지불할 금액이 부족하네요", 14);
-		SetPosition(Width, Height + 3, (char*)"게임을 종료합니다.", 12);
+		SetPosition((120 / 2) - (strlen("지불할 금액이 부족하네요") / 2), Height + 2, (char*)"지불할 금액이 부족하네요", 14);
+		Sleep(1000);
+		SetPosition((120 / 2) - (strlen("게임을 종료합니다") / 2), Height + 3, (char*)"게임을 종료합니다.", 12);
+		Sleep(2000);
 		exit(NULL);
 	}
 	else
 	{
-		SetPosition(Width, Height, (char*)"게임을 종료합니다.", 12);
+		SetPosition((120 / 2) - (strlen("게임을 종료합니다.") / 2), Height, (char*)"게임을 종료합니다.", 12);
+		Sleep(2000);
 		exit(NULL);
 	}
 	return i;
@@ -1092,12 +1187,6 @@ void PlayerScene()
 	SetPosition(Width + 5, Height + 32, (char*)"└ㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡ┘");
 }
 
-
-void EnemyScene(OBJECT* _Enemy)
-{
-
-}
-
 void ShopScene(OBJECT* _Player, int _stg)
 {
 	system("cls");
@@ -1119,26 +1208,34 @@ void ShopScene(OBJECT* _Player, int _stg)
 	int Height = 22;
 
 	SetPosition(Width, Height - 1, (char*)"다음 전투를 위해 이동하던 중 방랑상인 마이콜을 만났다", 15);
+	Sleep(500);
 	SetPosition(Width, Height, (char*)"마이콜의 잡화상에 오신것을 환영합니다 길동 아저씨, 같이 싸웠던 전우시니 특별히 할인가로 드릴게요", 14);
+	Sleep(1000);
 	SetPosition(Width, Height + 2, (char*)"마이콜의 잡화상 : ", 14);
+	Sleep(500);
 	SetPosition(eWidth, Height + 2, (char*)"1.  숯  돌   : 공격력 + ", 14);
 	SetPositionI(eWidth + 24, Height + 2, _stg * atk, 12);
 	SetPosition(eWidth + 29, Height + 2, (char*)", 가격 : ", 14);
 	SetPositionI(eWidth + 38, Height + 2, _stg * w1, 12);
+	Sleep(500);
 	SetPosition(eWidth, Height + 3, (char*)"2. 후라이팬  : 방어력 + ", 14);
 	SetPositionI(eWidth + 24, Height + 3, _stg * def, 12);
 	SetPosition(eWidth + 29, Height + 3, (char*)", 가격 : ", 14);
 	SetPositionI(eWidth + 38, Height + 3, _stg * w2, 12);
+	Sleep(500);
 	SetPosition(eWidth, Height + 4, (char*)"3.우황청심환 : 체  력 + ", 14);
 	SetPositionI(eWidth + 24, Height + 4, _stg * hp, 12);
 	SetPosition(eWidth + 29, Height + 4, (char*)", 가격 : ", 14);
 	SetPositionI(eWidth + 38, Height + 4, _stg * w3, 12);
+	Sleep(500);
 	SetPosition(eWidth, Height + 5, (char*)"4. 슬 리 퍼  : 속  도 + ", 14);
 	SetPositionI(eWidth + 24, Height + 5, _stg * spd, 12);
 	SetPosition(eWidth + 29, Height + 5, (char*)", 가격 : ", 14);
 	SetPositionI(eWidth + 38, Height + 5, _stg * w4, 12);
+	Sleep(500);
 	SetPosition(Width, Height + 7, (char*)"현재 소지금 : ", 15);
 	SetPositionI(Width + 14, Height + 7, _Player->Info.Gold ,14);
+	Sleep(500);
 	SetPosition(Width + 20, Height + 7, (char*)"원, 구매를 원하지 않으면 1 ~ 4 이외의 키를 입력 : ", 15);
 
 
@@ -1151,12 +1248,15 @@ void ShopScene(OBJECT* _Player, int _stg)
 			_Player->Info.ATK += _stg * atk;
 			_Player->Info.Gold -= _stg * w1;
 			SetPosition(Width, Height + 8, (char*)"감사합니다 호갱님!", 14);
+			Sleep(500);
 			SetPosition(Width, Height + 9, (char*)"뭔가 찜찜하다... 현재 소지금 : ", 15);
 			SetPositionI(Width + 32, Height + 9, _Player->Info.Gold, 14);
+			Sleep(1000);
 		}
 		else
 		{
-			SetPosition(Width, Height + 8, (char*)"저런...돈이 부족하시군요? 나가실 문은 오른쪽입니다~", 12);
+			SetPosition(Width, Height + 8, (char*)"저런...빈털털이시군요? 나가실 문은 오른쪽입니다~", 12);
+			Sleep(1000);
 			i = 0;
 		}
 	}
@@ -1167,12 +1267,15 @@ void ShopScene(OBJECT* _Player, int _stg)
 			_Player->Info.DEF += _stg * def;
 			_Player->Info.Gold -= _stg * w2;
 			SetPosition(Width, Height + 8, (char*)"감사합니다 호갱님!", 14);
+			Sleep(500);
 			SetPosition(Width, Height + 9, (char*)"뭔가 찜찜하다... 현재 소지금 : ", 15);
 			SetPositionI(Width + 32, Height + 9, _Player->Info.Gold, 14);
+			Sleep(1000);
 		}
 		else
 		{
 			SetPosition(Width, Height + 8, (char*)"저런...돈이 부족하시군요? 나가실 문은 오른쪽입니다~", 12);
+			Sleep(1000);
 			i = 0;
 		}
 	}
@@ -1183,12 +1286,15 @@ void ShopScene(OBJECT* _Player, int _stg)
 			_Player->Info.HP += _stg * hp;
 			_Player->Info.Gold -= _stg * w3;
 			SetPosition(Width, Height + 8, (char*)"감사합니다 호갱님!", 14);
+			Sleep(500);
 			SetPosition(Width, Height + 9, (char*)"뭔가 찜찜하다... 현재 소지금 : ", 15);
 			SetPositionI(Width + 32, Height + 9, _Player->Info.Gold, 14);
+			Sleep(1000);
 		}
 		else
 		{
 			SetPosition(Width, Height + 8, (char*)"저런...돈이 부족하시군요? 나가실 문은 오른쪽입니다~", 12);
+			Sleep(1000);
 			i = 0;
 		}
 	}
@@ -1199,23 +1305,28 @@ void ShopScene(OBJECT* _Player, int _stg)
 			_Player->Info.Speed += _stg * spd;
 			_Player->Info.Gold -= _stg * w4;
 			SetPosition(Width, Height + 8, (char*)"감사합니다 호갱님!", 14);
+			Sleep(500);
 			SetPosition(Width, Height + 9, (char*)"뭔가 찜찜하다... 현재 소지금 : ", 15);
+			Sleep(1000);
 			SetPositionI(Width + 32, Height + 9, _Player->Info.Gold, 14);
 		}
 		else
 		{
 			SetPosition(Width, Height + 8, (char*)"저런...돈이 부족하시군요? 나가실 문은 오른쪽입니다~", 12);
+			Sleep(1000);
 			i = 0;
 		}
 	}
 	else
 	{
 		SetPosition(Width, Height + 8, (char*)"에이 ~ 이 바닥에서 쿨거래는 기본이에요 형씨 ! ", 14);
+		Sleep(500);
 		SetPosition(Width, Height + 9, (char*)"물건의 상태가 좋지 않아 거래를 취소하고 발걸음을 옮겼다", 15);
+		Sleep(1000);
 	}
 
 	
-	Sleep(1500);
+	Sleep(1000);
 }
 
 int BuffScene()
@@ -1230,21 +1341,28 @@ int BuffScene()
 	while (lp)
 	{
 		SetPosition(Width, Height, (char*)"전투를 끝마친 당신을 희동이가 반겨준다");
+		Sleep(1000);
 		SetPosition(Width, Height + 1, (char*)"희동이의 응원 : ");
+		Sleep(500);
 		SetPosition(Width, Height + 3, (char*)"1. 다음 전투에서 공격력 30% 증가 버프", 14);
+		Sleep(500);
 		SetPosition(Width, Height + 4, (char*)"2. 다음 전투에서 방어력 30% 증가 버프", 14);
+		Sleep(500);
 		SetPosition(Width, Height + 5, (char*)"3. 다음 전투에서 속도 10 증가 버프", 14);
+		Sleep(500);
 		SetPosition(Width, Height + 7, (char*)"버프 선택 : ");
 		scanf("%d", &i);
 		if (i < 1 || i > 4)
 		{
 			SetPosition(Width + 15, Height + 7, (char*)"다시 선택하세요", 12);
+			Sleep(500);
 			i = 0;
 		}
 		else
 		{
-			SetPosition(Width + 11, Height + 8, (char*)"고모부 힘내!", 15);
-			SetPosition(Width + 3, Height + 9, (char*)"희동이의 응원에 힘이 솟는다", 11);
+			SetPosition((120 / 2) - (strlen("고모부 힘내!") / 2), Height + 8, (char*)"고모부 힘내!", 15);
+			Sleep(500);
+			SetPosition((120/2) - (strlen("희동이의 응원에 힘이 솟는다")/2), Height + 9, (char*)"희동이의 응원에 힘이 솟는다", 11);
 			lp = 0;
 		}
 	}
@@ -1256,18 +1374,49 @@ int BuffScene()
 
 void BossScene()
 {
-	printf_s("ㄷ");
+	int Height = 11;
+
+	system("cls");
+	SetPosition(60 - (strlen("선 넘네...")/2), Height, (char*)"선 넘네...", 12);
+	Sleep(1000);
+	SetPosition(60 - (strlen("젓밥 고길동이 날 이렇게까지 꼴받게 하다니")/2), Height + 2, (char*)"젓밥 고길동이 날 이렇게까지 꼴받게 하다니", 12);
+	Sleep(1000);
+	SetPosition(60 - (strlen("내가 직접 정신교육부터 다시 해주지")/2), Height + 4, (char*)"내가 직접 정신교육부터 다시 해주지", 12);
+	Sleep(1000);
+	SetPosition(60 - (strlen("드디어 여기까지 왔다...")/2), Height + 8, (char*)"드디어 여기까지 왔다...", 11);
+	Sleep(500);
+	SetPosition(60 - (strlen("녀석을 없애고 가정의 평화를 되찾는거다 !")/2), Height + 10, (char*)"녀석을 없애고 가정의 평화를 되찾는거다 !", 11);
 }
 
-void EndingScene()
+void EndingScene(OBJECT* _Player, int _count)
 {
-	printf_s("끝\n");
+	int Height = 11;
+
+	system("cls");
+	SetPosition(60 - (strlen("이런...말도 안되는...") / 2), Height, (char*)"이런...말도 안되는...", 12);
+	Sleep(1000);
+	SetPosition(60 - (strlen("...엄...마...") / 2), Height + 2, (char*)"...엄...마...", 12);
+	Sleep(1000);
+	SetPosition(60 - (strlen("사악한 외계 도마뱀을 물리쳤다 !") / 2), Height + 4, (char*)"사악한 외계 도마뱀을 물리쳤다 !", 15);
+	Sleep(1000);
+	SetPosition(60 - (strlen("드디어 끝난건가") / 2), Height + 6, (char*)"드디어 끝난건가", 11);
+	Sleep(1000);
+	SetPosition(60 - (strlen("벌써부터 마음이 안정되는 기분이군...") / 2), Height + 8, (char*)"벌써부터 마음이 안정되는 기분이군...", 11);
+	Sleep(1000);
+	SetPosition(54 , Height + 10, (char*)"총 플레이타임 : ", 15);
+	SetPositionI(54 + strlen("총 플레이타임 : "), Height + 10, _count / 1000000, 14);
+	SetPosition(54 + strlen("총 플레이타임 : ") + sizeof(_count / 1000000), Height + 10,(char*)"초", 15);
+	Sleep(1000);
+	SetPosition(54 , Height + 12, (char*)"최고 레벨 : ", 15);
+	SetPositionI(54 + strlen("최고 레벨 : "), Height + 12, _Player->Info.Level);
+	Sleep(1000);
+
 	SceneState++;
 }
 
 void ExitScene()
 {
-	printf_s("게임을 종료하시겠습니까?");
+	
 }
 
 void SetPosition(int _x, int _y, char* _str, int _Color)
