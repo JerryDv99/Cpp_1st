@@ -127,7 +127,7 @@ int main(void)
 	DWORD dwTime = GetTickCount();
 	//SetPosition(30, 21, (char*)"안녕", 14);
 	//SceneManager(Player, Enemy1, Enemy2, Enemy3, Enemy4, Enemy5, dwTime);
-	StoryScene();
+	BattleScene(Player, Enemy2, 0);
 	free(Player);
 	free(Enemy1);
 	free(Enemy2);
@@ -745,8 +745,8 @@ int Turn(OBJECT* _Player, OBJECT* _Enemy)
 
 	while (loop)
 	{
-		SetPosition((120 / 2) - (strlen("1. 공격 2. 스킬 3. 도망") / 2), Height + 8, (char*)"1. 공격 2. 스킬 3. 도망", 14);
-		SetPosition((120 / 2) - (strlen("나의 선택 : ") / 2), Height + 9, (char*)"나의 선택 : ", 14);
+		SetPosition((120 / 2) - (strlen("1. 공격 2. 스킬 3. 도망") / 2) - 2, Height + 8, (char*)"1. 공격 2. 스킬 3. 도망", 14);
+		SetPosition((120 / 2) - (strlen("나의 선택 : ") / 2) - 1, Height + 9, (char*)"나의 선택 : ", 14);
 		scanf("%d", &i);
 
 		switch (i)
