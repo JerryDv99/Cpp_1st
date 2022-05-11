@@ -605,7 +605,7 @@ void EStatScene(OBJECT* _Enemy)
 
 void PlayerAtk(OBJECT* _Player, OBJECT* _Enemy)
 {
-	int Width = 27;
+	int Width = 37;
 	int Height = 21;
 	
 	system("cls");
@@ -633,7 +633,7 @@ void PlayerAtk(OBJECT* _Player, OBJECT* _Enemy)
 
 void EnemyAtk(OBJECT* _Enemy, OBJECT* _Player)
 {
-	int Width = 27;
+	int Width = 37;
 	int Height = 21;
 
 	system("cls");
@@ -1198,9 +1198,9 @@ void ShopScene(OBJECT* _Player, int _stg)
 	int hp = 50;
 	int spd = 5;
 
-	int w1 = 1500;
-	int w2 = 500;
-	int w3 = 1000;
+	int w1 = 2000;
+	int w2 = 1500;
+	int w3 = 1500;
 	int w4 = 1000;
 
 	int Width = 13;
