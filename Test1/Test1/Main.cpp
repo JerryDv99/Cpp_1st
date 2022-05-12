@@ -106,7 +106,7 @@ int main(void)
 
 	system("mode con:cols=120 lines=33");
 
-	system("title 고길동 v0.3");
+	system("title 박준형 v0.6");
 
 	system("color 81");
 
@@ -696,7 +696,7 @@ void PlayerSkill(OBJECT* _Player, OBJECT* _Enemy, int _skill)
 		SetPosition(Width, Height + 6, _Enemy->Name, 12); 
 		SetPosition(Width + strlen(_Enemy->Name), Height + 6, (char*)"에게 ", 15);
 		SetPositionI(Width + strlen(_Enemy->Name) + strlen("에게 "), Height + 6, s3 - _Enemy->Info.DEF, 12);
-		SetPosition(Width + 2 + strlen(_Enemy->Name) + strlen("에게 ") + sizeof(s3 - _Enemy->Info.DEF), Height + 6, (char*)"의 데미지를 입혔다 !", 15);
+		SetPosition(Width + 1 + strlen(_Enemy->Name) + strlen("에게 ") + sizeof(s3 - _Enemy->Info.DEF), Height + 6, (char*)"의 데미지를 입혔다 !", 15);
 
 		_Enemy->Info.HP -= s3 - _Enemy->Info.DEF;
 		_Player->Info.MP -= 8;
