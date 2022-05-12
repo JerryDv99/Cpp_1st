@@ -92,7 +92,7 @@ void ShopScene(OBJECT* _Player, int _str);
 int BuffScene();
 void EndingScene(OBJECT* _Player, int _count);
 int FailScene(OBJECT* _Player);
-void ExitScene();
+void ExitScene(int _col1, int _col2);
 void BossScene();
 
 void SetPosition(int _x, int _y, char* _str, int _Color = 15);
@@ -108,7 +108,7 @@ int main(void)
 
 	system("title 고길동 v0.3");
 
-	//system("color 87");
+	system("color 81");
 
 	OBJECT* Player = (OBJECT*)malloc(sizeof(OBJECT));
 	InitializePlayer(Player);
@@ -126,8 +126,8 @@ int main(void)
 
 	DWORD dwTime = GetTickCount();
 	//SetPosition(30, 21, (char*)"안녕", 14);
-	//SceneManager(Player, Enemy1, Enemy2, Enemy3, Enemy4, Enemy5, dwTime);
-	BattleScene(Player, Enemy2, 0);
+	SceneManager(Player, Enemy1, Enemy2, Enemy3, Enemy4, Enemy5, dwTime);
+	
 	free(Player);
 	free(Enemy1);
 	free(Enemy2);
@@ -236,7 +236,7 @@ void InitializeEnemy5(OBJECT* _Obj)
 {
 	_Obj->Name = (char*)"인성파탄공룡 X리";
 
-	_Obj->Info.HP = 2222;
+	_Obj->Info.HP = 22222;
 	_Obj->Info.MP = 22;
 	_Obj->Info.ATK = 222;
 	_Obj->Info.DEF = 222;
@@ -267,7 +267,7 @@ void SceneManager(OBJECT* _Player, OBJECT* _Enemy1, OBJECT* _Enemy2, OBJECT* _En
 		EndingScene(_Player, _count);
 
 	case Scene_Exit:
-		ExitScene();
+		ExitScene(11,14);
 		break;
 	}
 }
@@ -677,10 +677,10 @@ void PlayerSkill(OBJECT* _Player, OBJECT* _Enemy, int _skill)
 	case 1:
 		SetPosition((120 / 2) - (strlen("하세기!") / 2), Height + 3, (char*)"하세기!", 14);
 		Sleep(1000);
-		SetPosition(Width, Height + 6, _Enemy->Name, 12);
-		SetPosition(Width + strlen(_Enemy->Name), Height + 6, (char*)"에게 ", 15);
-		SetPositionI(Width + strlen(_Enemy->Name) + strlen("에게 "), Height + 6, s1 - _Enemy->Info.DEF, 12);
-		SetPosition(Width + strlen(_Enemy->Name) + strlen("에게 ") + sizeof(s1 - _Enemy->Info.DEF), Height + 6, (char*)"의 데미지를 입혔다 !", 15);
+		SetPosition(Width + 4, Height + 6, _Enemy->Name, 12);
+		SetPosition(Width + 4 + strlen(_Enemy->Name), Height + 6, (char*)"에게 ", 15);
+		SetPositionI(Width + 4 + strlen(_Enemy->Name) + strlen("에게 "), Height + 6, s1 - _Enemy->Info.DEF, 12);
+		SetPosition(Width + 4 + strlen(_Enemy->Name) + strlen("에게 ") + sizeof(s1 - _Enemy->Info.DEF), Height + 6, (char*)"의 데미지를 입혔다 !", 15);
 		_Enemy->Info.HP -= s1 - _Enemy->Info.DEF;
 		_Player->Info.MP -= 1;
 		break;
@@ -696,7 +696,7 @@ void PlayerSkill(OBJECT* _Player, OBJECT* _Enemy, int _skill)
 		SetPosition(Width, Height + 6, _Enemy->Name, 12); 
 		SetPosition(Width + strlen(_Enemy->Name), Height + 6, (char*)"에게 ", 15);
 		SetPositionI(Width + strlen(_Enemy->Name) + strlen("에게 "), Height + 6, s3 - _Enemy->Info.DEF, 12);
-		SetPosition(Width + strlen(_Enemy->Name) + strlen("에게 ") + sizeof(s3 - _Enemy->Info.DEF), Height + 6, (char*)"의 데미지를 입혔다 !", 15);
+		SetPosition(Width + 2 + strlen(_Enemy->Name) + strlen("에게 ") + sizeof(s3 - _Enemy->Info.DEF), Height + 6, (char*)"의 데미지를 입혔다 !", 15);
 
 		_Enemy->Info.HP -= s3 - _Enemy->Info.DEF;
 		_Player->Info.MP -= 8;
@@ -1193,15 +1193,15 @@ void ShopScene(OBJECT* _Player, int _stg)
 	PlayerScene();
 	int i = 0;
 
-	int atk = 30;
-	int def = 20;
-	int hp = 50;
+	int atk = 40;
+	int def = 30;
+	int hp = 70;
 	int spd = 5;
 
-	int w1 = 3000;
-	int w2 = 2500;
-	int w3 = 2500;
-	int w4 = 2000;
+	int w1 = 4000;
+	int w2 = 3500;
+	int w3 = 3500;
+	int w4 = 3000;
 
 	int Width = 13;
 	int eWidth = 40;
@@ -1319,7 +1319,7 @@ void ShopScene(OBJECT* _Player, int _stg)
 	}
 	else
 	{
-		SetPosition(Width, Height + 8, (char*)"에이 ~ 이 바닥에서 쿨거래는 기본이에요 형씨 ! ", 14);
+		SetPosition(Width, Height + 8, (char*)"에이 형씨 ~ 이 바닥에서 쿨거래는 기본이에요  ! ", 14);
 		Sleep(500);
 		SetPosition(Width, Height + 9, (char*)"물건의 상태가 좋지 않아 거래를 취소하고 발걸음을 옮겼다", 15);
 		Sleep(1000);
@@ -1340,7 +1340,7 @@ int BuffScene()
 
 	while (lp)
 	{
-		SetPosition(Width, Height, (char*)"전투를 끝마친 당신을 희동이가 반겨준다");
+		SetPosition(Width, Height, (char*)"전투를 끝낸 당신을 희동이가 반겨준다");
 		Sleep(1000);
 		SetPosition(Width, Height + 1, (char*)"희동이의 응원 : ");
 		Sleep(500);
@@ -1386,6 +1386,7 @@ void BossScene()
 	SetPosition(60 - (strlen("드디어 여기까지 왔다...")/2), Height + 8, (char*)"드디어 여기까지 왔다...", 11);
 	Sleep(500);
 	SetPosition(60 - (strlen("녀석을 없애고 가정의 평화를 되찾는거다 !")/2), Height + 10, (char*)"녀석을 없애고 가정의 평화를 되찾는거다 !", 11);
+	Sleep(1500);
 }
 
 void EndingScene(OBJECT* _Player, int _count)
@@ -1403,20 +1404,71 @@ void EndingScene(OBJECT* _Player, int _count)
 	Sleep(1000);
 	SetPosition(60 - (strlen("벌써부터 마음이 안정되는 기분이군...") / 2), Height + 8, (char*)"벌써부터 마음이 안정되는 기분이군...", 11);
 	Sleep(1000);
-	SetPosition(51 , Height + 10, (char*)"총 플레이타임 : ", 15);
-	SetPositionI(51 + strlen("총 플레이타임 : "), Height + 10, _count / 1000000, 14);
-	SetPosition(51 + strlen("총 플레이타임 : ") + sizeof(_count / 1000000), Height + 10,(char*)"초", 15);
+	SetPosition(60 - (strlen("집으로 돌아가자 오늘 밤은 파티다 !") / 2), Height + 10, (char*)"집으로 돌아가자 오늘 밤은 파티다 !", 11);
 	Sleep(1000);
-	SetPosition(54 , Height + 12, (char*)"최고 레벨 : ", 15);
-	SetPositionI(54 + strlen("최고 레벨 : "), Height + 12, _Player->Info.Level, 14);
+	SetPosition(60 - (strlen("게임 클리어 !") / 2), Height + 12, (char*)"게임 클리어 !", 14);
 	Sleep(1000);
+	SetPosition(51 , Height + 14, (char*)"총 플레이타임 : ", 15);
+	SetPositionI(51 + strlen("총 플레이타임 : "), Height + 14, _count / 1000, 14);
+	SetPosition(51 + strlen("총 플레이타임 : ") + sizeof(_count / 1000), Height + 14,(char*)"초", 15);
+	Sleep(1000);
+	SetPosition(54 , Height + 16, (char*)"최고 레벨 : ", 15);
+	SetPositionI(54 + strlen("최종 레벨 : "), Height + 16, _Player->Info.Level, 14);
+	Sleep(1500);
 
 	SceneState++;
 }
 
-void ExitScene()
+void ExitScene(int _col1, int _col2)
 {
-	
+	int Width = 60 - (strlen("@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@") / 2);
+	int Height = 10;
+	system("cls");
+	system("color 08");
+
+	SetPosition(0, 1, (char*)"                                                    &G?^::::~?B                 ", _col1);
+	SetPosition(0, 2, (char*)"                                                  #?^::::::::::~P               ", _col1);
+	SetPosition(0, 3, (char*)"                     &#G5J?7 J                  #7::::::::::::::.!&             ", _col1);
+	SetPosition(0, 4, (char*)"                 P.??????? J                   5::::::::::::::::::~J~           ", _col1);
+	SetPosition(0, 5, (char*)"                 J J5PB&& :?                  J.:::::::::::::::::::::7?5&       ", _col1);
+	SetPosition(0, 6, (char*)"                 J:       :?                 Y.::::::::::::::::^^^:::::^~7JB    ", _col1);
+	SetPosition(0, 7, (char*)"                 J:       :?                G:::::::::::~7J5GB##&G::::::::::~&  ", _col1);
+	SetPosition(0, 8, (char*)"                 J:  &!7J7YJ               &^:::::::!?5#&&###&&&&P:::::::::::&  ", _col1);
+	SetPosition(0, 9, (char*)"             57??.:  ^:JJJJY               Y.::::!J###&#&&#&#&&&&G:::::::::^B   ", _col1);
+	SetPosition(0, 10, (char*)"           5&JJJJJ  &?7J7Y                 ^::^5&&#&&&&&&&&&&&&&&#::::::::J&    ", _col1);
+	SetPosition(0, 11, (char*)"           &!!?7^#                        B.^P   &B&B #G&B&#B &&&&!::::^Y&      ", _col1);
+	SetPosition(0, 12, (char*)"                                          PY      G& # B&##B & &&&G:~7Y#        ", _col1);
+	SetPosition(0, 13, (char*)"                                          Y       G &## &&& &BB &&&#&&&G&       ", _col1);
+	SetPosition(0, 14, (char*)"                                                  G&&#GBBB#&&BB#&&&####&        ", _col1);
+	SetPosition(0, 15, (char*)"                                             B####&&&&&&&&&&& #GG&B#            ", _col1);
+	SetPosition(0, 16, (char*)"                                             ! ! ##BB##GB###  #B#&B&            ", _col1);
+	SetPosition(0, 17, (char*)"                                              BBG ! ! ! ! ! ! &&&&G             ", _col1);
+	SetPosition(0, 18, (char*)"                                                &##&&&&&&&&&&&&&&##             ", _col1);
+	SetPosition(0, 19, (char*)"                                                  &##&&&&&&&&&&&##              ", _col1);
+	SetPosition(0, 20, (char*)"                                                     &###&&&&&#G#               ", _col1);
+	SetPosition(0, 21, (char*)"                                                       &GP#BBB& #&              ", _col1);
+	SetPosition(0, 22, (char*)"                                                     &#JYBB&&PG#B&&&&           ", _col1);
+	SetPosition(0, 23, (char*)"                                                   &&#5G5 &#PGG5G    &&         ", _col1);
+	SetPosition(0, 24, (char*)"                                                  #  5GB5BGGGGGBPB     #&       ", _col1);
+	SetPosition(0, 25, (char*)"                                                &&  GGGGGGGGGGGGBY#     &&      ", _col1);
+	SetPosition(0, 26, (char*)"                                               &&  B5BGGGGGGGGGGP5&B&    &&     ", _col1);
+	SetPosition(0, 27, (char*)"                                               && BYPGGGGGGGGGGJPPP       #     ", _col1);
+	SetPosition(0, 28, (char*)"                                                 #YJGGGGGGGGGGGJGBB&   &&&      ", _col1);
+	SetPosition(0, 29, (char*)"                                                  #5BGGGGPPPPGGP5GG#&&&         ", _col1);
+	SetPosition(0, 30, (char*)"                                                  PGGGGGGGPPPPGGGP5             ", _col1);
+	SetPosition(0, 31, (char*)"                                                  &5PGBBBBBBBBBGP55             ", _col1);
+	Sleep(3000);
+	system("cls");
+	SetPosition(Width, Height + 2, (char*)"   ###############  ######    ######  ###############           ##############  ########     ######  ###############    ", _col2);
+	SetPosition(Width, Height + 3, (char*)"   ###############  ######    ######  ###############           ##############  #########    ######  ################   ", _col2);
+	SetPosition(Width, Height + 4, (char*)"   ###############  ######    ######  #######                   #######         ##########   ######  #######  #######   ", _col2);
+	SetPosition(Width, Height + 5, (char*)"        #####       ################  ##############            #############   ###########  ######  #######  #######   ", _col2);
+	SetPosition(Width, Height + 6, (char*)"        #####       ################  ##############            #############   ###### ############  #######  #######   ", _col2);
+	SetPosition(Width, Height + 7, (char*)"        #####       ######    ######  #######                   #######         ######  ###########  #######  #######   ", _col2);
+	SetPosition(Width, Height + 8, (char*)"        #####       ######    ######  #######                   #######         ######    #########  #######  #######   ", _col2);
+	SetPosition(Width, Height + 9, (char*)"        #####       ######    ######  ###############           ##############  ######      #######  ################   ", _col2);
+	SetPosition(Width, Height + 10, (char*)"        #####       ######    ######  ###############           ##############  ######        #####  ###############    ", _col2);
+	Sleep(3000);
 }
 
 void SetPosition(int _x, int _y, char* _str, int _Color)
