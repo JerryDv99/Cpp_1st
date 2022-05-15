@@ -906,7 +906,7 @@ int Turn(OBJECT* _Player, OBJECT* _Enemy)
 			Sleep(200);
 			SetPosition(Width - 16, Height + 4, (char*)"3. 3스킬 : 필살기를 사용해 2000%% 데미지, 소모 마나 8", 14);
 			Sleep(200);
-			SetPosition(Width + 6, Height + 6, (char*)"이외의 아무 키 : 취소");
+			SetPosition(Width + 6, Height + 6, (char*)"이외의 아무 키를 눌러 취소 : ");
 			scanf("%d", &j);
 			if (j > 0 && j <= 3)
 			{
