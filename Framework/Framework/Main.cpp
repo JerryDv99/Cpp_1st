@@ -1,7 +1,8 @@
-// Framework v 0.2
+// Framework v 0.3
 
 #define _CRT_SECURE_NO_WARNINGS
 #include <iostream>  // 입출력 헤더
+#include <Windows.h>
 #include <string>
 
 using namespace std;	// iostream과 세트
@@ -35,7 +36,7 @@ typedef struct Vector3
 	Vector3(int _x, int _y)	// 복사 생성자를 만들 수 없다
 		: x(_x), y(_y), z(0) { };	// 사용하지 않는 변수도 초기화
 
-	Vector3(int _x, int _y, int _z)	
+	Vector3(int _x, int _y, int _z)	// 이름이 같아도 매개변수의 형태나 개수에 따라 맞는 함수 호출
 		: x(_x), y(_y), z(_z) { };
 
 
@@ -50,23 +51,47 @@ struct Transform
 	Vector3 Scale;		// 크기
 };
 
+struct Information
+{
+	char* Texture;
+	int Color;
+	int Option;
+};
+
 struct Object
 {
 	char* Name;
 	int Speed;
-	Transform TramsInfo;
-
+	Information Info;
+	Transform TransInfo;
 };
 
-// 초기화 함수 (디폴트 매개변수 : int _Valude = 0, 디폴트는 함수 정의부에서 사용 불가)
-void Initialize(Object* _Object, char* _Name, int _PosX = 0, int _PosY = 0, int _PosZ = 0);
+struct DrawTextInfo
+{
+	Information Info;
+	Transform TransInfo;
+};
+
+// 초기화 함수 {디폴트 매개변수 : int _Value = 0, 디폴트는 함수 정의부에서 사용 불가하며 뒤에서부터 채워줘야 함(_X = 1, _Y, _Z = 3 안됨)}
+void Initialize(Object* _Object, char* _Texture, int _PosX = 0, int _PosY = 0, int _PosZ = 0);
 
 // 이름 세팅 함수
 char* SetName();
 
-// 출력 함수
-void Output(Object* _Object);
+// 커서의 위치를 변경
+void SetCursorPosition(int _x, int _y);
 
+// Text의 색을 변경
+void SetTextColor(int _Color);
+
+// 출력할 Text의 위치와 색상을 변경해준다 (Color default = 흰색)
+void OnDrawText(char* _str, int _x, int _y, int _Color = 15);
+
+// 출력할 숫자의 위치와 색상을 변경해준다
+void OnDrawText(int _Value, int _x, int _y, int _Color = 15);
+
+// 커서를 나타내거나(True) 숨기는(False) 함수
+void HideCursor(bool _Visible);
 
 
 int main(void)
@@ -124,17 +149,114 @@ int main(void)
 
 	//cout << vPosition.x << ", " << vPosition.y << endl;
 
+	int Score = 0;
+
+	HideCursor(false); // 커서를 숨김
+
+	// 배경 초기화
+	
+	DrawTextInfo BackGround[30];
+
+
+	for (int i = 0; i < 30; ++i)
+	{
+		// 랜덤값을 초기화 해줌, 큰 값이 나올 수 있도록 time값끼리 곱해줄 것이지만
+		// for문이 빠르게 돌게되면 time의 증가값보다 빠를 수 있기 때문에
+		// 랜덤값이라고 하더라도 연속으로 같은 값이 나올 수 있음
+		// i의 값을 곱하고 더해줌으로써 중복값이 나오지 않도록 해줌
+		srand((GetTickCount() + i * i)* GetTickCount());
+
+
+		// 현재 어떻게 사용할지 정하지 않았지만, 추후 배경과 총알을 구분지어 플레이어가 배경과 닿았을때
+		// 총알에 닿았을 때에만 충돌판정이 되도록 설정해줄 것임
+		BackGround[i].Info.Option = 0;
+
+		// 좌표를 랜덤으로 설정
+		BackGround[i].TransInfo.Position.x = rand() % 100 + 10;
+		BackGround[i].TransInfo.Position.y = rand() % 26 + 1;
+
+		BackGround[i].Info.Texture = (char*)"*";
+
+		BackGround[i].Info.Color = rand() % 8 + 1;
+
+	}
+
+
+
 	// ** 플레이어 선언 및 동적할당
 	Object* Player = new Object;
 
 	// ** 플레이어 초기화
-	Initialize(Player, nullptr, 10, 20, 30);
+	Initialize(Player, (char*)"옷", 30, 10);
 
 	Object* Enemy = new Object;
-	Initialize(Enemy, (char*)"Enemy", 100, 200, 300);
+	Initialize(Enemy, (char*)"홋", 80, 10);
 
-	Output(Player);
-	Output(Enemy);
+	// 현재 시간으로 초기화
+	ULONGLONG Time = GetTickCount64();
+
+	// 출력
+	while (true)
+	{
+		// 초기화된 시간부터 +50만큼 증가하면
+		// 프레임과 프레임 사이의 시간 간격을 0.5초로 세팅
+		if (Time + 80 < GetTickCount64())
+		{
+			// 증가된 값만큼 다시 초기화
+			Time = GetTickCount64();
+
+			system("cls");
+
+			// 상 키를 입력받음
+			if (GetAsyncKeyState(VK_UP))
+			{
+				Player->TransInfo.Position.y -= 1;
+			}
+
+			// 하 키를 입력받음
+			if (GetAsyncKeyState(VK_DOWN))
+			{
+				Player->TransInfo.Position.y += 1;
+			}
+
+			// 좌 키를 입력받음
+			if (GetAsyncKeyState(VK_LEFT))
+			{
+				Player->TransInfo.Position.x -= 1;
+			}
+
+			// 우 키를 입력받음
+			if (GetAsyncKeyState(VK_RIGHT))
+			{
+				Player->TransInfo.Position.x += 1;
+			}
+			
+			// 스페이스 키를 입력받음
+			if (GetAsyncKeyState(VK_SPACE))
+			{
+				OnDrawText((char*)"장풍 !!",
+					Player->TransInfo.Position.x + strlen(Player->Info.Texture) + 1,
+					Player->TransInfo.Position.y,
+					13);
+			}
+
+			OnDrawText(Player->Info.Texture,
+				Player->TransInfo.Position.x,
+				Player->TransInfo.Position.y,
+				10);
+
+			OnDrawText(Enemy->Info.Texture,
+				Enemy->TransInfo.Position.x,
+				Enemy->TransInfo.Position.y,
+				12);
+			
+			int ix = 60 - strlen("Score : ");
+			OnDrawText((char*)"Score : ", ix, 1);
+			OnDrawText(++Score, 60, 1);
+
+
+		}
+	}
 
 	return 0;
 }
@@ -157,34 +279,63 @@ char* SetName()
 	return pName;
 }
 
-void Initialize(Object* _Object, char* _Name, int _PosX, int _PosY, int _PosZ)
+void Initialize(Object* _Object, char* _Texture, int _PosX, int _PosY, int _PosZ)
 {
 	// ** 3항 연산자
-	// _Name의 값이 nullptr이면 SetName()함수 실행
-	// 아니라면 _Name 값 대입
-	_Object->Name = (_Name == nullptr) ? SetName() : _Name;
+	// _Texture의 값이 nullptr이면 SetName()함수 실행
+	// 아니라면 _Texture 값 대입
+	_Object->Info.Texture = (_Texture == nullptr) ? SetName() : _Texture;
 
 	_Object->Speed = 0;
 
 	// ** 좌표값
-	_Object->TramsInfo.Position = Vector3(_PosX, _PosY, _PosZ);
+	_Object->TransInfo.Position = Vector3(_PosX, _PosY, _PosZ);
 
 	// ** 회전값 (현재 사용 안함)
-	_Object->TramsInfo.Rotation = Vector3(0, 0, 0);
+	_Object->TransInfo.Rotation = Vector3(0, 0, 0);
 
 	// ** 크기값
-	_Object->TramsInfo.Scale = Vector3(0, 0, 0);
+	_Object->TransInfo.Scale = Vector3(0, 0, 0);
 
 }
-void Output(Object* _Object)
+
+void SetCursorPosition(int _x, int _y)
 {
-	if (_Object->Name != nullptr)
-		cout << "Name : " << _Object->Name << endl;
+	COORD Pos = { (SHORT)_x, (SHORT)_y };
 
-	cout << "Speed : " << _Object->Speed << endl;
+	SetConsoleCursorPosition(GetStdHandle(STD_OUTPUT_HANDLE), Pos);
+}
 
-	cout << "X : " << _Object->TramsInfo.Position.x <<
-		", Y : " << _Object->TramsInfo.Position.y <<
-		", Z : " << _Object->TramsInfo.Position.z << endl;
+void SetTextColor(int _Color)
+{
+	SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), _Color);
+}
 
+void OnDrawText(char* _str, int _x, int _y, int _Color)
+{
+	SetCursorPosition(_x, _y);
+	SetTextColor(_Color);
+	cout << _str;
+}
+
+void OnDrawText(int _Value, int _x, int _y, int _Color)
+{
+	SetCursorPosition(_x, _y);
+	SetTextColor(_Color);
+
+	char* pText = new char[4];
+	_itoa(_Value, pText, 10);
+
+	cout << _Value;
+}
+
+void HideCursor(bool _Visible)
+{
+	CONSOLE_CURSOR_INFO CursorInfo;
+
+	CursorInfo.bVisible = _Visible;
+	CursorInfo.dwSize = 1;
+
+	SetConsoleCursorInfo(
+		GetStdHandle(STD_OUTPUT_HANDLE), &CursorInfo);
 }
