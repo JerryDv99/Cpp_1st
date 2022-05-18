@@ -1,5 +1,7 @@
 // Framework v 0.3
 
+// 플레이어 몬스터 씬관리 투사체 충돌
+
 #define _CRT_SECURE_NO_WARNINGS
 #include <iostream>  // 입출력 헤더
 #include <Windows.h>
