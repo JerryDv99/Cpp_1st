@@ -33,7 +33,7 @@ typedef struct Vector3
 	Vector3() {};	//	기본 생성자 없이는
 
 	Vector3(int _x, int _y)	// 복사 생성자를 만들 수 없다
-		: x(_x), y(_y), z(0) { };
+		: x(_x), y(_y), z(0) { };	// 사용하지 않는 변수도 초기화
 
 	Vector3(int _x, int _y, int _z)	
 		: x(_x), y(_y), z(_z) { };
@@ -45,9 +45,9 @@ typedef struct Vector3
 struct Transform
 {
 	// 오브젝트가 존재하기 위해 필요한 최소한의 요소들
-	Vector3 Position;
-	Vector3 Rotation;
-	Vector3 Scale;
+	Vector3 Position;	// 좌표
+	Vector3 Rotation;	// 회전률
+	Vector3 Scale;		// 크기
 };
 
 struct Object
@@ -58,7 +58,7 @@ struct Object
 
 };
 
-// 초기화 함수 (디폴트 매개변수 : int _Valude = 0)
+// 초기화 함수 (디폴트 매개변수 : int _Valude = 0, 디폴트는 함수 정의부에서 사용 불가)
 void Initialize(Object* _Object, char* _Name, int _PosX = 0, int _PosY = 0, int _PosZ = 0);
 
 // 이름 세팅 함수
