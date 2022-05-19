@@ -83,7 +83,14 @@ int main(void)
 			{
 				if (Bullet[i] != nullptr)
 				{
-					if (Bullet[i]->TransInfo.Position.x + Bullet[i]->TransInfo.Scale.x >= 120)
+					if (Collision(Bullet[i], Enemy))
+					{
+						delete Bullet[i];
+						Bullet[i] = nullptr;
+
+						--BulletCount;
+					}
+					else if (Bullet[i]->TransInfo.Position.x + Bullet[i]->TransInfo.Scale.x >= 120)
 					{
 						delete Bullet[i];
 						Bullet[i] = nullptr;	// 반복문 안에서 delete는 위험
@@ -95,53 +102,35 @@ int main(void)
 			
 			Collision(Player, Enemy);
 		
-			// 상 키를 입력받음
-			if (GetAsyncKeyState(VK_UP))
-			{
-				Player->TransInfo.Position.y -= 1;
-			}
-
-			// 하 키를 입력받음
-			if (GetAsyncKeyState(VK_DOWN))
-			{
-				Player->TransInfo.Position.y += 1;
-			}
-
-			// 좌 키를 입력받음
-			if (GetAsyncKeyState(VK_LEFT))
-			{
-				Player->TransInfo.Position.x -= 1;
-			}
-
-			// 우 키를 입력받음
-			if (GetAsyncKeyState(VK_RIGHT))
-			{
-				Player->TransInfo.Position.x += 1;
-			}
+			UpdateInput(Player);
 
 			// 스페이스 키를 입력받음
 			if (GetAsyncKeyState(VK_SPACE))
 			{
 				for (int i = 0; i < 128; ++i)
 				{
-					if(Bullet[i] == nullptr)
+					if (Bullet[i] == nullptr)
+					{
 						Bullet[i] = CreateBullet(
 							Player->TransInfo.Position.x,
 							Player->TransInfo.Position.y);
-					++BulletCount;
-					break;
+						++BulletCount;
+						break;
+					}
 				}
 			}
+
+			OnDrawText(Player->Info.Texture,
+				Player->TransInfo.Position.x,
+				Player->TransInfo.Position.y,
+				10);
 
 			OnDrawText(Enemy->Info.Texture,
 				Enemy->TransInfo.Position.x,
 				Enemy->TransInfo.Position.y,
 				12);
 
-			OnDrawText(Player->Info.Texture,
-				Player->TransInfo.Position.x,
-				Player->TransInfo.Position.y,
-				10);
+			
 
 			// Bullet 출력
 			for (int i = 0; i < 128; ++i)
@@ -149,6 +138,7 @@ int main(void)
 				if (Bullet[i])
 				{
 					Bullet[i]->TransInfo.Position.x += 2;
+
 					OnDrawText(Bullet[i]->Info.Texture,
 						Bullet[i]->TransInfo.Position.x,
 						Bullet[i]->TransInfo.Position.y);

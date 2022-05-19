@@ -1,7 +1,7 @@
 #pragma once
 // 구조체 관리
 
-typedef struct Vector3
+struct Vector3
 {
 	int x = 0, y = 0, z = 0;
 
@@ -14,7 +14,7 @@ typedef struct Vector3
 		: x(_x), y(_y), z(_z) { };
 
 
-}Vector3;
+};
 
 
 struct Transform

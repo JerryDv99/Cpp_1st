@@ -23,10 +23,12 @@ void OnDrawText(const int _Value, const int _x, const int _y, const int _Color =
 void HideCursor(const bool _Visible);
 
 // 충돌처리 함수
-void Collision(const Object* _ObjectA, const Object* _ObjectB);
+bool Collision(const Object* _ObjectA, const Object* _ObjectB);
 
 // Bullet 생성함수
 Object* CreateBullet(const int _x, const int _y);
+
+void UpdateInput(Object* _Object);
 
 
 void Initialize(Object* _Object, char* _Texture, int _PosX, int _PosY, int _PosZ)
@@ -108,8 +110,9 @@ void HideCursor(const bool _Visible)
 		GetStdHandle(STD_OUTPUT_HANDLE), &CursorInfo);
 }
 
-void Collision(const Object* _ObjectA, const Object* _ObjectB)
+bool Collision(const Object* _ObjectA, const Object* _ObjectB)
 {
+	int check = 0;
 	// Position.x + Scale.x = 우측
 	// Position.x = 좌측
 	// Rect 충돌 시 우측값은 항상 크다
@@ -119,8 +122,9 @@ void Collision(const Object* _ObjectA, const Object* _ObjectB)
 	{
 		OnDrawText((char*)"충돌 입니다.", _ObjectA->TransInfo.Position.x, _ObjectA->TransInfo.Position.y - 1, 12);
 		OnDrawText((char*)"으악 !", _ObjectB->TransInfo.Position.x + _ObjectB->TransInfo.Scale.x, _ObjectB->TransInfo.Position.y + 1, 12);
-
+		check = 1;
 	}
+	return check;
 }
 
 Object* CreateBullet(const int _x, const int _y)
@@ -132,4 +136,23 @@ Object* CreateBullet(const int _x, const int _y)
 	Initialize(_Object, (char*)"장풍!", _x + 2, _y);
 
 	return _Object;
+}
+
+void UpdateInput(Object* _Object)
+{
+	// ** [상] 키를 입력받음.
+	if (GetAsyncKeyState(VK_UP))
+		_Object->TransInfo.Position.y -= 1;
+
+	// ** [하] 키를 입력받음.
+	if (GetAsyncKeyState(VK_DOWN))
+		_Object->TransInfo.Position.y += 1;
+
+	// ** [좌] 키를 입력받음.
+	if (GetAsyncKeyState(VK_LEFT))
+		_Object->TransInfo.Position.x -= 1;
+
+	// ** [우] 키를 입력받음.
+	if (GetAsyncKeyState(VK_RIGHT))
+		_Object->TransInfo.Position.x += 1;
 }
