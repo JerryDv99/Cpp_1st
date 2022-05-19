@@ -9,25 +9,6 @@
 
 using namespace std;	// iostream과 세트
 
-//typedef struct tagInfo
-//{
-//	int iNumber;
-//
-//
-//	tagInfo()	// 생성자, 구조체 안에서만 사용 가능
-//	{
-//		cout << "기본 생성자" << endl;	// 초기화 시 생성자 호출
-//	};
-//
-//	tagInfo(int _iNumber)	
-//	{
-//		iNumber = _iNumber;
-//		cout << "복사 생성자" << endl;	// 초기화 시 생성자 호출
-//	};
-//
-//
-//}INFO;
-
 
 typedef struct Vector3
 {
@@ -98,59 +79,7 @@ void HideCursor(bool _Visible);
 
 int main(void)
 {
-	// ** 출력
-	//printf_s("문자 출력");
-	//cout << "문자 출력";		// console out <<(시프트 연산자) "문자열"		
 	
-	//꺾쇠 방향으로  << 보내기, >> 받기
-
-
-	// ** 줄바꿈
-	//printf_s("\\n을 사용하면 \n줄바꿈");
-	//cout << "endl 을 사용하면" << endl << "줄바꿈";
-
-
-	/*
-	// ** 입력
-	int iNumber = 0;
-
-	
-	printf_s("입력: ");
-	scanf("%d", &iNumber);
-
-	printf_s("출력 : %d", iNumber);
-
-	cout << "입력: ";
-	cin >> iNumber;
-
-	cout << "출력 : " << iNumber;
-	*/
-
-	// ** 동적할당 
-	//INFO* pInfo = (INFO*)malloc(sizeof(INFO));		// malloc의 형태가 void* 이기 때문에 형변환
-	//INFO* pInfo = new INFO;	// new는 동적할당, new 뒤의 INFO는 size 및 형태
-	//INFO* pInfo = new INFO(10);
-	//cout << pInfo->iNumber << endl;
-
-
-	//free(pInfo);
-	//delete pInfo;
-
-	/*INFO* pInfo[10];
-
-	for (int i = 0; i < 10; ++i)
-	{
-		pInfo[i] = new INFO(i);
-		cout << pInfo[i]->iNumber << endl;
-	}*/
-
-	//for (int i = 0; i < 10; ++i)
-		//cout << pInfo[i]->iNumber << endl;
-
-	//Vector3 vPosition = Vector3(10, 20, 30);	// 매개변수의 개수나 형태에 따라 호출
-
-	//cout << vPosition.x << ", " << vPosition.y << endl;
-
 	int Score = 0;
 
 	HideCursor(false); // 커서를 숨김
@@ -189,7 +118,7 @@ int main(void)
 	Object* Player = new Object;
 
 	// ** 플레이어 초기화
-	Initialize(Player, (char*)"옷", 30, 10);
+	Initialize(Player, (char*)"옷/", 30, 10);
 
 	Object* Enemy = new Object;
 	Initialize(Enemy, (char*)"홋", 80, 10);
@@ -208,6 +137,19 @@ int main(void)
 			Time = GetTickCount64();
 
 			system("cls");
+
+			// ** 배경 출력
+			for (int i = 0; i < 30; ++i)
+			{
+				OnDrawText(
+					BackGround[i].Info.Texture,
+					BackGround[i].TransInfo.Position.x,
+					BackGround[i].TransInfo.Position.y,
+					BackGround[i].Info.Color);
+
+				// ** 배경으로 사용될 텍스처의 색상을 랜덤으로 설정.
+				BackGround[i].Info.Color = rand() % 8 + 1;
+			}
 
 			// 상 키를 입력받음
 			if (GetAsyncKeyState(VK_UP))
@@ -235,25 +177,21 @@ int main(void)
 			
 			// 스페이스 키를 입력받음
 			if (GetAsyncKeyState(VK_SPACE))
-			{
-				OnDrawText((char*)"장풍 !!",
-					Player->TransInfo.Position.x + strlen(Player->Info.Texture) + 1,
-					Player->TransInfo.Position.y,
-					13);
-			}
+				Player->Info.Texture = (char*)"옷ㅡ";
+			else
+				Player->Info.Texture = (char*)"옷/";
+
+			OnDrawText(Enemy->Info.Texture,
+				Enemy->TransInfo.Position.x,
+				Enemy->TransInfo.Position.y,
+				12);
 
 			OnDrawText(Player->Info.Texture,
 				Player->TransInfo.Position.x,
 				Player->TransInfo.Position.y,
 				10);
 
-			OnDrawText(Enemy->Info.Texture,
-				Enemy->TransInfo.Position.x,
-				Enemy->TransInfo.Position.y,
-				12);
-			
-			int ix = 60 - strlen("Score : ");
-			OnDrawText((char*)"Score : ", ix, 1);
+			OnDrawText((char*)"Score : ", 60 - strlen("Score : "), 1);
 			OnDrawText(++Score, 60, 1);
 
 
