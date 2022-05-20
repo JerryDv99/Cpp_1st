@@ -2,22 +2,22 @@
 // 함수 관리
 
 // 초기화 함수 {디폴트 매개변수 : int _Value = 0, 디폴트는 함수 정의부에서 사용 불가하며 뒤에서부터 채워줘야 함(_X = 1, _Y, _Z = 3 안됨)}
-void Initialize(Object* _Object, char* _Texture, int _PosX = 0, int _PosY = 0, int _PosZ = 0);
+void Initialize(Object* _Object, char* _Texture, float _PosX = 0, float _PosY = 0, float _PosZ = 0);
 
 // 이름 세팅 함수
 char* SetName();
 
 // 커서의 위치를 변경
-void SetCursorPosition(const int _x, const int _y);
+void SetCursorPosition(const float _x, const float _y);
 
 // Text의 색을 변경
 void SetTextColor(const int _Color);
 
 // 출력할 Text의 위치와 색상을 변경해준다 (Color default = 흰색)
-void OnDrawText(const char* _str, const int _x, const int _y, const int _Color = 15);
+void OnDrawText(const char* _str, const float _x, const float _y, const int _Color = 15);
 
 // 출력할 숫자의 위치와 색상을 변경해준다
-void OnDrawText(const int _Value, const int _x, const int _y, const int _Color = 15);
+void OnDrawText(const int _Value, const float _x, const float _y, const int _Color = 15);
 
 // 커서를 나타내거나(True) 숨기는(False) 함수
 void HideCursor(const bool _Visible);
@@ -26,12 +26,15 @@ void HideCursor(const bool _Visible);
 bool Collision(const Object* _ObjectA, const Object* _ObjectB);
 
 // Bullet 생성함수
-Object* CreateBullet(const int _x, const int _y);
+Object* CreateBullet(const float _x, const float _y);
 
+Object* CreateEnemy(const float _x, const float _y);
+
+// 키 입력
 void UpdateInput(Object* _Object);
 
 
-void Initialize(Object* _Object, char* _Texture, int _PosX, int _PosY, int _PosZ)
+void Initialize(Object* _Object, char* _Texture, float _PosX, float _PosY, int _PosZ)
 {
 	// ** 3항 연산자
 	// _Texture의 값이 nullptr이면 SetName()함수 실행
@@ -69,7 +72,7 @@ char* SetName()
 	return pName;
 }
 
-void SetCursorPosition(const int _x, const int _y)
+void SetCursorPosition(const float _x, const float _y)
 {
 	COORD Pos = { (SHORT)_x, (SHORT)_y };
 
@@ -81,14 +84,14 @@ void SetTextColor(const int _Color)
 	SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), _Color);
 }
 
-void OnDrawText(const char* _str, const int _x, const int _y, const int _Color)
+void OnDrawText(const char* _str, const float _x, const float _y, const int _Color)
 {
 	SetCursorPosition(_x, _y);
 	SetTextColor(_Color);
 	cout << _str;
 }
 
-void OnDrawText(const int _Value, const int _x, const int _y, const int _Color)
+void OnDrawText(const int _Value, const float _x, const float _y, const int _Color)
 {
 	SetCursorPosition(_x, _y);
 	SetTextColor(_Color);
@@ -112,28 +115,32 @@ void HideCursor(const bool _Visible)
 
 bool Collision(const Object* _ObjectA, const Object* _ObjectB)
 {
-	int check = 0;
 	// Position.x + Scale.x = 우측
 	// Position.x = 좌측
 	// Rect 충돌 시 우측값은 항상 크다
 	if ((_ObjectA->TransInfo.Position.x + _ObjectA->TransInfo.Scale.x) > _ObjectB->TransInfo.Position.x &&
 		(_ObjectB->TransInfo.Position.x + _ObjectB->TransInfo.Scale.x) > _ObjectA->TransInfo.Position.x &&
 		_ObjectA->TransInfo.Position.y == _ObjectB->TransInfo.Position.y)
-	{
-		OnDrawText((char*)"충돌 입니다.", _ObjectA->TransInfo.Position.x, _ObjectA->TransInfo.Position.y - 1, 12);
-		OnDrawText((char*)"으악 !", _ObjectB->TransInfo.Position.x + _ObjectB->TransInfo.Scale.x, _ObjectB->TransInfo.Position.y + 1, 12);
-		check = 1;
-	}
-	return check;
+		return true;
+	 return false;
 }
 
-Object* CreateBullet(const int _x, const int _y)
+Object* CreateBullet(const float _x, const float _y)
 {
 	// Bullet 생성 및 동적할당
 	Object* _Object = new Object;
 
 	// 안전을 위해 초기화 시 _x와 _y는 변경할 수 없는 상수로 받아옴
 	Initialize(_Object, (char*)"장풍!", _x + 2, _y);
+
+	return _Object;
+}
+
+Object* CreateEnemy(const float _x, const float _y)
+{
+	Object* _Object = new Object;
+
+	Initialize(_Object, (char*)"홋", _x, _y);
 
 	return _Object;
 }

@@ -5,6 +5,7 @@
 #include <iostream>  // 입출력 헤더
 #include <Windows.h>
 #include <string>
+#include <math.h>
 
 using namespace std;	// iostream과 세트
 

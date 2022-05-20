@@ -3,14 +3,14 @@
 
 struct Vector3
 {
-	int x = 0, y = 0, z = 0;
+	float x = 0, y = 0, z = 0;
 
 	Vector3() {};	//	기본 생성자 없이는
 
-	Vector3(int _x, int _y)	// 복사 생성자를 만들 수 없다
+	Vector3(float _x, float _y)	// 복사 생성자를 만들 수 없다
 		: x(_x), y(_y), z(0) { };	// 사용하지 않는 변수도 초기화
 
-	Vector3(int _x, int _y, int _z)	// 이름이 같아도 매개변수의 형태나 개수에 따라 맞는 함수 호출
+	Vector3(float _x, float _y, float _z)	// 이름이 같아도 매개변수의 형태나 개수에 따라 맞는 함수 호출
 		: x(_x), y(_y), z(_z) { };
 
 
