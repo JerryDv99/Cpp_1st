@@ -2,7 +2,7 @@
 // 플레이어 몬스터 씬관리 투사체 충돌
 
 // Bullet이 몬스터와 충돌 시 Bullet 제거
-#include "Header.h"
+#include "Headers.h"
 
 int main(void)
 {
@@ -41,11 +41,11 @@ int main(void)
 	Object* Player = new Object;
 
 	// ** 플레이어 초기화
-	Initialize(Player, (char*)"옷/", 30, 10);
+	Initialize(Player, (char*)"=>-", 30, 10);
 
 	Object* Enemy[32]; // = new Object;
 	Enemy[0] = new Object;
-	//Initialize(Enemy[0], (char*)"홋", 80, 10);
+	Initialize(Enemy[0], (char*)"-<=", 80, 10);
 	for (int i = 1; i < 32; ++i)
 		Enemy[i] = nullptr;
 
@@ -58,16 +58,12 @@ int main(void)
 	Object* Bullet[128] = { nullptr };
 	Object* EBullet[128] = { nullptr };
 
-	int BulletCount = 0;
-
-
-
 	Object* Temp = new Object;
 
 	Temp->TransInfo.Position.y = 10;
 	Temp->TransInfo.Position.x = 80;
 
-	Temp->Info.Texture = (char*)"★";
+	Temp->Info.Texture = (char*)"<-";
 
 	// 출력
 	while (true)
@@ -95,64 +91,64 @@ int main(void)
 			}
 			int EnemyTime2 = 0;
 			// Enemy 생성
-			//if (EnemyTime + 1500 < GetTickCount64())
-			//{
-			//	EnemyTime = GetTickCount64();
+			if (EnemyTime + 1500 < GetTickCount64())
+			{
+				EnemyTime = GetTickCount64();
 
-			//	for (int i = 0; i < 32; ++i)
-			//	{
-			//		if (Enemy[i] == nullptr)
-			//		{
-			//			srand((GetTickCount() + i * i) * GetTickCount());
-			//			Enemy[i] = CreateEnemy(115, rand()%30);
-			//				
-			//			break;
-			//		}
-			//	}
-			//	// ** 수정할거
-			//	if (EnemyTime2 + 1000 < GetTickCount64())
-			//	{
-			//		EnemyTime2 = GetTickCount64();
-			//		for (int i = 0; i < 128; ++i)
-			//		{
-			//			if (EBullet[i] == nullptr)
-			//			{
-			//				EBullet[i] = CreateBullet(
-			//					Enemy[i]->TransInfo.Position.x - 4,
-			//					Enemy[i]->TransInfo.Position.y);
-			//				break;
-			//			}
-			//		}
-			//	}
-			//}
+				for (int i = 0; i < 32; ++i)
+				{
+					if (Enemy[i] == nullptr)
+					{
+						srand((GetTickCount() + i * i) * GetTickCount());
+						Enemy[i] = CreateEnemy(115, rand()%30);
+							
+						break;
+					}
+				}
+				// ** 수정할거
+				if (EnemyTime2 + 1000 < GetTickCount64())
+				{
+					EnemyTime2 = GetTickCount64();
+					for (int i = 0; i < 128; ++i)
+					{
+						if (EBullet[i] == nullptr)
+						{
+							EBullet[i] = CreateBullet(
+								Enemy[i]->TransInfo.Position.x - 2,
+								Enemy[i]->TransInfo.Position.y);
+							break;
+						}
+					}
+				}
+			}
 
-			//for (int i = 0; i < 128; ++i)
-			//{
-			//	if (EBullet[i] != nullptr)
-			//	{
-			//		for (int j = 0; j < 32; ++j)
-			//		{
-			//			if (Collision(Player, EBullet[i]))
-			//			{
-			//				OnDrawText((char*)"으악",
-			//					Player->TransInfo.Position.x - 2,
-			//					Player->TransInfo.Position.y + 1, 10);
-			//			
-			//				delete EBullet[i];
-			//				EBullet[i] = nullptr;
-			//				break;
-			//			}
-			//		}
-			//		if (EBullet[i] != nullptr)
-			//		{
-			//			if (EBullet[i]->TransInfo.Position.x <= 1)
-			//			{
-			//				delete EBullet[i];
-			//				EBullet[i] = nullptr;	// 반복문 안에서 delete는 위험
-			//			}
-			//		}
-			//	}
-			//}
+			for (int i = 0; i < 128; ++i)
+			{
+				if (EBullet[i] != nullptr)
+				{
+					for (int j = 0; j < 32; ++j)
+					{
+						if (Collision(Player, EBullet[i]))
+						{
+							OnDrawText((char*)"으악",
+								Player->TransInfo.Position.x - 2,
+								Player->TransInfo.Position.y + 1, 10);
+						
+							delete EBullet[i];
+							EBullet[i] = nullptr;
+							break;
+						}
+					}
+					if (EBullet[i] != nullptr)
+					{
+						if (EBullet[i]->TransInfo.Position.x <= 1)
+						{
+							delete EBullet[i];
+							EBullet[i] = nullptr;	// 반복문 안에서 delete는 위험
+						}
+					}
+				}
+			}
 
 
 			for (int i = 0; i < 128; ++i)
@@ -200,7 +196,6 @@ int main(void)
 						Bullet[i] = CreateBullet(
 							Player->TransInfo.Position.x,
 							Player->TransInfo.Position.y);
-						++BulletCount;
 						break;
 					}
 				}
@@ -226,74 +221,74 @@ int main(void)
 			// sqrt : 제곱근 함수
 			float Length = sqrt((x * x) + (y * y));
 
-			OnDrawText((char*)"Length : ", 60 - strlen("Length : "), 2);
-			OnDrawText(Length, 60, 2);
-
-
 			Vector3 Direction = Vector3(x / Length, y / Length);
 
 			Temp->TransInfo.Position.x += Direction.x;
 			Temp->TransInfo.Position.y += Direction.y;
 
+			OnDrawText((char*)"Length : ", float(60 - strlen("Length : ")), 2.0f);
+			OnDrawText((int)Length, 60.0f, 2.0f);
+
+
+		
+			
 
 
 
-			//for (int i = 0; i < 32; ++i)
-			//{
-			//	if (Enemy[i])
-			//	{
-			//		Enemy[i]->TransInfo.Position.x--;
 
-			//		// Enemy 출력
-			//		OnDrawText(Enemy[i]->Info.Texture,
-			//			Enemy[i]->TransInfo.Position.x,
-			//			Enemy[i]->TransInfo.Position.y,
-			//			12);
+			for (int i = 0; i < 32; ++i)
+			{
+				if (Enemy[i])
+				{
+					Enemy[i]->TransInfo.Position.x--;
 
-			//		//  Enemy 스크린 충돌
-			//		if (Enemy[i]->TransInfo.Position.x <= 0)
-			//		{
-			//			delete Enemy[i];
-			//			Enemy[i] = nullptr;
-			//		}
-			//	}
-			//	
-			//}
+					// Enemy 출력
+					OnDrawText(Enemy[i]->Info.Texture,
+						Enemy[i]->TransInfo.Position.x,
+						Enemy[i]->TransInfo.Position.y,
+						12);
 
-			//
+					//  Enemy 스크린 충돌
+					if (Enemy[i]->TransInfo.Position.x <= 0)
+					{
+						delete Enemy[i];
+						Enemy[i] = nullptr;
+					}
+				}
+				
+			}
 
-			//	
+			
 
-			//// Bullet 출력
-			//for (int i = 0; i < 128; ++i)
-			//{
-			//	if (Bullet[i])
-			//	{
-			//		Bullet[i]->TransInfo.Position.x += 2;
+				
 
-			//		OnDrawText(Bullet[i]->Info.Texture,
-			//			Bullet[i]->TransInfo.Position.x,
-			//			Bullet[i]->TransInfo.Position.y);
-			//	}
-			//}
+			// Bullet 출력
+			for (int i = 0; i < 128; ++i)
+			{
+				if (Bullet[i])
+				{
+					Bullet[i]->TransInfo.Position.x += 2;
 
-			//for (int i = 0; i < 128; ++i)
-			//{
-			//	if (EBullet[i] != nullptr)
-			//	{
-			//		EBullet[i]->TransInfo.Position.x -= 2;
+					OnDrawText(Bullet[i]->Info.Texture,
+						Bullet[i]->TransInfo.Position.x,
+						Bullet[i]->TransInfo.Position.y);
+				}
+			}
 
-			//		OnDrawText(EBullet[i]->Info.Texture,
-			//			EBullet[i]->TransInfo.Position.x,
-			//			EBullet[i]->TransInfo.Position.y);
-			//	}
-			//}
-			//
-			//OnDrawText((char*)"Bullet Count : ", 95, 1);
-			//OnDrawText(BulletCount, 95 + strlen("Bullet Count : "), 1);
+			for (int i = 0; i < 128; ++i)
+			{
+				if (EBullet[i] != nullptr)
+				{
+					EBullet[i]->TransInfo.Position.x -= 2;
 
-			//OnDrawText((char*)"Score : ", 60 - strlen("Score : "), 1);
-			//OnDrawText(++Score, 60, 1);
+					OnDrawText(EBullet[i]->Info.Texture,
+						EBullet[i]->TransInfo.Position.x,
+						EBullet[i]->TransInfo.Position.y);
+				}
+			}
+			
+			OnDrawText((char*)"Score : ", float( 60 - strlen("Score : ")), 1.0f);
+			OnDrawText(++Score, 60.0f, 1.0f);
 
 
 		}

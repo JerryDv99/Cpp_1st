@@ -12,8 +12,6 @@ struct Vector3
 
 	Vector3(float _x, float _y, float _z)	// 이름이 같아도 매개변수의 형태나 개수에 따라 맞는 함수 호출
 		: x(_x), y(_y), z(_z) { };
-
-
 };
 
 

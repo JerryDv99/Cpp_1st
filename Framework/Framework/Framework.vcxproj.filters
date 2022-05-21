@@ -29,7 +29,7 @@
     <ClInclude Include="Struct.h">
       <Filter>헤더 파일\Headers</Filter>
     </ClInclude>
-    <ClInclude Include="Header.h">
+    <ClInclude Include="Headers.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
   </ItemGroup>

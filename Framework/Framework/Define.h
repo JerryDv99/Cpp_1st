@@ -34,7 +34,7 @@ Object* CreateEnemy(const float _x, const float _y);
 void UpdateInput(Object* _Object);
 
 
-void Initialize(Object* _Object, char* _Texture, float _PosX, float _PosY, int _PosZ)
+void Initialize(Object* _Object, char* _Texture, float _PosX, float _PosY, float _PosZ)
 {
 	// ** 3항 연산자
 	// _Texture의 값이 nullptr이면 SetName()함수 실행
@@ -47,10 +47,10 @@ void Initialize(Object* _Object, char* _Texture, float _PosX, float _PosY, int _
 	_Object->TransInfo.Position = Vector3(_PosX, _PosY, _PosZ);
 
 	// ** 회전값 (현재 사용 안함)
-	_Object->TransInfo.Rotation = Vector3(0, 0, 0);
+	_Object->TransInfo.Rotation = Vector3(0.0f, 0.0f, 0.0f);
 
 	// ** 크기값
-	_Object->TransInfo.Scale = Vector3(strlen(_Object->Info.Texture), 1, 0);
+	_Object->TransInfo.Scale = Vector3((float)strlen(_Object->Info.Texture), 1.0f, 0.0f);
 
 }
 
@@ -131,7 +131,7 @@ Object* CreateBullet(const float _x, const float _y)
 	Object* _Object = new Object;
 
 	// 안전을 위해 초기화 시 _x와 _y는 변경할 수 없는 상수로 받아옴
-	Initialize(_Object, (char*)"장풍!", _x + 2, _y);
+	Initialize(_Object, (char*)"==", _x + 2, _y);
 
 	return _Object;
 }
@@ -140,7 +140,7 @@ Object* CreateEnemy(const float _x, const float _y)
 {
 	Object* _Object = new Object;
 
-	Initialize(_Object, (char*)"홋", _x, _y);
+	Initialize(_Object, (char*)"-<=", _x, _y);
 
 	return _Object;
 }
