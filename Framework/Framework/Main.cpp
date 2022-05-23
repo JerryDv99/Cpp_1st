@@ -63,7 +63,7 @@ int main(void)
 	Temp->TransInfo.Position.y = 10;
 	Temp->TransInfo.Position.x = 80;
 
-	Temp->Info.Texture = (char*)"<-";
+	Temp->Info.Texture = (char*)"-=";
 
 	// 출력
 	while (true)
@@ -89,37 +89,44 @@ int main(void)
 				// ** 배경으로 사용될 텍스처의 색상을 랜덤으로 설정.
 				BackGround[i].Info.Color = rand() % 8 + 1;
 			}
-			int EnemyTime2 = 0;
+			
 			// Enemy 생성
 			if (EnemyTime + 1500 < GetTickCount64())
 			{
 				EnemyTime = GetTickCount64();
-
 				for (int i = 0; i < 32; ++i)
 				{
 					if (Enemy[i] == nullptr)
 					{
 						srand((GetTickCount() + i * i) * GetTickCount());
 						Enemy[i] = CreateEnemy(115, rand()%30);
-							
+
 						break;
 					}
 				}
 				// ** 수정할거
-				if (EnemyTime2 + 1000 < GetTickCount64())
+				int EnemyTime2 = 0;
+				int mcount = 0;
+				if (EnemyTime2 + 500 < GetTickCount64())
 				{
 					EnemyTime2 = GetTickCount64();
-					for (int i = 0; i < 128; ++i)
+					for (int i = 0; i < 32; ++i)
 					{
-						if (EBullet[i] == nullptr)
+
+						if (EBullet[mcount] == nullptr)
 						{
-							EBullet[i] = CreateBullet(
+							EBullet[mcount] = CreateBullet(
 								Enemy[i]->TransInfo.Position.x - 2,
 								Enemy[i]->TransInfo.Position.y);
+							mcount++;
+							if (mcount >= 127)
+								mcount = 0;
+
 							break;
 						}
 					}
 				}
+
 			}
 
 			for (int i = 0; i < 128; ++i)
