@@ -112,7 +112,6 @@ int main(void)
 					EnemyTime2 = GetTickCount64();
 					for (int i = 0; i < 32; ++i)
 					{
-
 						if (EBullet[mcount] == nullptr)
 						{
 							EBullet[mcount] = CreateBullet(
