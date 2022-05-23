@@ -3,7 +3,7 @@
 
 // Bullet이 몬스터와 충돌 시 Bullet 제거
 #include "Headers.h"
-
+// Space 미사일 여러개 만들기
 int main(void)
 {
 
@@ -11,10 +11,9 @@ int main(void)
 
 	// 배경 초기화
 	
-	DrawTextInfo BackGround[30];
+	DrawTextInfo BackGround[32];
 
-
-	for (int i = 0; i < 30; ++i)
+	for (int i = 0; i < 32; ++i)
 	{
 		// 랜덤값을 초기화 해줌, 큰 값이 나올 수 있도록 time값끼리 곱해줄 것이지만
 		// for문이 빠르게 돌게되면 time의 증가값보다 빠를 수 있기 때문에
@@ -58,12 +57,12 @@ int main(void)
 	Object* Bullet[128] = { nullptr };
 	Object* EBullet[128] = { nullptr };
 
-	Object* Temp = new Object;
+	Object* Temp = nullptr;
+	Vector3 Direction;
 
-	Temp->TransInfo.Position.y = 10;
-	Temp->TransInfo.Position.x = 80;
+	bool Check = false;
 
-	Temp->Info.Texture = (char*)"-=";
+	int Power = 0;
 
 	// 출력
 	while (true)
@@ -105,12 +104,20 @@ int main(void)
 					}
 				}
 				// ** 수정할거
-				int EnemyTime2 = 0;
-				int mcount = 0;
+
+			}
+
+			int EnemyTime2 = 0;
+			int mcount = 0;
+
+
+			/*for (int i = 0; i < 32; ++i)
+			{
+				
 				if (EnemyTime2 + 500 < GetTickCount64())
 				{
 					EnemyTime2 = GetTickCount64();
-					for (int i = 0; i < 32; ++i)
+					if (Enemy[i] != nullptr)
 					{
 						if (EBullet[mcount] == nullptr)
 						{
@@ -120,31 +127,33 @@ int main(void)
 							mcount++;
 							if (mcount >= 127)
 								mcount = 0;
-
-							break;
 						}
+						else
+						{
+							mcount++;
+						}
+						OnDrawText(i, 20.0f, 2.0f);
+						OnDrawText(mcount, 30.0f, 2.0f);
 					}
-				}
 
-			}
+				}
+			}*/
 
 			for (int i = 0; i < 128; ++i)
 			{
 				if (EBullet[i] != nullptr)
 				{
-					for (int j = 0; j < 32; ++j)
+					if (Collision(Player, EBullet[i]))
 					{
-						if (Collision(Player, EBullet[i]))
-						{
-							OnDrawText((char*)"으악",
-								Player->TransInfo.Position.x - 2,
-								Player->TransInfo.Position.y + 1, 10);
-						
-							delete EBullet[i];
-							EBullet[i] = nullptr;
-							break;
-						}
+						OnDrawText((char*)"으악",
+							Player->TransInfo.Position.x - 2,
+							Player->TransInfo.Position.y + 1, 10);
+					
+						delete EBullet[i];
+						EBullet[i] = nullptr;
+						break;
 					}
+					
 					if (EBullet[i] != nullptr)
 					{
 						if (EBullet[i]->TransInfo.Position.x <= 1)
@@ -156,32 +165,43 @@ int main(void)
 				}
 			}
 
-
+			// Bullet의 총 길이만큼 반복문으로 확인
 			for (int i = 0; i < 128; ++i)
 			{
+				// 현재 생산된 Bulet만 확인
 				if (Bullet[i] != nullptr)
 				{
+					// Enemy 전체 길이를 확인
 					for (int j = 0; j < 32; ++j)
 					{
+						// 현재 생성된 Enemy만 확인
 						if (Enemy[j] != nullptr)
 						{
+							// 위 루프까지 들어왔다면 Bullet과 Enemy는 현재 생산된 상태
+							// 서로 충돌 확인
 							if (Collision(Enemy[j], Bullet[i]))
 							{
+								// 충돌 발생시 둘 다 삭제
 								delete Enemy[j];
 								Enemy[j] = nullptr;
 
 								delete Bullet[i];
 								Bullet[i] = nullptr;
+
+								// 반복문 탈출
 								break;
 							}
 						}
 					}
+
+					// 생성된 Bullet 중에
 					if (Bullet[i] != nullptr)
 					{
+						// Bullet이 콘솔 화면 이탈 시 삭제
 						if (Bullet[i]->TransInfo.Position.x + Bullet[i]->TransInfo.Scale.x >= 120)
 						{
 							delete Bullet[i];
-							Bullet[i] = nullptr;	// 반복문 안에서 delete는 위험
+							Bullet[i] = nullptr;	// 보통 반복문 안에서의 delete는 위험
 						}
 					}
 				}
@@ -192,9 +212,54 @@ int main(void)
 		
 			UpdateInput(Player);
 
+			/***********************************************************
+			* 0x0000 이전에 눌린 적이 없고, 호출 시점에 눌리지 않은 상태
+			* 0x8000 이전에 눌린 적이 없고, 호출 시점에 눌린 상태
+			* 
+			* 0x0001 이전에 눌린 적이 있고, 호출 시점에 눌리지 않은 상태
+			* 0x8001 이전에 눌린 적이 있고, 호출 시점에 눌린 상태
+			************************************************************/
+
+
 			// 스페이스 키를 입력받음
+			// 버튼을 눌렀을때
+			if (!Check && GetAsyncKeyState(VK_SPACE) & 0x0001)
+			{
+				// 값 초기화
+				Power = 0;
+								
+				Check = true;
+			}
+			// 버튼을 누르고 잇을떄
+			if (GetAsyncKeyState(VK_SPACE) & 0x8000)
+			{
+				if(Power < 10)
+					Power++;					
+			}
+			// 버튼을 누르지 않은 상태
+			if (Check && !(GetAsyncKeyState(VK_SPACE) & 0x8000))
+			{
+				// 버튼을 놓았을 때 Temp 생성
+				Temp = new Object;
+
+				Temp->TransInfo.Position.x = 0;
+				Temp->TransInfo.Position.y = float(rand() % 30);
+
+				Temp->Info.Texture = (char*)">-";
+
+				Temp->Speed = Power;
+				
+				Direction = GetDirection(Player, Temp);
+
+				Check = false;
+			}
+
+			/*
 			if (GetAsyncKeyState(VK_SPACE))
 			{
+
+				// Temp가 Player를 추척하기 위해 방향을 받아옴
+				
 				for (int i = 0; i < 128; ++i)
 				{
 					if (Bullet[i] == nullptr)
@@ -206,6 +271,7 @@ int main(void)
 					}
 				}
 			}
+			*/
 
 			// Player 출력
 			OnDrawText(Player->Info.Texture,
@@ -213,34 +279,27 @@ int main(void)
 				Player->TransInfo.Position.y,
 				10);
 			
-			OnDrawText(Temp->Info.Texture,
-				Temp->TransInfo.Position.x,
-				Temp->TransInfo.Position.y,
-				12);
+			if (Temp)
+			{
+				OnDrawText(Temp->Info.Texture,
+					Temp->TransInfo.Position.x,
+					Temp->TransInfo.Position.y,
+					12);
 
-			// 3333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333
+				// 해당 방향으로 이동
+				Temp->TransInfo.Position.x += Direction.x * Temp->Speed;
+				//Temp->TransInfo.Position.y += Direction.y * Temp->Speed;
 
-			float x = Player->TransInfo.Position.x - Temp->TransInfo.Position.x;
-			float y = Player->TransInfo.Position.y - Temp->TransInfo.Position.y;
+				// 거리 출력
+				OnDrawText((char*)"Length : ", float(60 - strlen("Length : ")), 2.0f);
+				OnDrawText((int)GetDistance(Player, Temp), 60.0f, 2.0f);
 
-
-			// sqrt : 제곱근 함수
-			float Length = sqrt((x * x) + (y * y));
-
-			Vector3 Direction = Vector3(x / Length, y / Length);
-
-			Temp->TransInfo.Position.x += Direction.x;
-			Temp->TransInfo.Position.y += Direction.y;
-
-			OnDrawText((char*)"Length : ", float(60 - strlen("Length : ")), 2.0f);
-			OnDrawText((int)Length, 60.0f, 2.0f);
-
-
-		
-			
-
-
-
+				if (Temp->TransInfo.Position.x >= 118)
+				{
+					delete Temp;
+					Temp = nullptr;
+				}
+			}
 
 			for (int i = 0; i < 32; ++i)
 			{
@@ -296,7 +355,16 @@ int main(void)
 			OnDrawText((char*)"Score : ", float( 60 - strlen("Score : ")), 1.0f);
 			OnDrawText(++Score, 60.0f, 1.0f);
 
-
+			OnDrawText((char*)"[        ]", 1.0f, 28.0f);
+		
+			
+			for (int i = 0; i < Power; ++i)
+			{
+				OnDrawText((char*)"■", 2.0f + i, 28.0f);
+			}
+			
+			
+			
 		}
 	}
 
