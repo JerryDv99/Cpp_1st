@@ -33,6 +33,15 @@ Object* CreateEnemy(const float _x, const float _y);
 // 키 입력
 void UpdateInput(Object* _Object);
 
+// 거리 구하기 함수
+float GetDistance(const Object* _ObjectA, const Object* _ObjectB);
+
+// 방향 구하기 함수
+Vector3 GetDirection(const Object* _ObjectA, const Object* _ObjectB);
+
+
+
+
 
 void Initialize(Object* _Object, char* _Texture, float _PosX, float _PosY, float _PosZ)
 {
@@ -162,4 +171,24 @@ void UpdateInput(Object* _Object)
 	// ** [우] 키를 입력받음.
 	if (GetAsyncKeyState(VK_RIGHT))
 		_Object->TransInfo.Position.x += 1;
+}
+
+float GetDistance(const Object* _ObjectA, const Object* _ObjectB)
+{
+	float x = _ObjectA->TransInfo.Position.x - _ObjectB->TransInfo.Position.x;
+	float y = _ObjectA->TransInfo.Position.y - _ObjectB->TransInfo.Position.y;
+
+	// sqrt : 제곱근 함수
+	return sqrt((x * x) + (y * y)); 
+}
+
+Vector3 GetDirection(const Object* _ObjectA, const Object* _ObjectB)
+{
+	float x = _ObjectA->TransInfo.Position.x - _ObjectB->TransInfo.Position.x;
+	float y = _ObjectA->TransInfo.Position.y - _ObjectB->TransInfo.Position.y;
+
+
+	float Distance = sqrt((x * x) + (y * y));
+
+	return Vector3(x / Distance, y / Distance);
 }
