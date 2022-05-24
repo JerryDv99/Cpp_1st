@@ -57,7 +57,7 @@ int main(void)
 	Object* Bullet[128] = { nullptr };
 	Object* EBullet[128] = { nullptr };
 
-	Object* Temp = nullptr;
+	Object* Temp[128] = { nullptr };
 	Vector3 Direction;
 
 	bool Check = false;
@@ -220,7 +220,6 @@ int main(void)
 			* 0x8001 이전에 눌린 적이 있고, 호출 시점에 눌린 상태
 			************************************************************/
 
-
 			// 스페이스 키를 입력받음
 			// 버튼을 눌렀을때
 			if (!Check && GetAsyncKeyState(VK_SPACE) & 0x0001)
@@ -240,18 +239,30 @@ int main(void)
 			if (Check && !(GetAsyncKeyState(VK_SPACE) & 0x8000))
 			{
 				// 버튼을 놓았을 때 Temp 생성
-				Temp = new Object;
+				for (int i = 0; i < 128; i++)
+				{
+					if (Temp[i] == nullptr)
+					{
+						srand((GetTickCount() + i * i) * GetTickCount());
 
-				Temp->TransInfo.Position.x = 0;
-				Temp->TransInfo.Position.y = float(rand() % 30);
+						Temp[i] = new Object;
 
-				Temp->Info.Texture = (char*)">-";
+						Temp[i]->TransInfo.Position.x = 0;
+						Temp[i]->TransInfo.Position.y = float(rand() % 30);
 
-				Temp->Speed = Power;
+						Temp[i]->Info.Texture = (char*)">-";
+
+						Temp[i]->Speed = Power;
+
+						Direction = GetDirection(Player, Temp[i]);
+						
+						Check = false;
+						break;
+					}
+				}
 				
-				Direction = GetDirection(Player, Temp);
-
-				Check = false;
+				
+				
 			}
 
 			/*
@@ -279,25 +290,28 @@ int main(void)
 				Player->TransInfo.Position.y,
 				10);
 			
-			if (Temp)
+			for (int i = 0; i < 128; ++i)
 			{
-				OnDrawText(Temp->Info.Texture,
-					Temp->TransInfo.Position.x,
-					Temp->TransInfo.Position.y,
-					12);
-
-				// 해당 방향으로 이동
-				Temp->TransInfo.Position.x += Direction.x * Temp->Speed;
-				//Temp->TransInfo.Position.y += Direction.y * Temp->Speed;
-
-				// 거리 출력
-				OnDrawText((char*)"Length : ", float(60 - strlen("Length : ")), 2.0f);
-				OnDrawText((int)GetDistance(Player, Temp), 60.0f, 2.0f);
-
-				if (Temp->TransInfo.Position.x >= 118)
+				if (Temp[i] != nullptr)
 				{
-					delete Temp;
-					Temp = nullptr;
+					OnDrawText(Temp[i]->Info.Texture,
+						Temp[i]->TransInfo.Position.x,
+						Temp[i]->TransInfo.Position.y,
+						10);
+
+					// 해당 방향으로 이동
+					Temp[i]->TransInfo.Position.x += Direction.x * Temp[i]->Speed;
+					//Temp->TransInfo.Position.y += Direction.y * Temp->Speed;
+
+					// 거리 출력
+					OnDrawText((char*)"Length : ", float(60 - strlen("Length : ")), 2.0f);
+					OnDrawText((int)GetDistance(Player, Temp[i]), 60.0f, 2.0f);
+
+					if (Temp[i]->TransInfo.Position.x >= 117)
+					{
+						delete Temp[i];
+						Temp[i] = nullptr;
+					}				
 				}
 			}
 
@@ -355,12 +369,12 @@ int main(void)
 			OnDrawText((char*)"Score : ", float( 60 - strlen("Score : ")), 1.0f);
 			OnDrawText(++Score, 60.0f, 1.0f);
 
-			OnDrawText((char*)"[        ]", 1.0f, 28.0f);
+			OnDrawText((char*)"[                     ]", 1.0f, 28.0f);
 		
 			
 			for (int i = 0; i < Power; ++i)
 			{
-				OnDrawText((char*)"■", 2.0f + i, 28.0f);
+				OnDrawText((char*)"■", 2.0f + i * 2, 28.0f);
 			}
 			
 			
