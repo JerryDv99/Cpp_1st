@@ -36,6 +36,7 @@ struct Object
 	int Speed;
 	Information Info;
 	Transform TransInfo;
+	ULONGLONG ETime;
 };
 
 struct DrawTextInfo

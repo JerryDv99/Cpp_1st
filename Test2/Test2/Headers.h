@@ -6,7 +6,7 @@
 #include <string>
 #include <math.h>
 
-using namespace std;	
+using namespace std;
 
 #include "Struct.h"
 #include "Define.h"

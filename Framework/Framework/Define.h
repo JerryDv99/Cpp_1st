@@ -28,7 +28,7 @@ bool Collision(const Object* _ObjectA, const Object* _ObjectB);
 // Bullet 생성함수
 Object* CreateBullet(const float _x, const float _y);
 
-Object* CreateEnemy(const float _x, const float _y);
+Object* CreateEnemy(const float _x, const float _y, ULONGLONG _time);
 
 // 키 입력
 void UpdateInput(Object* _Object);
@@ -60,6 +60,8 @@ void Initialize(Object* _Object, char* _Texture, float _PosX, float _PosY, float
 
 	// ** 크기값
 	_Object->TransInfo.Scale = Vector3((float)strlen(_Object->Info.Texture), 1.0f, 0.0f);
+
+	_Object->ETime = 0;
 
 }
 
@@ -145,11 +147,13 @@ Object* CreateBullet(const float _x, const float _y)
 	return _Object;
 }
 
-Object* CreateEnemy(const float _x, const float _y)
+Object* CreateEnemy(const float _x, const float _y, ULONGLONG _time)
 {
 	Object* _Object = new Object;
 
 	Initialize(_Object, (char*)"-<=", _x, _y);
+
+	_Object->ETime = _time;
 
 	return _Object;
 }
