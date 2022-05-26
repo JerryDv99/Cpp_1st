@@ -28,11 +28,9 @@ bool ECollision(const Object* _Object, const Object* _Enemy);
 
 bool PCollision(const Object* _Object, const Object* _Player);
 
-void Explosion(const Object* _Object, const float _x, const float _y);
-
 void UpdateInput(Object* _Object);
 
-
+void ScorePP(const int _i);
 
 void Initialize(Object* _Object, float _PosX, float _PosY) 
 {
@@ -206,13 +204,6 @@ bool PCollision(const Object* _Object, const Object* _Player)
 	return false;
 }
 
-void Explosion(const Object* _Object, const float _x, const float _y)
-{
-	OnDrawText(_Object->Expl.Texture[0],_x - 2, _y, 12);
-	OnDrawText(_Object->Expl.Texture[1], _x - 2, _y - 1, 12);
-	OnDrawText(_Object->Expl.Texture[2],_x - 2,	_y - 2, 12);
-}
-
 void UpdateInput(Object* _Object)
 {
 	if (_Object->TransInfo.Position.y >= 20)
@@ -239,4 +230,10 @@ void UpdateInput(Object* _Object)
 			_Object->TransInfo.Position.x += 2;
 	}
 	
+}
+
+void ScorePP(const int _i)
+{
+	OnDrawText((char*)"+", 12.0f, 1.0f, 14);
+	OnDrawText(_i, 14.0f , 1.0f, 14);
 }

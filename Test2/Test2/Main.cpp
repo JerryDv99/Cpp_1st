@@ -30,7 +30,6 @@ int main(void)
 	Object* Player = new Object;
 	PInitialize(Player, 60.0f, 50.0f);
 
-	Object* Expl = new Object;
 	Player->Player.Name = (char*)"고길동";
 
 	Object* Enemy[64] = { nullptr };
@@ -39,10 +38,11 @@ int main(void)
 
 	ULONGLONG Time = GetTickCount64();
 	ULONGLONG EnemyTime = GetTickCount64();
-	ULONGLONG ExplTime = GetTickCount64();
 	ULONGLONG Cooling = GetTickCount64();
 	ULONGLONG ERR = GetTickCount64();
 	ULONGLONG Loaded = GetTickCount64();
+
+	int Score = 0;
 
 	bool Check = false;
 	bool OHeat = false;
@@ -66,13 +66,11 @@ int main(void)
 						srand((GetTickCount() + i * i) * GetTickCount());
 						Enemy[i] = CreateEnemy((rand() % 116 + 2), 6.0f, EnemyTime);
 						Enemy[i]->Enemy.ETime = GetTickCount64();
-						Enemy[i]->Enemy.Expl = false;
 
 						break;
 					}
 				}
 			}
-
 
 			// 이동
 			UpdateInput(Player);
@@ -150,9 +148,9 @@ int main(void)
 						if (Enemy[j] != nullptr)
 						{
 							if (ECollision(Bullet[i], Enemy[j]))
-							{							
-								Enemy[j]->Enemy.Expl = true;
-
+							{
+								ScorePP(500);
+								Score += 500;
 								delete Bullet[i];
 								Bullet[i] = nullptr;
 
@@ -239,19 +237,20 @@ int main(void)
 
 			for (int i = 0; i < 64; ++i)
 			{
+				float x = 0;
+				float y = 0;
 				if (Enemy[i])
 				{
+					x = Enemy[i]->TransInfo.Position.x;
+					y = Enemy[i]->TransInfo.Position.y;
 					OnDrawObj(Enemy[i], Enemy[i]->TransInfo.Position.x, Enemy[i]->TransInfo.Position.y);
-					if (Enemy[i]->Enemy.Expl = true)
-					{
-						if (ExplTime - GetTickCount64() < -1999)
-							Explosion(Expl, Enemy[i]->TransInfo.Position.x, Enemy[i]->TransInfo.Position.y);
-					}
+					
 				}
 			}
 			
 
 			OnDrawText((char*)"SCORE : ", 1.0f, 0.0f);
+			OnDrawText(Score, 9.0f, 0.0f);
 			OnDrawText((char*)"Heat Gauge : [                    ]", 84.0f, 0.0f);
 
 			OnDrawText((char*)"Missile : ", 101.0f, 1.0f);
