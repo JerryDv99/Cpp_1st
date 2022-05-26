@@ -18,12 +18,17 @@ void OnDrawText(const int _Value, const float _x, const float _y, const int _Col
 
 void HideCursor(const bool _Visible);
 
+Object* CreateEnemy(const float _x, const float _y, ULONGLONG _time);
+
+void EnemyMove(Object* _Enemy, ULONGLONG _etime);
+
 Object* CreateBullet(const float _x, const float _y);
 
 bool ECollision(const Object* _Object, const Object* _Enemy);
 
 bool PCollision(const Object* _Object, const Object* _Player);
 
+void Explosion(const Object* _Object, const float _x, const float _y);
 
 void UpdateInput(Object* _Object);
 
@@ -106,7 +111,7 @@ void OnDrawObj(Object* _Object, const float _x, const float _y)
 	
 	if (_Object->Player.Name != nullptr)
 	{
-		OnDrawText(_Object->Player.Texture[0], 
+		OnDrawText(_Object->Player.Texture[0],
 			_Object->TransInfo.Position.x,
 			_Object->TransInfo.Position.y,
 			_Object->Player.Color[0]);
@@ -124,7 +129,7 @@ void OnDrawObj(Object* _Object, const float _x, const float _y)
 			_Object->Player.Color[3]);
 
 	}
-	else
+	else if (_Object->Enemy.ETime != 0)
 	{
 		OnDrawText(_Object->Enemy.Texture[0],
 			_Object->TransInfo.Position.x,
@@ -157,6 +162,22 @@ void HideCursor(const bool _Visible)
 		GetStdHandle(STD_OUTPUT_HANDLE), &CursorInfo);
 }
 
+Object* CreateEnemy(const float _x, const float _y, ULONGLONG _time)
+{
+	Object* _Enemy = new Object;
+
+	PInitialize(_Enemy, _x, _y);
+
+	_Enemy->Enemy.ETime = _time;
+
+	return _Enemy;
+}
+
+void EnemyMove(Object* _Enemy, ULONGLONG _etime)
+{
+	//if()
+}
+
 Object* CreateBullet(const float _x, const float _y)
 {
 	Object* _Object = new Object;
@@ -165,6 +186,7 @@ Object* CreateBullet(const float _x, const float _y)
 
 	return _Object;
 }
+
 bool ECollision(const Object* _Object, const Object* _Enemy)
 {
 	if (_Object->TransInfo.Position.y <= _Enemy->TransInfo.Position.y &&
@@ -182,6 +204,13 @@ bool PCollision(const Object* _Object, const Object* _Player)
 		_Object->TransInfo.Position.x == _Player->TransInfo.Position.x)
 		return true;
 	return false;
+}
+
+void Explosion(const Object* _Object, const float _x, const float _y)
+{
+	OnDrawText(_Object->Expl.Texture[0],_x - 2, _y, 12);
+	OnDrawText(_Object->Expl.Texture[1], _x - 2, _y - 1, 12);
+	OnDrawText(_Object->Expl.Texture[2],_x - 2,	_y - 2, 12);
 }
 
 void UpdateInput(Object* _Object)

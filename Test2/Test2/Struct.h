@@ -31,6 +31,7 @@ struct Enemy
 	char* Texture[4] = { (char*)"¥´", (char*)"¢Ø¡Ô¢Ö", (char*)"¡Õ£Õ¡Õ", (char*)"¡«¡«¡«" };
 	int Color[4] = { 4, 12, 12, 12 };
 	ULONGLONG ETime;
+	bool Expl = false;
 };
 
 struct Bullet
@@ -40,12 +41,13 @@ struct Bullet
 
 struct Missile
 {
-	char* Texture = (char*)"¥Ä";
+	char* Texture = (char*)"¥Ë";
+	ULONGLONG MTime;
 };
 
-struct Explosion
+struct Expl
 {
-	char* Texture[3] = { (char*)"!BOOM!", (char*)"SCORE+", (char*)" 500 !" };
+	char* Texture[3] = { (char*)" 500 !", (char*)"SCORE+", (char*)"!BOOM!" };
 	int Color = 4;		
 };
 
@@ -55,6 +57,7 @@ struct Object
 	Enemy Enemy;
 	Bullet Bullet;
 	Missile Missile;
-	Explosion Expl;
+	Expl Expl;
 	Transform TransInfo;
+	int Speed;
 };

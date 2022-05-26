@@ -102,7 +102,7 @@ int main(void)
 				{
 					if (Enemy[i] == nullptr)
 					{
-						srand((GetTickCount() + i * i) * GetTickCount());
+							
 						Enemy[i] = CreateEnemy(115, rand()%30, EnemyTime);
 						Enemy[i]->ETime = GetTickCount();
 
@@ -228,7 +228,7 @@ int main(void)
 					}
 				}
 			}
-			
+				
 			//if (Collision(Player, Enemy))
 				//OnDrawText((char*)"충돌 입니다.", Enemy->TransInfo.Position.x, Enemy->TransInfo.Position.y - 1, 12);
 		
@@ -238,7 +238,7 @@ int main(void)
 			* 0x0000 이전에 눌린 적이 없고, 호출 시점에 눌리지 않은 상태
 			* 0x8000 이전에 눌린 적이 없고, 호출 시점에 눌린 상태
 			* 
-			* 0x0001 이전에 눌린 적이 있고, 호출 시점에 눌리지 않은 상태
+			*		 이전에 눌린 적이 있고, 호출 시점에 눌리지 않은 상태
 			* 0x8001 이전에 눌린 적이 있고, 호출 시점에 눌린 상태
 			************************************************************/
 
