@@ -457,7 +457,7 @@ int main(void)
 				if (Power >= 10.0f)
 				{
 					
-					OnDrawText((char*)"[ O V E R H I T !  ! ]", 1.0f, 28.0f, 12);
+					OnDrawText((char*)"[ O V E R H E A T ! ]", 1.0f, 28.0f, 12);
 					OHeat = true;
 					if (Err + 5000 < GetTickCount64())
 					{
