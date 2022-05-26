@@ -33,9 +33,28 @@ struct Enemy
 	ULONGLONG ETime;
 };
 
+struct Bullet
+{
+	char* Texture = (char*)"бл";
+};
+
+struct Missile
+{
+	char* Texture = (char*)"е─";
+};
+
+struct Explosion
+{
+	char* Texture[3] = { (char*)"!BOOM!", (char*)"SCORE+", (char*)" 500 !" };
+	int Color = 4;		
+};
+
 struct Object
 {
 	Player Player;
 	Enemy Enemy;
+	Bullet Bullet;
+	Missile Missile;
+	Explosion Expl;
 	Transform TransInfo;
 };

@@ -63,7 +63,7 @@ int main(void)
 	Vector3 Direction;
 	
 	bool Check = false;
-	bool OHit = false;
+	bool OHeat = false;
 	float Power = 0.0f;
 
 	// 출력
@@ -244,7 +244,7 @@ int main(void)
 
 			// 스페이스 키를 입력받음
 			// 버튼을 눌렀을때
-			if (OHit == false)
+			if (OHeat == false)
 			{
 				
 				if (!Check && GetAsyncKeyState(VK_SPACE) & 0x0001)
@@ -458,11 +458,11 @@ int main(void)
 				{
 					
 					OnDrawText((char*)"[ O V E R H I T !  ! ]", 1.0f, 28.0f, 12);
-					OHit = true;
+					OHeat = true;
 					if (Err + 5000 < GetTickCount64())
 					{
 						Err = GetTickCount64();
-						OHit = false;
+						OHeat = false;
 						Power = 0.0f;
 					}
 					
