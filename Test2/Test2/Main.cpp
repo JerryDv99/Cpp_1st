@@ -29,11 +29,12 @@ int main(void)
 
 	Object* Player = new Object;
 	PInitialize(Player, 60.0f, 50.0f);
-
-	Player->Player.Name = (char*)"고길동";
+	Player->HP = 5;
+	Player->Player.Name = (char*)"고길동";	// 이후 setname
 
 	Object* Enemy[64] = { nullptr };
 	Object* Bullet[256] = { nullptr };
+	Object* EBullet[128] = { nullptr };
 	Object* Missile[8] = { nullptr };
 
 	ULONGLONG Time = GetTickCount64();
@@ -48,7 +49,7 @@ int main(void)
 	bool OHeat = false;
 	bool Load = false;
 
-	float Heat = 0.2f;
+	float Heat = 0.0f;
 
 	while (true)
 	{
@@ -64,7 +65,7 @@ int main(void)
 					if (Enemy[i] == nullptr)
 					{
 						srand((GetTickCount() + i * i) * GetTickCount());
-						Enemy[i] = CreateEnemy((rand() % 116 + 2), 6.0f, EnemyTime);
+						Enemy[i] = CreateEnemy((rand() % 114 + 2), 6.0f, EnemyTime);
 						Enemy[i]->Enemy.ETime = GetTickCount64();
 
 						break;
@@ -72,6 +73,33 @@ int main(void)
 				}
 			}
 
+			for (int i = 0; i < 64; ++i)
+			{
+				if (Enemy[i] != nullptr)
+				{
+					srand((GetTickCount() + i * i) * GetTickCount());
+					if (Enemy[i]->Enemy.ETime + (rand() % 500 + 500) < GetTickCount64())
+					{
+						Enemy[i]->Enemy.ETime = GetTickCount64();
+						for (int j = 0; j < 128; ++j)
+						{
+							if (EBullet[j] == nullptr)
+							{
+								EBullet[j] = CreateBullet(
+									Enemy[i]->TransInfo.Position.x,
+									Enemy[i]->TransInfo.Position.y + 1);
+
+								break;
+							}
+
+						}
+					}
+				}
+			}
+
+			for (int i = 0; i < 128; ++i)
+			{
+			}
 			// 이동
 			UpdateInput(Player);
 
@@ -85,7 +113,7 @@ int main(void)
 				if (GetAsyncKeyState(VK_SPACE) & 0x8000)
 				{
 					if (Heat < 10)
-						Heat += 0.1f;
+						Heat += 0.25f;
 					for (int i = 0; i < 128; ++i)
 					{
 						if (Bullet[i] == nullptr)
@@ -131,6 +159,7 @@ int main(void)
 								Player->TransInfo.Position.y - 1);
 							Missile[i]->Missile.MTime = GetTickCount64();
 							Missile[i]->Speed = 0;
+							Missile[i]->HP = 5;
 							Loaded = GetTickCount64();
 							break;
 						}
@@ -149,13 +178,14 @@ int main(void)
 						{
 							if (ECollision(Bullet[i], Enemy[j]))
 							{
-								ScorePP(500);
+								ScoreP(500);
 								Score += 500;
-								delete Bullet[i];
-								Bullet[i] = nullptr;
 
 								delete Enemy[j];
 								Enemy[j] = nullptr;
+
+								delete Bullet[i];
+								Bullet[i] = nullptr;								
 
 								break;																					
 							}
@@ -171,20 +201,104 @@ int main(void)
 					}					
 				}
 			}
+
 			// 플레이어 미사일 삭제
 			for (int i = 0; i < 8; ++i)
 			{
 				if (Missile[i] != nullptr)
 				{
-					if (Missile[i]->TransInfo.Position.y <= 0)
+					for (int j = 0; j < 64; ++j)
 					{
-						delete Missile[i];
-						Missile[i] = nullptr;
+						if (Enemy[j] != nullptr)
+						{
+							if (ECollision(Missile[i], Enemy[j]))
+							{
+								ScoreP(1000);
+								Score += 1000;
+								
+								if (Missile[i]->HP > 1)
+								{
+									Missile[i]->HP -= 1;
+								}
+
+								else if (Missile[i]->HP == 1)
+								{
+									delete Missile[i];
+									Missile[i] = nullptr;
+								}
+								
+
+								delete Enemy[j];
+								Enemy[j] = nullptr;
+
+								break;
+							}
+						}
+					}					
+					if (Missile[i] != nullptr)
+					{
+						if (Missile[i]->TransInfo.Position.y <= 0)
+						{
+							delete Missile[i];
+							Missile[i] = nullptr;
+						}
+					}
+					
+				}
+			}
+
+			for (int i = 0; i < 128; ++i)
+			{
+				if (EBullet[i] != nullptr)
+				{
+					for (int j = 0; j < 8; ++j)
+					{
+						if (Missile[j] != nullptr)
+						{
+							if (ECollision(Missile[j], EBullet[i]))
+							{
+								if (Missile[j]->HP > 1)
+								{
+									Missile[j]->HP -= 1;
+								}
+
+								else if (Missile[j]->HP == 1)
+								{
+									delete Missile[j];
+									Missile[j] = nullptr;
+								}
+
+								delete EBullet[i];
+								EBullet[i] = nullptr;
+
+								break;
+							}
+						}
+					}					
+				}
+
+				if (EBullet[i] != nullptr)
+				{
+					if (PCollision(EBullet[i], Player))
+					{
+						Player->HP--;
+
+						delete EBullet[i];
+						EBullet[i] = nullptr;
+					}
+				}
+
+				if (EBullet[i] != nullptr)
+				{
+					if (EBullet[i]->TransInfo.Position.y >= 60)
+					{
+						delete EBullet[i];
+						EBullet[i] = nullptr;
 					}
 				}
 			}
 			// 플레이어 뷸렛 생성
-			for (int i = 0; i < 128; ++i)
+			for (int i = 0; i < 256; ++i)
 			{
 				if (Bullet[i])
 				{
@@ -196,6 +310,17 @@ int main(void)
 				}
 			}
 
+			for (int i = 0; i < 128; ++i)
+			{
+				if (EBullet[i])
+				{
+					OnDrawText(EBullet[i]->Bullet.Texture,
+						EBullet[i]->TransInfo.Position.x,
+						EBullet[i]->TransInfo.Position.y, 12);
+
+					EBullet[i]->TransInfo.Position.y += 1.0;
+				}
+			}
 			// 미사일 출력
 			for (int i = 0; i < 8; ++i)
 			{
@@ -227,7 +352,8 @@ int main(void)
 					OnDrawText(2, 113.0f, 1.0f, 14);
 				else if (Loaded - GetTickCount64() >= - 4999)
 					OnDrawText(1, 113.0f, 1.0f, 14);
-				else if (Loaded - GetTickCount64() == - 5000)
+				else if (Loaded - GetTickCount64() <= - 5000 &&
+					Loaded - GetTickCount64() >= - 5049)
 					Load = true;			
 			}
 			if (Loaded - GetTickCount64() <= -5000)
@@ -237,12 +363,9 @@ int main(void)
 
 			for (int i = 0; i < 64; ++i)
 			{
-				float x = 0;
-				float y = 0;
+				
 				if (Enemy[i])
-				{
-					x = Enemy[i]->TransInfo.Position.x;
-					y = Enemy[i]->TransInfo.Position.y;
+				{				
 					OnDrawObj(Enemy[i], Enemy[i]->TransInfo.Position.x, Enemy[i]->TransInfo.Position.y);
 					
 				}
@@ -250,11 +373,10 @@ int main(void)
 			
 
 			OnDrawText((char*)"SCORE : ", 1.0f, 0.0f);
-			OnDrawText(Score, 9.0f, 0.0f);
+			OnDrawText(Score, 9.0f, 0.0f, 14);
 			OnDrawText((char*)"Heat Gauge : [                    ]", 84.0f, 0.0f);
 
 			OnDrawText((char*)"Missile : ", 101.0f, 1.0f);
-
 			// 오버히트
 			for (int i = 0; i < Heat; ++i)
 			{
@@ -264,12 +386,12 @@ int main(void)
 
 				if (9.9f >= Heat && Heat >= 8.0f)
 					OnDrawText((char*)"■", 98.0f + i * 2, 0.0f, 12);
-				if (Heat >= 10.0f)
+				if (Heat >= 10.0f && Heat <= 11.0f)
 				{
 					OHeat = true;
 					OnDrawText((char*)"[ O V E R H E A T ! !]", 97.0f, 0.0f, 12);
 					
-					if (ERR + 5000 < GetTickCount64())
+					if (ERR + 3000 < GetTickCount64())
 					{
 						ERR = GetTickCount64();
 						OHeat = false;
@@ -279,11 +401,21 @@ int main(void)
 				}
 			}
 			
+			OnDrawText((char*)"HP : ", 48.0f, 0.0f, 10);
+			for (int i = 0; i > Player->HP; --i)
+			{
+				OnDrawText((char*)"♥", 54.0f + i * 2, 0.0f, 10);
+				if (i <= 3)
+					OnDrawText((char*)"♥", 54.0f + i * 2, 0.0f, 14);
+				if (i == 1)
+					OnDrawText((char*)"♥", 54.0f + i * 2, 0.0f, 12);
+				//if (i <= 0)
+
+			}
 
 		}
 		
 	}
-
 
 	return 0;
 }

@@ -30,7 +30,7 @@ bool PCollision(const Object* _Object, const Object* _Player);
 
 void UpdateInput(Object* _Object);
 
-void ScorePP(const int _i);
+void ScoreP(const int _i);
 
 void Initialize(Object* _Object, float _PosX, float _PosY) 
 {
@@ -232,7 +232,7 @@ void UpdateInput(Object* _Object)
 	
 }
 
-void ScorePP(const int _i)
+void ScoreP(const int _i)
 {
 	OnDrawText((char*)"+", 12.0f, 1.0f, 14);
 	OnDrawText(_i, 14.0f , 1.0f, 14);

@@ -52,4 +52,5 @@ struct Object
 	Missile Missile;
 	Transform TransInfo;
 	int Speed;
+	int HP;
 };

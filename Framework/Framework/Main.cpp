@@ -138,29 +138,6 @@ int main(void)
 				}
 			}
 
-			/*for (int i = 0; i < 128; ++i)
-			{
-				if (EBullet[i] == nullptr)
-				{
-					for (int j = 0; j < 32; ++j)
-					{
-						if (Enemy[j] != nullptr)
-						{	
-
-							EBullet[i] = CreateBullet(
-								Enemy[j]->TransInfo.Position.x - 2,
-								Enemy[j]->TransInfo.Position.y);
-
-							OnDrawText(i, 20.0f, 2.0f);
-							OnDrawText(j, 30.0f, 2.0f);
-							break;
-							
-						}
-					}
-				}break;
-			}*/
-			
-
 			for (int i = 0; i < 128; ++i)
 			{
 				if (EBullet[i] != nullptr)
