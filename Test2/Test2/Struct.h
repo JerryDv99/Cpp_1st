@@ -54,3 +54,10 @@ struct Object
 	int Speed;
 	int HP;
 };
+
+struct BackGround
+{
+	char* Texture;
+	int Color;
+	Transform TransInfo;
+};

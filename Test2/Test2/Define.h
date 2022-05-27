@@ -12,6 +12,10 @@ void SetCursorPosition(const float _x, const float _y);
 
 void SetTextColor(const int _Color);
 
+BackGround* CreateBackGround(const int _rand);
+
+void OnDrawBG(BackGround* _BG);
+
 void OnDrawText(const char* _str, const float _x, const float _y, const int _Color = 15);
 
 void OnDrawText(const int _Value, const float _x, const float _y, const int _Color = 15);
@@ -20,7 +24,11 @@ void HideCursor(const bool _Visible);
 
 Object* CreateEnemy(const float _x, const float _y, ULONGLONG _time);
 
-void EnemyMove(Object* _Enemy, ULONGLONG _etime);
+void EnemyMove(Object* _Enemy, Vector3 _Direction, int _x);
+
+float GetDistance(const Object* _ObjectA, const Object* _ObjectB);
+
+Vector3 GetDirection(const Object* _ObjectA, const Object* _ObjectB);
 
 Object* CreateBullet(const float _x, const float _y);
 
@@ -84,6 +92,26 @@ char* SetName()
 void SetTextColor(const int _Color)
 {
 	SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), _Color);
+}
+
+BackGround* CreateBackGround(const int _rand)
+{
+	BackGround* _BG = new BackGround;
+	_BG->Texture = (char*)"*";
+
+	_BG->TransInfo.Position.x = _rand % 120;
+	_BG->TransInfo.Position.y = 1;
+	_BG->Color = _rand % 9 + 5;
+
+	return _BG;
+}
+
+void OnDrawBG(BackGround* _BG)
+{
+	OnDrawText(_BG->Texture,
+		_BG->TransInfo.Position.x,
+		_BG->TransInfo.Position.y,
+		_BG->Color);
 }
 
 void OnDrawText(const char* _str, const float _x, const float _y, const int _Color)
@@ -171,9 +199,52 @@ Object* CreateEnemy(const float _x, const float _y, ULONGLONG _time)
 	return _Enemy;
 }
 
-void EnemyMove(Object* _Enemy, ULONGLONG _etime)
+void EnemyMove(Object* _Enemy, Vector3 _Direction , int _x)
 {
-	//if()
+	switch(_x)
+	{
+	case 1:
+		if (_Enemy->TransInfo.Position.x > 4)
+			_Enemy->TransInfo.Position.x--;
+	case 2:
+		if (_Enemy->TransInfo.Position.x < 116)
+			_Enemy->TransInfo.Position.x++;
+	case 3:
+		if (_Enemy->TransInfo.Position.y < 56)
+			_Enemy->TransInfo.Position.y++;
+	case 4:
+		if (_Enemy->TransInfo.Position.y > 40)
+			_Enemy->TransInfo.Position.y--;
+	case 5:
+		if (_Enemy->TransInfo.Position.x > 4 &&
+			_Enemy->TransInfo.Position.x < 116 &&
+			_Enemy->TransInfo.Position.y < 56 &&
+			_Enemy->TransInfo.Position.y > 40)
+		{
+			_Enemy->TransInfo.Position.x += _Direction.x;
+			_Enemy->TransInfo.Position.y += _Direction.y;			
+		}
+			
+	}
+		
+}
+
+float GetDistance(const Object* _ObjectA, const Object* _ObjectB)
+{
+	float x = _ObjectA->TransInfo.Position.x - _ObjectB->TransInfo.Position.x;
+	float y = _ObjectA->TransInfo.Position.y - _ObjectB->TransInfo.Position.y;
+
+	return sqrt((x * x) + (y * y));
+}
+
+Vector3 GetDirection(const Object* _ObjectA, const Object* _ObjectB)
+{
+	float x = _ObjectA->TransInfo.Position.x - _ObjectB->TransInfo.Position.x;
+	float y = _ObjectA->TransInfo.Position.y - _ObjectB->TransInfo.Position.y;
+
+	float Distance = sqrt((x * x) + (y * y));
+
+	return Vector3(x / Distance, y / Distance);
 }
 
 Object* CreateBullet(const float _x, const float _y)
@@ -189,8 +260,8 @@ bool ECollision(const Object* _Object, const Object* _Enemy)
 {
 	if (_Object->TransInfo.Position.y <= _Enemy->TransInfo.Position.y &&
 		_Object->TransInfo.Position.y >= (_Enemy->TransInfo.Position.y - 2) &&
-		_Object->TransInfo.Position.x >= (_Enemy->TransInfo.Position.x - 2) &&
-		_Object->TransInfo.Position.x <= (_Enemy->TransInfo.Position.x + 2))
+		_Object->TransInfo.Position.x >= (_Enemy->TransInfo.Position.x - 3) &&
+		_Object->TransInfo.Position.x <= (_Enemy->TransInfo.Position.x + 3))
 		return true;
 	return false;
 }

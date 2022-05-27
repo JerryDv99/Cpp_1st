@@ -1,6 +1,8 @@
 #include "Headers.h"
 // v 0.1 플레이어, 에너미 만듬
 // v 0.2 뷸렛 생성, 오버 히트
+// v 0.3 미사일, 충돌 관리
+// v 0.4 HP, 스코어, 배경
 
 /*
 1. 파랑
@@ -37,26 +39,57 @@ int main(void)
 	Object* EBullet[128] = { nullptr };
 	Object* Missile[8] = { nullptr };
 
+	BackGround* BackGround[64] = { nullptr };
+
+	Vector3 Direction;
+
 	ULONGLONG Time = GetTickCount64();
+	ULONGLONG BG = GetTickCount64();
+	ULONGLONG GameTime = GetTickCount64();
+	ULONGLONG R1Time = GetTickCount64();
 	ULONGLONG EnemyTime = GetTickCount64();
 	ULONGLONG Cooling = GetTickCount64();
 	ULONGLONG ERR = GetTickCount64();
 	ULONGLONG Loaded = GetTickCount64();
 
 	int Score = 0;
+	int Kill = 0;
+	int ECount = 0;
+	int Life = 1;	// 재도전 기회
+	int T;
 
+	bool Story = false;
 	bool Check = false;
 	bool OHeat = false;
 	bool Load = false;
 
-	float Heat = 0.0f;
+	float Heat = 0.0f;	
 
-	while (true)
+	while (R1Time + 60000 > GetTickCount64())
 	{
 		if (Time + 500 < GetTickCount64())
 		{
 			system("cls");
 
+			// 배경
+			if (BG + 200 < GetTickCount64())
+			{
+				BG = GetTickCount64();
+
+				for (int i = 0; i < 64; ++i)
+				{
+					if (BackGround[i] == nullptr)
+					{
+						srand((GetTickCount64() + i * i) * GetTickCount64());
+						BackGround[i] = CreateBackGround(rand());
+
+						break;
+					}
+				}		
+			}
+			
+
+			// 에너미 생성
 			if (EnemyTime + 1000 < GetTickCount64())
 			{
 				EnemyTime = GetTickCount64();
@@ -73,6 +106,7 @@ int main(void)
 				}
 			}
 
+			// 에너미 뷸렛 생성
 			for (int i = 0; i < 64; ++i)
 			{
 				if (Enemy[i] != nullptr)
@@ -96,12 +130,13 @@ int main(void)
 					}
 				}
 			}
-
+		
 			for (int i = 0; i < 128; ++i)
 			{
 			}
 			// 이동
-			UpdateInput(Player);
+			if(!Story)
+				UpdateInput(Player);
 
 			// 스페이스바 뷸렛
 			if (!OHeat)
@@ -159,7 +194,7 @@ int main(void)
 								Player->TransInfo.Position.y - 1);
 							Missile[i]->Missile.MTime = GetTickCount64();
 							Missile[i]->Speed = 0;
-							Missile[i]->HP = 5;
+							Missile[i]->HP = 2;
 							Loaded = GetTickCount64();
 							break;
 						}
@@ -167,7 +202,7 @@ int main(void)
 				}
 			}
 			
-			// 플레이어 뷸렛 삭제
+			// 플레이어 뷸렛 / 에너미 충돌
 			for (int i = 0; i < 128; ++i)
 			{
 				if (Bullet[i] != nullptr)
@@ -179,6 +214,7 @@ int main(void)
 							if (ECollision(Bullet[i], Enemy[j]))
 							{
 								ScoreP(500);
+								Kill++;
 								Score += 500;
 
 								delete Enemy[j];
@@ -202,7 +238,7 @@ int main(void)
 				}
 			}
 
-			// 플레이어 미사일 삭제
+			// 에너미 / 미사일 충돌
 			for (int i = 0; i < 8; ++i)
 			{
 				if (Missile[i] != nullptr)
@@ -213,9 +249,10 @@ int main(void)
 						{
 							if (ECollision(Missile[i], Enemy[j]))
 							{
-								ScoreP(1000);
-								Score += 1000;
-								
+								ScoreP(2000);
+								Score += 2000;
+								Kill++;
+
 								if (Missile[i]->HP > 1)
 								{
 									Missile[i]->HP -= 1;
@@ -247,6 +284,7 @@ int main(void)
 				}
 			}
 
+			// 에너미 뷸렛 / 미사일 충돌
 			for (int i = 0; i < 128; ++i)
 			{
 				if (EBullet[i] != nullptr)
@@ -256,18 +294,7 @@ int main(void)
 						if (Missile[j] != nullptr)
 						{
 							if (ECollision(Missile[j], EBullet[i]))
-							{
-								if (Missile[j]->HP > 1)
-								{
-									Missile[j]->HP -= 1;
-								}
-
-								else if (Missile[j]->HP == 1)
-								{
-									delete Missile[j];
-									Missile[j] = nullptr;
-								}
-
+							{						
 								delete EBullet[i];
 								EBullet[i] = nullptr;
 
@@ -297,7 +324,39 @@ int main(void)
 					}
 				}
 			}
-			// 플레이어 뷸렛 생성
+
+			// Enemy 20 이상일 때 fail
+			/*for (int i = 0; i < 64; ++i)
+			{
+				if (Enemy[i] != nullptr)
+				{
+					ECount++;
+					if (ECount >= 20)
+					{
+						ECount = 0;
+						// 게임 엔드
+					}
+				}
+			}*/
+
+			// 배경 출력
+			for (int i = 0; i < 64; ++i)
+			{
+				if (BackGround[i])
+				{
+					OnDrawBG(BackGround[i]);
+
+					BackGround[i]->TransInfo.Position.y += 1;
+					if (BackGround[i]->TransInfo.Position.y >= 60)
+					{
+						delete BackGround[i];
+						BackGround[i] = nullptr;
+
+						break;
+					}
+				}
+			}
+			// 플레이어 뷸렛 출력
 			for (int i = 0; i < 256; ++i)
 			{
 				if (Bullet[i])
@@ -310,6 +369,7 @@ int main(void)
 				}
 			}
 
+			// 에너미 뷸렛
 			for (int i = 0; i < 128; ++i)
 			{
 				if (EBullet[i])
@@ -321,6 +381,7 @@ int main(void)
 					EBullet[i]->TransInfo.Position.y += 1.0;
 				}
 			}
+
 			// 미사일 출력
 			for (int i = 0; i < 8; ++i)
 			{
@@ -333,7 +394,7 @@ int main(void)
 					if (Missile[i]->Missile.MTime + 500 < GetTickCount64())
 					{
 						Missile[i]->Missile.MTime = GetTickCount64();
-						Missile[i]->Speed += 1;
+						Missile[i]->Speed += 1.5;
 					}
 					Missile[i]->TransInfo.Position.y -= Missile[i]->Speed;
 				}				
@@ -361,22 +422,30 @@ int main(void)
 
 			OnDrawObj(Player, Player->TransInfo.Position.x, Player->TransInfo.Position.y);
 
+			// 에너미 무빙
 			for (int i = 0; i < 64; ++i)
 			{
 				
 				if (Enemy[i])
 				{				
 					OnDrawObj(Enemy[i], Enemy[i]->TransInfo.Position.x, Enemy[i]->TransInfo.Position.y);
-					
+					Direction = GetDirection(Player, Enemy[i]);
+					if (Enemy[i]->Enemy.ETime + (rand() % 500 + 500) < GetTickCount64())
+					{
+						Enemy[i]->Enemy.ETime = GetTickCount64();
+						EnemyMove(Enemy[i], Direction, rand() % 5);
+					}					
 				}
 			}
 			
 
 			OnDrawText((char*)"SCORE : ", 1.0f, 0.0f);
 			OnDrawText(Score, 9.0f, 0.0f, 14);
-			OnDrawText((char*)"Heat Gauge : [                    ]", 84.0f, 0.0f);
 
 			OnDrawText((char*)"Missile : ", 101.0f, 1.0f);
+
+			OnDrawText((char*)"Heat Gauge : [                    ]", 84.0f, 0.0f);
+					
 			// 오버히트
 			for (int i = 0; i < Heat; ++i)
 			{
@@ -386,7 +455,7 @@ int main(void)
 
 				if (9.9f >= Heat && Heat >= 8.0f)
 					OnDrawText((char*)"■", 98.0f + i * 2, 0.0f, 12);
-				if (Heat >= 10.0f && Heat <= 11.0f)
+				if (Heat >= 10.0f && Heat <= 12.0f)
 				{
 					OHeat = true;
 					OnDrawText((char*)"[ O V E R H E A T ! !]", 97.0f, 0.0f, 12);
@@ -401,17 +470,26 @@ int main(void)
 				}
 			}
 			
-			OnDrawText((char*)"HP : ", 48.0f, 0.0f, 10);
-			for (int i = 0; i > Player->HP; --i)
+			// HP 바
+			OnDrawText((char*)"HP : ", 50.0f, 0.0f, 10);
+			for (int i = 1; i <= Player->HP; ++i)
 			{
 				OnDrawText((char*)"♥", 54.0f + i * 2, 0.0f, 10);
-				if (i <= 3)
+				if ( Player->HP <= 3)
 					OnDrawText((char*)"♥", 54.0f + i * 2, 0.0f, 14);
-				if (i == 1)
+				if (Player->HP == 1)
 					OnDrawText((char*)"♥", 54.0f + i * 2, 0.0f, 12);
 				//if (i <= 0)
-
+				// 게임 엔드
 			}
+
+			OnDrawText((char*)"남은 시간 : ", 50.0f, 1.0f, 14);
+			for (T = 0; T < (R1Time + 60000 - GetTickCount64()) / 1000; ++T)
+			{
+				if (T >= (R1Time + 60000 - GetTickCount64()) / 1000)
+					T = 0;
+			}
+			OnDrawText(T, 64.0f, 1.0f, 14);		
 
 		}
 		
