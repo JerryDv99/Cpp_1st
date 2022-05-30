@@ -6,6 +6,8 @@ void PInitialize(Object* _Player, float _PosX = 0, float _PosY = 0, float _PosZ 
 
 void EInitialize(Object* _Enemy, float _PosX = 0, float _PosY = 0, float _PosZ = 0);
 
+void ItemInit(Object* _Item, int _rand);
+
 char* SetName();
 
 void SetCursorPosition(const float _x, const float _y);
@@ -40,6 +42,15 @@ void UpdateInput(Object* _Object);
 
 void ScoreP(const int _i);
 
+Object* CreateItem(const int _rand);
+
+void Warning(const int _x, const int _y);
+
+
+
+
+
+
 void Initialize(Object* _Object, float _PosX, float _PosY) 
 {
 	_Object->TransInfo.Position = Vector3(_PosX, _PosY);
@@ -68,6 +79,26 @@ void EInitialize(Object* _Enemy, float _PosX , float _PosY, float _PosZ)
 
 	_Enemy->Enemy.ETime = 0;
 }  
+
+void ItemInit(Object* _Item, int _rand)
+{
+	if (_rand % 2 == 0)
+	{
+		_Item->Item.Option = 1;
+		_Item->Item.Texture[0] = (char*)" x2 ";
+		_Item->Item.Texture[1] = (char*)"¡«¡«";
+	}
+	if (_rand % 2 == 1)
+	{
+		_Item->Item.Option = 2;
+		_Item->Item.Texture[0] = (char*)" +1 ";
+		_Item->Item.Texture[1] = (char*)" HP ";
+	}
+
+	_Item->TransInfo.Position = Vector3((_rand % 30 * 2) + 20 , 1.0f);
+	_Item->TransInfo.Rotation = Vector3(0.0f, 0.0f);
+	_Item->TransInfo.Scale = Vector3((float)strlen(_Item->Item.Texture[0]), 2.0f);
+}
 
 void SetCursorPosition(const float _x, const float _y)
 {
@@ -155,6 +186,17 @@ void OnDrawObj(Object* _Object, const float _x, const float _y)
 			_Object->Player.Color[3]);
 
 	}
+	else if (_Object->Item.Option == 1 || _Object->Item.Option == 2)
+	{
+		OnDrawText(_Object->Item.Texture[0],
+			_Object->TransInfo.Position.x - 2,
+			_Object->TransInfo.Position.y,
+			_Object->Item.Color);
+		OnDrawText(_Object->Item.Texture[1],
+			_Object->TransInfo.Position.x - 2,
+			_Object->TransInfo.Position.y - 1,
+			_Object->Item.Color);
+	}
 	else if (_Object->Enemy.ETime != 0)
 	{
 		OnDrawText(_Object->Enemy.Texture[0],
@@ -174,7 +216,7 @@ void OnDrawObj(Object* _Object, const float _x, const float _y)
 			_Object->TransInfo.Position.y - 3,
 			_Object->Enemy.Color[3]);
 
-	}
+	}	
 }
 
 void HideCursor(const bool _Visible)
@@ -269,7 +311,7 @@ bool ECollision(const Object* _Object, const Object* _Enemy)
 bool PCollision(const Object* _Object, const Object* _Player)
 {
 	if (_Object->TransInfo.Position.y >= _Player->TransInfo.Position.y &&
-		_Object->TransInfo.Position.y <= (_Player->TransInfo.Position.y + 2) && 
+		_Object->TransInfo.Position.y <= (_Player->TransInfo.Position.y + 3) && 
 		_Object->TransInfo.Position.x == _Player->TransInfo.Position.x)
 		return true;
 	return false;
@@ -307,4 +349,47 @@ void ScoreP(const int _i)
 {
 	OnDrawText((char*)"+", 12.0f, 1.0f, 14);
 	OnDrawText(_i, 14.0f , 1.0f, 14);
+}
+
+Object* CreateItem(const int _rand)
+{
+	Object* _Item = new Object;
+
+	ItemInit(_Item, _rand);
+
+	return _Item;
+}
+
+// °íÄ¡±â
+void Warning(const int _x, const int _y)
+{
+	for (int i = 0; i + _y < 60; ++i)
+	{
+		switch ((i + 9) % 9)
+		{
+		case 0:
+			OnDrawText((char*)"/", _x, _y + i, 12);
+		case 1:
+			OnDrawText((char*)"W", _x, _y + i, 12);
+		case 2:
+			OnDrawText((char*)"A", _x, _y + i, 12);
+		case 3:
+			OnDrawText((char*)"R", _x, _y + i, 12);
+		case 4:
+			OnDrawText((char*)"N", _x, _y + i, 12);
+		case 5:
+			OnDrawText((char*)"I", _x, _y + i, 12);
+		case 6:
+			OnDrawText((char*)"N", _x, _y + i, 12);
+		case 7:
+			OnDrawText((char*)"G", _x, _y + i, 12);
+		case 8:
+			OnDrawText((char*)"!", _x, _y + i, 12);		
+		}
+	}
+}
+
+void BossScene()
+{
+
 }
