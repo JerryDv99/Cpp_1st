@@ -1,7 +1,7 @@
 #include "Headers.h"
-// v 0.1 플레이어, 에너미 만듬
+// v 0.1 플레이어, 에너미
 // v 0.2 뷸렛 생성, 오버 히트
-// v 0.3 미사일, 충돌 관리
+// v 0.3 미사일, 충돌
 // v 0.4 HP, 스코어, 배경
 // v 0.5 아이템 드랍
 
@@ -536,6 +536,7 @@ int main(void)
 				}
 			}
 			
+			Warning(10, 2);
 
 			OnDrawText((char*)"SCORE : ", 1.0f, 0.0f);
 			OnDrawText(Score, 9.0f, 0.0f, 14);

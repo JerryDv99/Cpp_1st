@@ -46,7 +46,7 @@ Object* CreateItem(const int _rand);
 
 void Warning(const int _x, const int _y);
 
-
+void BossScene();
 
 
 
@@ -215,7 +215,6 @@ void OnDrawObj(Object* _Object, const float _x, const float _y)
 			_Object->TransInfo.Position.x - 2,
 			_Object->TransInfo.Position.y - 3,
 			_Object->Enemy.Color[3]);
-
 	}	
 }
 
@@ -365,31 +364,59 @@ void Warning(const int _x, const int _y)
 {
 	for (int i = 0; i + _y < 60; ++i)
 	{
-		switch ((i + 9) % 9)
+		switch (i % 9)
 		{
 		case 0:
 			OnDrawText((char*)"/", _x, _y + i, 12);
+			break;
 		case 1:
 			OnDrawText((char*)"W", _x, _y + i, 12);
+			break;
 		case 2:
 			OnDrawText((char*)"A", _x, _y + i, 12);
+			break;
 		case 3:
 			OnDrawText((char*)"R", _x, _y + i, 12);
+			break;
 		case 4:
 			OnDrawText((char*)"N", _x, _y + i, 12);
+			break;
 		case 5:
 			OnDrawText((char*)"I", _x, _y + i, 12);
+			break;
 		case 6:
 			OnDrawText((char*)"N", _x, _y + i, 12);
+			break;
 		case 7:
 			OnDrawText((char*)"G", _x, _y + i, 12);
+			break;
 		case 8:
-			OnDrawText((char*)"!", _x, _y + i, 12);		
+			OnDrawText((char*)"!", _x, _y + i, 12);
+			break;
 		}
 	}
 }
 
 void BossScene()
 {
-
+	float Width = 6.0f;
+	float Height = 0.0f;
+	OnDrawText((char*)"MMMMFVVVVFVVIMMMMMMMMMMNMNNMNNMMMFFNNNNNMVVVVV**VV*V*VV*IFFVVVVVVVFIMMMMMIFIMMMIFFFIIIIVVVVFVVVVVVV*****VMNN", Width, Height);
+	OnDrawText((char*)"MMM::.:.::.:::::.:::..:****:::..:****:::**VVVVV*V**V:*F*VFV***VFF*::::*::*:::::*****:::**::*********:****MMM", Width, Height + 1);
+	OnDrawText((char*)"MMM::*********::::::.:::***:::..:**:::*:VVVV**VV*.:VVFV**FV***VFII:..::**::::******:::::::**:***********VMMM", Width, Height + 2);
+	OnDrawText((char*)" MMMVM*::**::*****::::::*****:..::***:**VFVV**VV**::VV**VIFV**VFII**:****::::*******:::*******:******NNVMNM ", Width, Height + 3);
+	OnDrawText((char*)"  VV  NN************:******V**:::********VV**VVVV*******VMF**VVVIV********:::*VVV**************VVFFIIM  VV  ", Width, Height + 4);
+	OnDrawText((char*)"        NMMMFVVVV***::******************VIVVVFVFVV******FMIVVVVVIM:.*V*******V*********VVVFIIIMMMNNN        ", Width, Height + 5);
+	OnDrawText((char*)"          VV  NNNM*VVVVVVV**************VFFVVFFFVV******VIFVVIVFII**VV********VVVVFVVVVV:MNNNN  VV          ", Width, Height + 6);
+	OnDrawText((char*)"                  VFNNMFIMIIVVVVVV**VVV**VFVVVVFFV*VVVFVVIFFVVVFMI*VVVVVVVFVV*VMIIMFIN M*N                  ", Width, Height + 7);
+	OnDrawText((char*)"                  VV  NVFVVI*:MMMIIVVFFV*VMFVVVFFVVVVFVFVVFFVVVFMVVFFFVIMMMMM*VIVVFVIN  VV                  ", Width, Height + 8);
+	OnDrawText((char*)"                      NVVVVFFM VV MFIFVVVFIVVFIII**VVVVVV**IIFVVFVFFVVMFMN VV NMV*FVVN                      ", Width, Height + 9);
+	OnDrawText((char*)"                      NVVVVVIN    M*VVVFN   IFVVV***VVVV***VVFFN   NV*FVIN    MM*VFVVN                      ", Width, Height + 10);
+	OnDrawText((char*)"                      NFVVVVIN    M*VVVFN   VVVVVV**V::V**VVVMVV   NVVIVVN    NMVVVFVN                      ", Width, Height + 11);
+	OnDrawText((char*)"                       VVVVVV     M*VFVFN     MVVVV**::**VVVMM     NVVVVFN     VVVVVV                       ", Width, Height + 12);
+	OnDrawText((char*)"                        VVVV       VVVVV       MFVVN****NVFNM       VVVVV       VVVV                        ", Width, Height + 13);
+	OnDrawText((char*)"                                    VVV         MIVVV**VVVIM         VVV                                    ", Width, Height + 14);
+	OnDrawText((char*)"                                                 NMVVVVVIMN                                                 ", Width, Height + 15);
+	OnDrawText((char*)"                                                   MFVVIM                                                   ", Width, Height + 16);
+	OnDrawText((char*)"                                                    NNNN                                                    ", Width, Height + 17);
 }
