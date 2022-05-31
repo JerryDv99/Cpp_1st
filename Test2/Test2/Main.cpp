@@ -31,22 +31,41 @@ int main(void)
 
 	system("mode con:cols=120 lines=60");
 
+	const int Scene_Logo = 0;
+	const int Scene_Main = 1;
+	const int Scene_Story1 = 2;
+	const int Scene_Stage1 = 3;
+	const int Scene_Story2 = 4;
+	const int Scene_Boss = 5;
+	const int Scene_Story3 = 6;
+	const int Scene_Ending = 7;
+
+	int SceneState = 0;
+	// 다시 메인으로
+
 	Object* Player = new Object;
 	PInitialize(Player, 60.0f, 50.0f);
 	Player->HP = 5;
 	Player->Player.Name = (char*)"123";	// 이후 setname
+	Logo* logo = new Logo;
+
 
 	Object* Enemy[64] = { nullptr };
 	Object* Bullet[256] = { nullptr };
 	Object* EBullet[128] = { nullptr };
 	Object* Missile[8] = { nullptr };
 	Object* Item[2] = { nullptr };
+	Object* Ally[6] = { nullptr };
+
+	
 
 	BackGround* BackGround[64] = { nullptr };
 
 	Vector3 Direction;
 
 	ULONGLONG Time = GetTickCount64();
+	ULONGLONG Logo = GetTickCount64();
+	ULONGLONG Loading = GetTickCount64();
 	ULONGLONG BG = GetTickCount64();
 	ULONGLONG GameTime = GetTickCount64();
 	ULONGLONG R1Time = GetTickCount64();
@@ -56,6 +75,7 @@ int main(void)
 	ULONGLONG Loaded = GetTickCount64();
 	ULONGLONG DropItem = GetTickCount64();
 	ULONGLONG BuffTime = GetTickCount64();
+	
 
 	int Score = 0;
 	int Kill = 0;
@@ -69,8 +89,26 @@ int main(void)
 	bool Load = false;
 	bool Buff = false;
 
-	float Heat = 0.0f;	
+	float Heat = 0.0f;
+	
+	//int ScoreBoard[8] = { 0 };
+	char Initial[8][4] = { 0 };
 
+	ScoreBoard();
+	switch(SceneState)
+	{
+	case Scene_Logo:
+		LogoScene(logo, Logo, Loading);
+		SceneState++;
+	/*case Scene_Main:
+	case Scene_Story1:
+	case Scene_Stage1:
+	case Scene_Story2:
+	case Scene_Boss:
+	case Scene_Story3:
+	case Scene_Ending:*/
+	}
+	
 	while (R1Time + 60000 > GetTickCount64())
 	{
 		if (Time + 1000 < GetTickCount64())
@@ -92,8 +130,7 @@ int main(void)
 						break;
 					}
 				}		
-			}
-			
+			}				
 
 			// 에너미 생성
 			if (EnemyTime + 1000 < GetTickCount64())
@@ -518,8 +555,8 @@ int main(void)
 			if (Loaded - GetTickCount64() <= -5000)
 				OnDrawText((char*)"Loaded", 111.0f, 1.0f, 10);
 
-			OnDrawObj(Player, Player->TransInfo.Position.x, Player->TransInfo.Position.y);
-
+			OnDrawObj(Player, Player->TransInfo.Position.x, Player->TransInfo.Position.y);			
+			
 			// 에너미 무빙
 			for (int i = 0; i < 64; ++i)
 			{
@@ -534,10 +571,8 @@ int main(void)
 						EnemyMove(Enemy[i], Direction, rand() % 5);
 					}					
 				}
-			}
-			
-			Warning(10, 2);
-
+			}			
+		
 			OnDrawText((char*)"SCORE : ", 1.0f, 0.0f);
 			OnDrawText(Score, 9.0f, 0.0f, 14);
 
@@ -599,6 +634,21 @@ int main(void)
 		}
 		
 	}
-
+	for (int i = 0; i < 6; ++i)
+	{
+		if (Ally[i] == nullptr)
+		{
+			if (i < 3)
+				Ally[i] = CreateAlly(14.0f + 15 * i, 50.0f, i);
+			else if (i >= 3)
+				Ally[i] = CreateAlly(30 + 15 * i, 50.0f, i);
+			break;
+		}
+	}
+	for (int i = 0; i < 6; ++i)
+	{
+		if (Ally[i])
+			OnDrawObj(Ally[i], Ally[i]->TransInfo.Position.x, Ally[i]->TransInfo.Position.y);
+	}
 	return 0;
 }

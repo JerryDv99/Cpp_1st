@@ -101,3 +101,47 @@ struct BackGround
 //	int Color = 12;
 //	Transform TransInfo;
 //};
+
+struct Logo
+{
+	char* Texture[40] = { (char*)"                                                                                               MVV * M                 ",
+						(char*)"                                                                                             NVV*FN                     ",
+						(char*)"                                                                                            FVV*M                       ",
+						(char*)"                                                     NMMIIFIMMNN                          MVV**N                        ",
+						(char*)"                                                    NVVVVVVVVV*****VFMN                 NFVV*V                          ",
+						(char*)"                                                    IVVFVVVVVVV**:::**VVFM            NFVV**M                           ",
+						(char*)"                                                    FVVVVVVVVVVVVV*::VVVVFM         NIVV*:*N                            ",
+						(char*)"                                                    FFVVVVVVVVVVVVVVVFVFN          MVVV*:*                              ",
+						(char*)"                                                   NVVVV****VVVV****VIIFMN       IVVV*::*                               ",
+						(char*)"                                                  FV****VVVVVVVVVVVVFIIIFFIMNNMIVVVV***VVFN                             ",
+						(char*)"                                                  V*:VVVFFFFIIFFFFFFVVVVVFMMFVVVVVVVVVVVVFN                             ",
+						(char*)"                                                  F**VFFFFIMMMIFFVVVVVFIMMMV::VVVVVVVVVFM                               ",
+						(char*)"                                                  IFIIIIFVVFIFFVV***VIMMIIN*:*VVVVVVVVFN                                ",
+						(char*)"                                                 IFIIIFVVVVVFVVVVVVFVVVVVVV**VVVVVVFVVFN    NMMIIMN                     ",
+						(char*)"                                               MIVVVV****VVVFVVVVVVVVVVVVVVVVVFIIVVV*VVVVMMV**::::*M                    ",
+						(char*)"                                            NMIFV*****VVVVFIFVVVVVVVVVVVVVVVIMFVVVVVVVVFV******::::VN                   ",
+						(char*)"                                          NMMMMFV**VVVVFMMMMIVVVVVVVVVVVVFIMIFVVVVVVVVV*:::***VV:::*N                   ",
+						(char*)"                                         NMMNMMVFFIIMMMMMMIFVMFVVVVV*VVVV*VVVV*::**VVVVV*:VFIVVVVV*V   NFVVVN           ",
+						(char*)"                                        NMNNNMMIMMMMMMMMMFVVFMFVIIVVV***VVVVVVVVVVFVVFFFIFFFVVV***VVVF*::::::VM         ",
+						(char*)"                                       MMMMMFVV***IMMMMMVVVVMMIVV**:::.::VVVVVVVVVV*VFMMIVVVVVV*::*VVVV*:::::::*M       ",
+						(char*)"                                     NMFFF***:::*VMMMIVVVVVFVV*::::..:::*VVVVVVVVVVVVVVVVVVVVVVV***VVVVVV**::::::V      ",
+						(char*)"                                  NMFVV**:*:::**IMIVVVVVFFVV*:::::::.:*VFVVVVVVVVVVVVVVVVVVVVVVVV*:VVVVVVVVV**::::VN    ",
+						(char*)"                                NIFV**:..::V*VFFVVVVVVVVFFVVVVV**:::::VIVVVVVVVVVVVVVVVVVVVVVVV*::*VVVVVVVVVVVV**VVVM   ",
+						(char*)"                              NIVV*:...:**VFVV*VVVVVVVFIIMMMIFFVVVV**VVVVVVVVVVVVVVVVVVVVVVV*:::*VVVVVVVVVVVVVVVVVVVVIN ",
+						(char*)"                            MFVVV:...:*VVV***VVVVVVVVIMMMMMMMMMMMIV*VVVVVVVVVV******:::::***:**VVVVVVVVVVVVVVVVVVVVVVVVN",
+						(char*)"                          MVV**:**:*VVV****VVVVVVVVIMMIIMMMMMMMIV**VVVVVVVVVFFFFVVVVV**V:..:**VVVVV**V*VVVVVVVVVVVVVVVFN",
+						(char*)"                       NNIV**:.:*VVV****VVVVVVVVVFFIIIIIIIIIIF***V***VVIMNN         NIMIFVVVVMN    NNMMIIIFVVVVVVVVVFN  ",
+						(char*)"                     NMIVV*:**VV*****VVVVVVFFFVFFFFVVVVVVVVVVVVIMMNN               MMIMMMMM                             ",
+						(char*)"                  NNMMF*VIIFVV*:**VVVVVVVFFFVVVIMMMMMMMMMMMIM                    NMIIMMIMN                              ",
+						(char*)"                NMMMMMMIFV*::**VVVVVFFFFIMN MMMMMMIMMMIMMMN                      MM                                     ",
+						(char*)"             NMMMMMMIFV*::**VVVVFFVVIMM       NIFIMNMMN                                                                 ",
+						(char*)"           NMMMMMMFV*::**VVVVVVVVVIN          NN                                                                        ",
+						(char*)"         MMMMMMIV*::**VVVFFFFFIMN                                                                                       ",
+						(char*)"       MMMMMMV****VVVVFFFFIMN                                                                                           ",
+						(char*)"     MMMMMIV***VVVVFFFIMMN                                                                                              ",
+						(char*)"   NVVMIFV**VVVVVFFFIMN                                                                                                 ",
+						(char*)"  M*::**VVVVVFFIFFIN                                                                                                    ",
+						(char*)"NV:....*VVFIIINNN                                                                                                       ",
+						(char*)"M*::*::*VIMNN                                                                                                           ",
+						(char*)" MMMVNMIN                                                                                                               " };
+};																																										  

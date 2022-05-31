@@ -24,9 +24,17 @@ void OnDrawText(const int _Value, const float _x, const float _y, const int _Col
 
 void HideCursor(const bool _Visible);
 
+void LogoScene(Logo* _logo, ULONGLONG _t, ULONGLONG _load);
+
+void MainScene();
+
+void ScoreBoard();
+
 Object* CreateEnemy(const float _x, const float _y, ULONGLONG _time);
 
 void EnemyMove(Object* _Enemy, Vector3 _Direction, int _x);
+
+Object* CreateAlly(const float _x, const float _y, const int _i);
 
 float GetDistance(const Object* _ObjectA, const Object* _ObjectB);
 
@@ -229,6 +237,97 @@ void HideCursor(const bool _Visible)
 		GetStdHandle(STD_OUTPUT_HANDLE), &CursorInfo);
 }
 
+void LogoScene(Logo* _logo,ULONGLONG _t, ULONGLONG _load)
+{
+	int count = 0;
+	for (int i = 0; i < 40; ++i)
+	{
+		OnDrawText(_logo->Texture[i], 0, 0 + i);
+	}
+
+	
+	while (_t + 2500 > GetTickCount64())
+	{
+		if (_load + 50 < GetTickCount64())
+		{
+			_load = GetTickCount64();
+			for (int i = 0; count < 40; ++i)
+			{
+				OnDrawText("〧", 20.0f + count * 2, 56, 10);
+				count++;
+
+				break;
+			}
+		}
+	}
+	
+}
+
+ 
+
+ 
+                                        
+
+void MainScene()
+{
+
+}
+
+//void ScoreBoard(int _arr[], char* _name[][4])
+void ScoreBoard()
+{
+	system("cls");
+
+	int Width = 60 - strlen("灰天天天天天天天天天天天天天天天天天天天天天天天天天天天天天天天天天天天天天天天天天天天天天天汐") / 2;
+	int Height = 7;
+	OnDrawText((char*)".-. .-. .-. .-. .-. .-. .-. .-. .-. .-.", 40.0f, 2.0f, 14);
+	OnDrawText((char*)"`-. |   | | |(  |-  |(  | | |-| |(  |  )", 40.0f, 3.0f, 14);
+	OnDrawText((char*)"`-' `-' `-' ' ' `-' `-' `-' ` ' ' ' `-'", 40.0f, 4.0f, 14);
+	
+	OnDrawText((char*)"灰天天天天天天天天天天天天天天天天天天天天天天天天天天天天天天天天天天天天天天天天天天天天天天汐", Width, Height, 15);
+	OnDrawText((char*)"太                     .                                                                     太", Width, Height + 1, 15);
+	OnDrawText((char*)"太                    '|                                                                     太", Width, Height + 2, 15);
+	OnDrawText((char*)"太                    '-'                                                                    太", Width, Height + 3, 15);
+	OnDrawText((char*)"太                   天天天天天天天天天天天天天天天天天天天天天天天天天天                    太", Width, Height + 4, 15);
+	OnDrawText((char*)"太                    ,-.                                                                    太", Width, Height + 5, 15);
+	OnDrawText((char*)"太                     /                                                                     太", Width, Height + 6, 15);
+	OnDrawText((char*)"太                    '--                                                                    太", Width, Height + 7, 15);
+	OnDrawText((char*)"太                   天天天天天天天天天天天天天天天天天天天天天天天天天天                    太", Width, Height + 8, 15);
+	OnDrawText((char*)"太                    --.                                                                    太", Width, Height + 9, 15);
+	OnDrawText((char*)"太                    --|                                                                    太", Width, Height + 10, 15);
+	OnDrawText((char*)"太                    --'                                                                    太", Width, Height + 11, 15);
+	OnDrawText((char*)"太                   天天天天天天天天天天天天天天天天天天天天天天天天天天                    太", Width, Height + 12, 15);
+	OnDrawText((char*)"太                     ,.                                                                    太", Width, Height + 13, 15);
+	OnDrawText((char*)"太                    '-|                                                                    太", Width, Height + 14, 15);
+	OnDrawText((char*)"太                      '                                                                    太", Width, Height + 15, 15);
+	OnDrawText((char*)"太                   天天天天天天天天天天天天天天天天天天天天天天天天天天                    太", Width, Height + 16, 15);
+	OnDrawText((char*)"太                     .--                                                                    太", Width, Height + 17, 15);
+	OnDrawText((char*)"太                     '-.                                                                    太", Width, Height + 18, 15);
+	OnDrawText((char*)"太                     `-'                                                                    太", Width, Height + 19, 15);
+	OnDrawText((char*)"太                   天天天天天天天天天天天天天天天天天天天天天天天天天天                    太", Width, Height + 20, 15);
+	OnDrawText((char*)"太                      ,-                                                                   太", Width, Height + 21, 15);
+	OnDrawText((char*)"太                     :-.                                                                   太", Width, Height + 22, 15);
+	OnDrawText((char*)"太                     `-'                                                                   太", Width, Height + 23, 15);
+	OnDrawText((char*)"太                   天天天天天天天天天天天天天天天天天天天天天天天天天天                    太", Width, Height + 24, 15);
+	OnDrawText((char*)"太                     --,                                                                   太", Width, Height + 25, 15);
+	OnDrawText((char*)"太                      /                                                                    太", Width, Height + 26, 15);
+	OnDrawText((char*)"太                     '                                                                     太", Width, Height + 27, 15);
+	OnDrawText((char*)"太                   天天天天天天天天天天天天天天天天天天天天天天天天天天                    太", Width, Height + 28, 15);
+	OnDrawText((char*)"太                     ,-.                                                                   太", Width, Height + 29, 15);
+	OnDrawText((char*)"太                     :-:                                                                   太", Width, Height + 30, 15);
+	OnDrawText((char*)"太                     `-'                                                                   太", Width, Height + 31, 15);
+	OnDrawText((char*)"汍天天天天天天天天天天天天天天天天天天天天天天天天天天天天天天天天天天天天天天天天天天天天天天污", Width, Height + 32, 15);
+	Sleep(10000);
+
+	
+                                      
+             
+             
+             
+                                      
+
+}
+
 Object* CreateEnemy(const float _x, const float _y, ULONGLONG _time)
 {
 	Object* _Enemy = new Object;
@@ -268,6 +367,17 @@ void EnemyMove(Object* _Enemy, Vector3 _Direction , int _x)
 			
 	}
 		
+}
+
+Object* CreateAlly(const float _x, const float _y, const int _i)
+{
+	Object* _Ally = new Object;
+
+	PInitialize(_Ally, _x, _y);
+
+	_Ally->Player.Name = (char*)"a";
+
+	return _Ally;
 }
 
 float GetDistance(const Object* _ObjectA, const Object* _ObjectB)
