@@ -17,6 +17,12 @@ struct Transform
 	Vector3 Scale;
 };
 
+struct Icon
+{
+	char* Texture = (char*)"=>-";
+	Transform TransInfo;
+};
+
 struct Player
 {
 	char* Name = { nullptr };
@@ -53,6 +59,7 @@ struct Item
 
 struct Object
 {
+	Icon Icon;
 	Player Player;
 	Enemy Enemy;
 	Bullet Bullet;
@@ -69,7 +76,6 @@ struct BackGround
 	int Color;
 	Transform TransInfo;
 };
-
 
 //struct Boss
 //{

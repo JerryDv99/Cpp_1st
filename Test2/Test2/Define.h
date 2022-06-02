@@ -26,9 +26,9 @@ void HideCursor(const bool _Visible);
 
 void LogoScene(Logo* _logo, ULONGLONG _t, ULONGLONG _load);
 
-void MainScene();
+void MainScene(Object* _icon, int _arr[], char _name[][4]);
 
-void ScoreBoard();
+void ScoreBoard(int _arr[], char _name[][4]);
 
 Object* CreateEnemy(const float _x, const float _y, ULONGLONG _time);
 
@@ -144,6 +144,8 @@ BackGround* CreateBackGround(const int _rand)
 
 	return _BG;
 }
+
+
 
 void OnDrawBG(BackGround* _BG)
 {
@@ -261,61 +263,237 @@ void LogoScene(Logo* _logo,ULONGLONG _t, ULONGLONG _load)
 		}
 	}
 	
-}
+}                                
 
- 
 
- 
-                                        
+bool RCheck = false;
+bool LCheck = false;
+bool Main = true;
 
-void MainScene()
-{
-
-}
-
-void ScoreBoard(int _arr[], char* _name[][4])
+void MainScene(Object* _icon, int _arr[], char _name[][4])
 {
 	system("cls");
+
+	int Width = 12;
+	int Height = 7;
+
+	OnDrawText((char*)"                                             *N*                                                ", Width, Height ,9);
+	OnDrawText((char*)"                                             MNN*                                               ", Width, Height + 1,9);
+	OnDrawText((char*)"                                            *NNNF                                               ", Width, Height + 2,9);
+	OnDrawText((char*)"                                            VNNNN*                                              ", Width, Height + 3,9);
+	OnDrawText((char*)"                                            MNNNNV                                              ", Width, Height + 4,9);
+	OnDrawText((char*)"                                           *NFVFNF                                              ", Width, Height + 5,9);
+	OnDrawText((char*)"                                           *N   VM                                              ", Width, Height + 6,9);
+	OnDrawText((char*)"                                           *N***VN                                              ", Width, Height + 7,9);
+	OnDrawText((char*)"                                           *N   *N                                              ", Width, Height + 8,9);
+	OnDrawText((char*)"                                           *N   VN                                              ", Width, Height + 9,9);
+	OnDrawText((char*)"                                           *N***VN                                              ", Width, Height + 10,9);
+	OnDrawText((char*)"                                           *N   VN                                              ", Width, Height + 11,9);
+	OnDrawText((char*)"                                        IMVVN   *NVMM*                                          ", Width, Height + 12,9);
+	OnDrawText((char*)"                                       *NNNNN   *$NNNV                                          ", Width, Height + 13,9);
+	OnDrawText((char*)"                                     *INNNNNN***INNNNNN*                                        ", Width, Height + 14,9);
+	OnDrawText((char*)"                                    VNNNNNNNNNNNNNNNNNNNV                                       ", Width, Height + 15,9);
+	OnDrawText((char*)"                                   VNNNNNNNNNNNNNNNNNNNNNM*                                     ", Width, Height + 16,9);
+	OnDrawText((char*)"                                  *INNNNNNNNNNNNNNNNNNNNNMV                                     ", Width, Height + 17,9);
+	OnDrawText((char*)"                                    VVVVVVVVINNNMFVVVVVVV*                                      ", Width, Height + 18,9);
+	OnDrawText((char*)"FNMMMMMMMMMMMMMMMMMMMM                        VV                        MMMMMMMMMMMMMMMMMMMMMMM*", Width, Height + 19,9);
+	OnDrawText((char*)" *VVVVVVVVVVVVVVVVVVVV                                                   VVVVVVVVVVVVVVVVVVVVV* ", Width, Height + 20,12);
+	OnDrawText((char*)"  *INNNNNNNNNNNNNNNNNM                                                   VNNNNNNNNNNNNNNNNNMV   ", Width, Height + 21,12);
+	OnDrawText((char*)"    *VFFFFFFFFFFFFFFFV                                                   VFFFFFFFFFFFFFFFFV     ", Width, Height + 22,12);
+	OnDrawText((char*)"     *FMMIMMIIIIIMMMMI                                                   VMIIIMMMMMIIIIIIV      ", Width, Height + 23,12);
+	OnDrawText((char*)"       *FFFFFFFFFFFFFF                                                   VFFFFFFFFFFFFIV        ", Width, Height + 24,12);
+	OnDrawText((char*)"        *VFFFFVVVVFVFV                                                   VFFFFFFFFVFFV*         ", Width, Height + 25,12);
+	OnDrawText((char*)"          VM$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$N*M*F$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$I*          ", Width, Height + 26,9);
+	OnDrawText((char*)"            ****************VVVVVVVVVVVV*VVVVMNI*VV***VVVVVVVVVVVV******************            ", Width, Height + 27,9);
+	OnDrawText((char*)"                          *MNNNNNNNNNINNFVVFNNNNNMVVFNNIMNNNNNNNNM*                             ", Width, Height + 28,9);
+	OnDrawText((char*)"                          NNNNNNNNNF VNNNNM*IMINN*MNNNNV *MNNNNNNNN*                            ", Width, Height + 29,9);
+	OnDrawText((char*)"                         FNNNNNNNI* VNNNNN**V*VVVVVNNNNNV  INNNNNNNN*                           ", Width, Height + 30,9);
+	OnDrawText((char*)"                        FNNNNNNM*  VNNNNNF *FNNNMV*INNNNNM* *MNNNNNNN                           ", Width, Height + 31,9);
+	OnDrawText((char*)"                       VNNNNNNV  VNNNNNNNMNNNNNNNNNMNNNNNNNF  *INNNNNI                          ", Width, Height + 32,9);
+	OnDrawText((char*)"                       VNNNNF* *MNNNNNNNNNNNNNNNNNNNNNNNNNNNM*  VNNNNV                          ", Width, Height + 33,9);
+	OnDrawText((char*)"                        VNI*  *NNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNI* *FNN                           ", Width, Height + 34,9);
+	OnDrawText((char*)"                         V  *FNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNN*  **                           ", Width, Height + 35,9);
+	OnDrawText((char*)"                           FNNNNNNNNNI*VMVVVNNNNNMVVMFVFNNNNNNNNNI                              ", Width, Height + 36,9);
+	OnDrawText((char*)"                           MNNNNNNMIV*  V    V$F    V   VIMNNNNNNM*                             ", Width, Height + 37,9);
+	OnDrawText((char*)"                            *VV**       *    *V*    *       ***VV                               ", Width, Height + 38,9);
+
+	OnDrawText((char*)"MMMMMN  VNNMF  VMMNNIV  ", Width + 22, Height + 19, 9);
+	OnDrawText((char*)"VINNV  MNV VN$ VNM  INF ", Width + 22, Height + 20, 9);
+	OnDrawText((char*)" V$N   N$  *N$ FNI  FNI ", Width + 22, Height + 21, 9);
+	OnDrawText((char*)" V$N   N$  *N$ VNNMMNI* ", Width + 22, Height + 22, 9);
+	OnDrawText((char*)" V$N   N$  *N$ VNM      ", Width + 22, Height + 23, 9);
+	OnDrawText((char*)" V$N   FNVVFNM VNI      ", Width + 22, Height + 24, 9);
+	OnDrawText((char*)" VVV     VVV   VFV      ", Width + 22, Height + 25, 9);
+	OnDrawText((char*)"  VFNNMV  MNV  MNN NMV  NM", Width + 48, Height + 19, 12);
+	OnDrawText((char*)" V$N  F$M N$V  N$N $NN  $N ", Width + 48, Height + 20, 12);
+	OnDrawText((char*)" V$N      N$V  N$M NNNNV$$ ", Width + 48, Height + 21, 12);
+	OnDrawText((char*)" V$N VMMF N$V  N$V $MVNMNN ", Width + 48, Height + 22, 12);
+	OnDrawText((char*)" V$N  FNM NNV  N$V NM VNNN ", Width + 48, Height + 23, 12);
+	OnDrawText((char*)"  MNVVMNV FNMVFNMN $M  NNN ", Width + 48, Height + 24, 12);
+	OnDrawText((char*)"   VFFV     VVVV   FV  VVV ", Width + 48, Height + 25, 12);
+		
+	OnDrawText((char*)"1 . START", 26, 52);
+	OnDrawText((char*)"2 . RANK", 56, 52);
+	OnDrawText((char*)"3 . EXIT", 86, 52);
+
+	if (_icon->TransInfo.Position.x == 20 || _icon->TransInfo.Position.x == 50)
+	{
+		if (!RCheck && GetAsyncKeyState(VK_RIGHT) & 0x0001)
+		{
+			RCheck = true;
+		}
+
+		if (RCheck && !(GetAsyncKeyState(VK_RIGHT) & 0x8000))
+		{
+			_icon->TransInfo.Position.x += 30;
+			RCheck = false;
+		}			
+	}
+	if (_icon->TransInfo.Position.x == 50 || _icon->TransInfo.Position.x == 80)
+	{
+		if (!LCheck && GetAsyncKeyState(VK_LEFT) & 0x0001)
+		{
+			LCheck = true;
+		}		
+		if (LCheck && !(GetAsyncKeyState(VK_LEFT) & 0x8000))
+		{
+			_icon->TransInfo.Position.x -= 30;
+			LCheck = false;
+		}	
+		
+	}
+
+	if (_icon->TransInfo.Position.x == 20)
+		OnDrawText((char*)"1 . START", 26, 52, 10);
+	if (_icon->TransInfo.Position.x == 50)
+		OnDrawText((char*)"2 . RANK", 56, 52, 10);
+	if (_icon->TransInfo.Position.x == 80)
+		OnDrawText((char*)"3 . EXIT", 86, 52, 10);
+
+	OnDrawText(_icon->Icon.Texture, _icon->TransInfo.Position.x, _icon->TransInfo.Position.y, 11);
+
+	if (GetAsyncKeyState(VK_RETURN))
+	{
+		if (_icon->TransInfo.Position.x == 20)
+			Main = false;
+		if (_icon->TransInfo.Position.x == 50)
+			ScoreBoard(_arr, _name);
+		if (_icon->TransInfo.Position.x == 80)
+			exit(NULL);
+
+	}
+
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+void ScoreBoard(int _arr[], char _name[][4])
+{
+	system("cls");
+	HideCursor(false);
 
 	int Width = 60 - strlen("灰天天天天天天天天天天天天天天天天天天天天天天天天天天天天天天天天天天天天天天天天天天天天天天汐") / 2;
 	int Height = 16;
 	OnDrawText((char*)".-. .-. .-. .-. .-. .-. .-. .-. .-. .-.", 40.0f, 5.0f, 14);
 	OnDrawText((char*)"`-. |   | | |(  |-  |(  | | |-| |(  |  )", 40.0f, 6.0f, 14);
 	OnDrawText((char*)"`-' `-' `-' ' ' `-' `-' `-' ` ' ' ' `-'", 40.0f, 7.0f, 14);
-	
+
 	OnDrawText((char*)"灰天天天天天天天天天天天天天天天天天天天天天天天天天天天天天天天天天天天天天天天天天天天天天天汐", Width, Height, 15);
-	OnDrawText((char*)"太                      .     RANK  :  1st                                                   太", Width, Height + 1, 15);
-	OnDrawText((char*)"太                     '|     SCORE :                                                        太", Width, Height + 2, 15);
-	OnDrawText((char*)"太                     '-'    NAME  :                                                        太", Width, Height + 3, 15);
+	OnDrawText((char*)"太                            RANK  :           1st                                          太", Width, Height + 1, 15);
+	OnDrawText((char*)"太                            SCORE :                                                        太", Width, Height + 2, 15);
+	OnDrawText((char*)"太                            NAME  :                                                        太", Width, Height + 3, 15);
 	OnDrawText((char*)"太                   天天天天天天天天天天天天天天天天天天天天天天天天天天                    太", Width, Height + 4, 15);
-	OnDrawText((char*)"太                     ,-.    RANK  :  2nd                                                   太", Width, Height + 5, 15);
-	OnDrawText((char*)"太                      /     SCORE :                                                        太", Width, Height + 6, 15);
-	OnDrawText((char*)"太                     '--    NAME  :                                                        太", Width, Height + 7, 15);
+	OnDrawText((char*)"太                            RANK  :           2nd                                          太", Width, Height + 5, 15);
+	OnDrawText((char*)"太                            SCORE :                                                        太", Width, Height + 6, 15);
+	OnDrawText((char*)"太                            NAME  :                                                        太", Width, Height + 7, 15);
 	OnDrawText((char*)"太                   天天天天天天天天天天天天天天天天天天天天天天天天天天                    太", Width, Height + 8, 15);
-	OnDrawText((char*)"太                     --.    RANK  :  3rd                                                   太", Width, Height + 9, 15);
-	OnDrawText((char*)"太                     --|    SCORE :                                                        太", Width, Height + 10, 15);
-	OnDrawText((char*)"太                     --'    NAME  :                                                        太", Width, Height + 11, 15);
+	OnDrawText((char*)"太                            RANK  :           3rd                                          太", Width, Height + 9, 15);
+	OnDrawText((char*)"太                            SCORE :                                                        太", Width, Height + 10, 15);
+	OnDrawText((char*)"太                            NAME  :                                                        太", Width, Height + 11, 15);
 	OnDrawText((char*)"太                   天天天天天天天天天天天天天天天天天天天天天天天天天天                    太", Width, Height + 12, 15);
-	OnDrawText((char*)"太                     ,.     RANK  :  4th                                                   太", Width, Height + 13, 15);
-	OnDrawText((char*)"太                    '-|     SCORE :                                                        太", Width, Height + 14, 15);
-	OnDrawText((char*)"太                      '     NAME  :                                                        太", Width, Height + 15, 15);
+	OnDrawText((char*)"太                            RANK  :           4th                                          太", Width, Height + 13, 15);
+	OnDrawText((char*)"太                            SCORE :                                                        太", Width, Height + 14, 15);
+	OnDrawText((char*)"太                            NAME  :                                                        太", Width, Height + 15, 15);
 	OnDrawText((char*)"太                   天天天天天天天天天天天天天天天天天天天天天天天天天天                    太", Width, Height + 16, 15);
-	OnDrawText((char*)"太                     .--    RANK  :  5th                                                   太", Width, Height + 17, 15);
-	OnDrawText((char*)"太                     '-.    SCORE :                                                        太", Width, Height + 18, 15);
-	OnDrawText((char*)"太                     `-'    NAME  :                                                        太", Width, Height + 19, 15);
+	OnDrawText((char*)"太                            RANK  :           5th                                          太", Width, Height + 17, 15);
+	OnDrawText((char*)"太                            SCORE :                                                        太", Width, Height + 18, 15);
+	OnDrawText((char*)"太                            NAME  :                                                        太", Width, Height + 19, 15);
 	OnDrawText((char*)"太                   天天天天天天天天天天天天天天天天天天天天天天天天天天                    太", Width, Height + 20, 15);
-	OnDrawText((char*)"太                      ,-    RANK  :  6th                                                   太", Width, Height + 21, 15);
-	OnDrawText((char*)"太                     :-.    SCORE :                                                        太", Width, Height + 22, 15);
-	OnDrawText((char*)"太                     `-'    NAME  :                                                        太", Width, Height + 23, 15);
+	OnDrawText((char*)"太                            RANK  :           6th                                          太", Width, Height + 21, 15);
+	OnDrawText((char*)"太                            SCORE :                                                        太", Width, Height + 22, 15);
+	OnDrawText((char*)"太                            NAME  :                                                        太", Width, Height + 23, 15);
 	OnDrawText((char*)"太                   天天天天天天天天天天天天天天天天天天天天天天天天天天                    太", Width, Height + 24, 15);
-	OnDrawText((char*)"太                     --,    RANK  :  7th                                                   太", Width, Height + 25, 15);
-	OnDrawText((char*)"太                      /     SCORE :                                                        太", Width, Height + 26, 15);
-	OnDrawText((char*)"太                     '      NAME  :                                                        太", Width, Height + 27, 15);
+	OnDrawText((char*)"太                            RANK  :           7th                                          太", Width, Height + 25, 15);
+	OnDrawText((char*)"太                            SCORE :                                                        太", Width, Height + 26, 15);
+	OnDrawText((char*)"太                            NAME  :                                                        太", Width, Height + 27, 15);
 	OnDrawText((char*)"太                   天天天天天天天天天天天天天天天天天天天天天天天天天天                    太", Width, Height + 28, 15);
-	OnDrawText((char*)"太                     ,-.    RANK  :  8th                                                   太", Width, Height + 29, 15);
-	OnDrawText((char*)"太                     :-:    SCORE :                                                        太", Width, Height + 30, 15);
-	OnDrawText((char*)"太                     `-'    NAME  :                                                        太", Width, Height + 31, 15);
+	OnDrawText((char*)"太                            RANK  :           8th                                          太", Width, Height + 29, 15);
+	OnDrawText((char*)"太                            SCORE :                                                        太", Width, Height + 30, 15);
+	OnDrawText((char*)"太                            NAME  :                                                        太", Width, Height + 31, 15);
 	OnDrawText((char*)"汍天天天天天天天天天天天天天天天天天天天天天天天天天天天天天天天天天天天天天天天天天天天天天天污", Width, Height + 32, 15);
+
+	OnDrawText((char*)" . ", Width + 22, Height + 1, 14);
+	OnDrawText((char*)"'| ", Width + 22, Height + 2, 14);
+	OnDrawText((char*)"'-'", Width + 22, Height + 3, 14);
+	OnDrawText((char*)",-.", Width + 22, Height + 5, 8);
+	OnDrawText((char*)" / ", Width + 22, Height + 6, 8);
+	OnDrawText((char*)"'--", Width + 22, Height + 7, 8);
+	OnDrawText((char*)"--.", Width + 22, Height + 9, 6);
+	OnDrawText((char*)"--|", Width + 22, Height + 10, 6);
+	OnDrawText((char*)"--'", Width + 22, Height + 11, 6);
+	OnDrawText((char*)" ,.", Width + 22, Height + 13, 11);
+	OnDrawText((char*)"'-|", Width + 22, Height + 14, 11);
+	OnDrawText((char*)"  '", Width + 22, Height + 15, 11);
+	OnDrawText((char*)".--", Width + 22, Height + 17, 11);
+	OnDrawText((char*)"'-.", Width + 22, Height + 18, 11);
+	OnDrawText((char*)"`-'", Width + 22, Height + 19, 11);
+	OnDrawText((char*)" ,-", Width + 22, Height + 21, 11);
+	OnDrawText((char*)":-.", Width + 22, Height + 22, 11);
+	OnDrawText((char*)"`-'", Width + 22, Height + 23, 11);
+	OnDrawText((char*)"--,", Width + 22, Height + 25, 11);
+	OnDrawText((char*)" / ", Width + 22, Height + 26, 11);
+	OnDrawText((char*)"'  ", Width + 22, Height + 27, 11);
+	OnDrawText((char*)",-.", Width + 22, Height + 29, 11);
+	OnDrawText((char*)":-:", Width + 22, Height + 30, 11);
+	OnDrawText((char*)"`-'", Width + 22, Height + 31, 11);
 
 	OnDrawText((char*)_name[0], 60, Height + 2, 14);
 	OnDrawText(_arr[0], 60, Height + 3, 14);
@@ -333,17 +511,18 @@ void ScoreBoard(int _arr[], char* _name[][4])
 	OnDrawText(_arr[6], 60, Height + 27, 14);
 	OnDrawText((char*)_name[7], 60, Height + 30, 14);
 	OnDrawText(_arr[7], 60, Height + 31, 14);
+
+	OnDrawText("Exit [X]", 56, 56, 10);
 	
-
-	Sleep(10000);
-
-	
-                                      
-             
-             
-             
-                                      
-
+	while (true)
+	{
+		if (GetAsyncKeyState(0x58))
+		{
+			
+			break;
+		}
+	}   
+	HideCursor(true);
 }
 
 Object* CreateEnemy(const float _x, const float _y, ULONGLONG _time)
