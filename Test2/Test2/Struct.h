@@ -39,18 +39,18 @@ struct Enemy
 	ULONGLONG ETime;
 };
 
-struct Bullet
+struct sBullet
 {
 	char* Texture = (char*)"бл";
 };
 
-struct Missile
+struct sMissile
 {
 	char* Texture = (char*)"е╦";
 	ULONGLONG MTime;
 };
 
-struct Item
+struct sItem
 {
 	char* Texture[2] = { nullptr };
 	int Color = 10;
@@ -62,9 +62,9 @@ struct Object
 	Icon Icon;
 	Player Player;
 	Enemy Enemy;
-	Bullet Bullet;
-	Missile Missile;
-	Item Item;
+	sBullet Bullet;
+	sMissile Missile;
+	sItem Item;
 	Transform TransInfo;
 	int Speed;
 	int HP;
@@ -108,7 +108,7 @@ struct BackGround
 //	Transform TransInfo;
 //};
 
-struct Logo
+struct sLogo
 {
 	char* Texture[40] = { (char*)"                                                                                               MVV * M                 ",
 						(char*)"                                                                                             NVV*FN                     ",

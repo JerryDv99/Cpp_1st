@@ -24,11 +24,13 @@ void OnDrawText(const int _Value, const float _x, const float _y, const int _Col
 
 void HideCursor(const bool _Visible);
 
-void LogoScene(Logo* _logo, ULONGLONG _t, ULONGLONG _load);
+void LogoScene(sLogo* _logo, ULONGLONG _t, ULONGLONG _load);
 
 void MainScene(Object* _icon, int _arr[], char _name[][4]);
 
 void ScoreBoard(int _arr[], char _name[][4]);
+
+void Tutorial(Object* _Player, ULONGLONG _time, ULONGLONG _tuto);
 
 Object* CreateEnemy(const float _x, const float _y, ULONGLONG _time);
 
@@ -48,6 +50,8 @@ bool PCollision(const Object* _Object, const Object* _Player);
 
 void UpdateInput(Object* _Object);
 
+void UpdateInput1(Object* _Object);
+
 void ScoreP(const int _i);
 
 Object* CreateItem(const int _rand);
@@ -57,6 +61,53 @@ void Warning(const int _x, const int _y);
 void BossScene();
 
 
+Vector3 Direction;
+
+ULONGLONG Time = GetTickCount64();
+ULONGLONG Logo = GetTickCount64();
+ULONGLONG Loading = GetTickCount64();
+ULONGLONG BG = GetTickCount64();
+ULONGLONG GameTime = GetTickCount64();
+ULONGLONG EnemyTime1 = GetTickCount64();
+ULONGLONG Cooling1 = GetTickCount64();
+ULONGLONG ERR1 = GetTickCount64();
+ULONGLONG Loaded1 = GetTickCount64();
+ULONGLONG DropItem1 = GetTickCount64();
+ULONGLONG BuffTime1 = GetTickCount64();
+
+Object* Bullet[256] = { nullptr };
+Object* EBullet[128] = { nullptr };
+Object* Missile[8] = { nullptr };
+Object* Item[2] = { nullptr };
+
+bool first = true;
+bool Story1 = false;
+bool loop = true;
+bool Story = false;
+bool Check = false;
+bool OHeat = false;
+bool Load = false;
+bool Buff = false;
+bool Exit = false;
+
+bool RCheck = false;
+bool LCheck = false;
+bool Main = true;
+
+bool tuto1 = false;
+bool tuto2 = false;
+bool tuto3 = false;
+bool tuto4 = false;
+bool tuto5 = false;
+bool tuto6 = false;
+
+int Score = 0;
+int Kill = 0;
+int ECount = 0;
+int Life = 2;	// 재도전 기회
+int T;
+
+float Heat = 0.0f;
 
 
 void Initialize(Object* _Object, float _PosX, float _PosY) 
@@ -88,6 +139,7 @@ void EInitialize(Object* _Enemy, float _PosX , float _PosY, float _PosZ)
 	_Enemy->Enemy.ETime = 0;
 }  
 
+// 시간 남으면 미사일 세발 아이템 만들기
 void ItemInit(Object* _Item, int _rand)
 {
 	if (_rand % 2 == 0)
@@ -119,7 +171,7 @@ char* SetName()
 {
 	char Buffer[128] = "";
 
-	cout << "입력 : "; cin >> Buffer;
+	cout << " : "; cin >> Buffer;
 
 	char* pName = new char[strlen(Buffer) + 1];
 
@@ -239,7 +291,7 @@ void HideCursor(const bool _Visible)
 		GetStdHandle(STD_OUTPUT_HANDLE), &CursorInfo);
 }
 
-void LogoScene(Logo* _logo,ULONGLONG _t, ULONGLONG _load)
+void LogoScene(sLogo* _logo, ULONGLONG _t, ULONGLONG _load)
 {
 	int count = 0;
 	for (int i = 0; i < 40; ++i)
@@ -264,11 +316,6 @@ void LogoScene(Logo* _logo,ULONGLONG _t, ULONGLONG _load)
 	}
 	
 }                                
-
-
-bool RCheck = false;
-bool LCheck = false;
-bool Main = true;
 
 void MainScene(Object* _icon, int _arr[], char _name[][4])
 {
@@ -385,46 +432,6 @@ void MainScene(Object* _icon, int _arr[], char _name[][4])
 
 }
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 void ScoreBoard(int _arr[], char _name[][4])
 {
 	system("cls");
@@ -523,6 +530,296 @@ void ScoreBoard(int _arr[], char _name[][4])
 		}
 	}   
 	HideCursor(true);
+}
+
+void Tutorial(Object* _Player, ULONGLONG _time, ULONGLONG _tuto)
+{
+	int Height = 50;
+	Object* Enemy = new Object;
+	EInitialize(Enemy, 60, 10);
+	Enemy->Enemy.ETime = 1;
+
+	Object* Enemy1 = CreateEnemy(100, 10, 1);
+	Object* Enemy2 = CreateEnemy(100, 20, 1);
+
+	Story = true;
+	OHeat = true;
+
+	if (_time + 20 < GetTickCount64())
+	{
+		_time = GetTickCount64();
+		system("cls");
+
+		OnDrawText((char*)"┎ㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡ┒", 2, Height);
+		OnDrawText((char*)"ㅣ                                                                                                                 ㅣ", 2, Height + 1);
+		OnDrawText((char*)"ㅣ                                                                                                                 ㅣ", 2, Height + 2);
+		OnDrawText((char*)"ㅣ                                                                                                                 ㅣ", 2, Height + 3);
+		OnDrawText((char*)"ㅣ                                                                                                                 ㅣ", 2, Height + 4);
+		OnDrawText((char*)"ㅣ                                                                                                                 ㅣ", 2, Height + 5);
+		OnDrawText((char*)"ㅣ                                                                                                                 ㅣ", 2, Height + 6);
+		OnDrawText((char*)"ㅣ                                                                                                                 ㅣ", 2, Height + 7);
+		OnDrawText((char*)"ㅣ                                                                                                                 ㅣ", 2, Height + 8);
+		OnDrawText((char*)"┖ㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡ┚", 2, Height + 9);
+
+		if (_tuto + 100 < GetTickCount64() && tuto1)
+		{
+			OnDrawText((char*)"안녕하신가 신참, 나는 이 함대의 지휘관 로저스 제독일세. 자네 이름은 뭔가?", 60 - strlen("안녕하신가 신참, 나는 이 함대의 지휘관 로저스 제독일세. 자네 이름은 뭔가?") / 2, Height + 3);
+			OnDrawText((char*)"이름 ", 52, Height + 6);
+			_Player->Player.Name = SetName();
+			_tuto = GetTickCount64();
+			tuto1 = false;
+		}
+
+		if (!tuto1 && tuto2)
+		{
+			if (_tuto + 3000 > GetTickCount64())
+			{
+				if (_tuto + 2000 > GetTickCount64())
+				{
+					OnDrawText((char*)"", 60 - strlen("") / 2, Height + 3);
+					OnDrawText((char*)"┏ㅡㅡㅡㅡㅡ┑", _Player->TransInfo.Position.x - 5, _Player->TransInfo.Position.y - 1, 12);
+					OnDrawText((char*)"ㅣ         ㅣ", _Player->TransInfo.Position.x - 5, _Player->TransInfo.Position.y, 12);
+					OnDrawText((char*)"ㅣ         ㅣ", _Player->TransInfo.Position.x - 5, _Player->TransInfo.Position.y + 1, 12);
+					OnDrawText((char*)"ㅣ         ㅣ", _Player->TransInfo.Position.x - 5, _Player->TransInfo.Position.y + 2, 12);
+					OnDrawText((char*)"ㅣ         ㅣ", _Player->TransInfo.Position.x - 5, _Player->TransInfo.Position.y + 3, 12);
+					OnDrawText((char*)"┖ㅡㅡㅡㅡㅡ┚", _Player->TransInfo.Position.x - 5, _Player->TransInfo.Position.y + 4, 12);
+				}
+				OnDrawText((char*)"빨갛게 표시된 기체가 자네일세", 60 - strlen("빨갛게 표시된 기체가 자네일세") / 2, Height + 3);
+				OnDrawText((char*)"방향키로 이동할 수 있지", 60 - strlen("방향키로 이동할 수 있지") / 2, Height + 6);		
+			}
+			if (_tuto + 3000 < GetTickCount64())
+			{
+				Story = false;
+				_tuto = GetTickCount64();
+				tuto2 = false;
+			}
+			
+		}
+
+		if (!tuto2 && tuto3)
+		{
+			if (_tuto + 5000 > GetTickCount64())
+			{
+				if (_tuto + 2000 > GetTickCount64())
+				{
+					OnDrawText((char*)"", 60 - strlen("") / 2, Height + 3);
+					OnDrawText((char*)"┏ㅡㅡㅡㅡㅡㅡ┑", Enemy->TransInfo.Position.x - 6, Enemy->TransInfo.Position.y - 4, 12);
+					OnDrawText((char*)"ㅣ           ㅣ", Enemy->TransInfo.Position.x - 6, Enemy->TransInfo.Position.y - 3, 12);
+					OnDrawText((char*)"ㅣ           ㅣ", Enemy->TransInfo.Position.x - 6, Enemy->TransInfo.Position.y - 2, 12);
+					OnDrawText((char*)"ㅣ           ㅣ", Enemy->TransInfo.Position.x - 6, Enemy->TransInfo.Position.y - 1, 12);
+					OnDrawText((char*)"ㅣ           ㅣ", Enemy->TransInfo.Position.x - 6, Enemy->TransInfo.Position.y, 12);
+					OnDrawText((char*)"┖ㅡㅡㅡㅡㅡㅡ┚", Enemy->TransInfo.Position.x - 6, Enemy->TransInfo.Position.y + 1, 12);
+				}
+				OnDrawText((char*)"모의 적기를 추가했네", 60 - strlen("모의 적기를 추가했네") / 2, Height + 3);
+				OnDrawText((char*)"스페이스 바를 눌러 일반 무장을 발사해보게", 60 - strlen("스페이스 바를 눌러 일반 무장을 발사해보게") / 2, Height + 6);
+				OHeat = false;
+			}
+			if (_tuto + 3000 < GetTickCount64())
+			{
+				_tuto = GetTickCount64();
+				tuto3 = false;
+			}
+		}
+
+		if (!tuto3 && tuto4 && !Enemy)
+		{
+			if (_tuto + 7000 > GetTickCount64())
+			{
+				OnDrawText((char*)"잘했네, 하지만 신참들 대부분이 허공에 총질을 하지", 60 - strlen("잘했네, 하지만 신참들 대부분이 허공에 총질을 하지") / 2, Height + 2);
+				OnDrawText((char*)"일반 무장은 발사 중일때 계속 뜨거워지고 과열되면 5초 동안 냉각에 들어가 발사가 불가능하다", 60 - strlen("일반 무장은 발사 중일때 계속 뜨거워지고 과열되면 5초 동안 냉각에 들어가 발사가 불가능하다") / 2, Height + 4, 12);
+				OnDrawText((char*)"발사 중이 아닐땐 냉각장치가 작동되어 열 수치가 점점 떨어지니 참고하도록", 60 - strlen("발사 중이 아닐땐 냉각장치가 작동되어 열 수치가 점점 떨어지니 참고하도록") / 2, Height + 6);
+			}
+			if (_tuto + 7000 < GetTickCount64())
+			{
+				_tuto = GetTickCount64();
+				tuto4 = false;
+			}
+		}
+
+		if (!tuto4 && tuto5)
+		{
+			if (_tuto + 8000 > GetTickCount64())
+			{
+				OnDrawText((char*)"다음은 미사일 사용법에 대해 알려주지", 60 - strlen("다음은 미사일 사용법에 대해 알려주지") / 2, Height + 1);
+				OnDrawText((char*)"적들도 당연히 무장이 있고 공격을 해온다네", 60 - strlen("적들도 당연히 무장이 있고 공격을 해온다네") / 2, Height + 3);
+				OnDrawText((char*)"이 때 [ x ] 키를 눌러 미사일을 발사하면, 적 투사체를 파괴하며 나아가 경로 상의 적을 최대 3기까지 파괴 가능하지", 60 - strlen("이 때 [ x ] 키를 눌러 미사일을 발사하면, 적 투사체를 파괴하며 나아가 경로 상의 적을 최대 3기까지 파괴 가능하지") / 2, Height + 5);
+				OnDrawText((char*)"미사일로 적을 처치하면 보너스 점수가 크니 적재적소에 사용하도록", 60 - strlen("미사일로 적을 처치하면 보너스 점수가 크니 적재적소에 사용하도록") / 2, Height + 7);
+			}
+			if (_tuto + 7000 < GetTickCount64())
+			{
+				_tuto = GetTickCount64();
+				tuto5 = false;
+			}
+		}
+		if (!Story)
+			UpdateInput1(_Player);
+
+		if (!OHeat)
+		{
+			if (!Check && GetAsyncKeyState(VK_SPACE) & 0x0001)
+			{
+				Check = true;
+			}
+			if (GetAsyncKeyState(VK_SPACE) & 0x8000)
+			{
+				if (Heat < 10)
+					Heat += 0.25f;
+				for (int i = 0; i < 128; ++i)
+				{
+					if (Bullet[i] == nullptr)
+					{
+						if (!Buff)
+						{
+							Bullet[i] = CreateBullet(
+								_Player->TransInfo.Position.x - 2,
+								_Player->TransInfo.Position.y + 1);
+							Bullet[i + 1] = CreateBullet(
+								_Player->TransInfo.Position.x + 2,
+								_Player->TransInfo.Position.y + 1);
+						}
+						else if (Buff)
+						{
+							Bullet[i] = CreateBullet(
+								_Player->TransInfo.Position.x - 4,
+								_Player->TransInfo.Position.y + 1);
+							Bullet[i + 1] = CreateBullet(
+								_Player->TransInfo.Position.x + 4,
+								_Player->TransInfo.Position.y + 1);
+							Bullet[i + 2] = CreateBullet(
+								_Player->TransInfo.Position.x - 2,
+								_Player->TransInfo.Position.y + 1);
+							Bullet[i + 3] = CreateBullet(
+								_Player->TransInfo.Position.x + 2,
+								_Player->TransInfo.Position.y + 1);
+						}
+
+						break;
+					}
+				}
+			}
+
+			if (Check && !(GetAsyncKeyState(VK_SPACE) & 0x8000))
+			{
+				Check = false;
+			}
+
+			if (!Check)
+			{
+				if (Cooling1 + 500 < GetTickCount64())
+				{
+					Cooling1 = GetTickCount64();
+					if (Heat > 0)
+						Heat -= 1.0f;
+					if (Heat < 0)
+						Heat = 0;
+				}
+			}
+		}
+		for (int i = 0; i < 128; ++i)
+		{
+			if (Bullet[i] != nullptr)
+			{
+				for (int j = 0; j < 64; ++j)
+				{
+					if (Enemy)
+					{
+						if (ECollision(Bullet[i], Enemy))
+						{
+							ScoreP(500);
+							Kill++;
+							Score += 500;
+
+							delete Enemy;
+							Enemy = nullptr;
+
+							delete Bullet[i];
+							Bullet[i] = nullptr;
+
+							break;
+						}
+					}
+				}
+				if (Bullet[i] != nullptr)
+				{
+					if (Bullet[i]->TransInfo.Position.y <= 0)
+					{
+						delete Bullet[i];
+						Bullet[i] = nullptr;
+					}
+				}
+			}
+		}
+
+		if (Load)
+		{
+			if (GetAsyncKeyState(0x58))
+			{
+				for (int i = 0; i < 8; ++i)
+				{
+					if (Missile[i] == nullptr)
+					{
+						Load = false;
+						Missile[i] = CreateBullet(
+							_Player->TransInfo.Position.x,
+							_Player->TransInfo.Position.y - 1);
+						Missile[i]->Missile.MTime = GetTickCount64();
+						Missile[i]->Speed = 0;
+						Missile[i]->HP = 2;
+						Loaded1 = GetTickCount64();
+						break;
+					}
+				}
+			}
+		}
+
+		for (int i = 0; i < 8; ++i)
+		{
+			if (Missile[i] != nullptr)
+			{
+				for (int j = 0; j < 3; ++j)
+				{
+					if (Enemy[j] != nullptr)
+					{
+						if (ECollision(Missile[i], Enemy[j]))
+						{
+							ScoreP(2000);
+							Score += 2000;
+							Kill++;
+
+							if (Missile[i]->HP > 1)
+							{
+								Missile[i]->HP -= 1;
+							}
+
+							else if (Missile[i]->HP == 1)
+							{
+								delete Missile[i];
+								Missile[i] = nullptr;
+							}
+
+
+							delete Enemy[j];
+							Enemy[j] = nullptr;
+
+							break;
+						}
+					}
+				}
+				if (Missile[i] != nullptr)
+				{
+					if (Missile[i]->TransInfo.Position.y <= 0)
+					{
+						delete Missile[i];
+						Missile[i] = nullptr;
+					}
+				}
+
+			}
+		}
+		OnDrawObj(_Player, _Player->TransInfo.Position.x, _Player->TransInfo.Position.y);
+		OnDrawObj(Enemy, Enemy->TransInfo.Position.x, Enemy->TransInfo.Position.y);
+	}
+	
 }
 
 Object* CreateEnemy(const float _x, const float _y, ULONGLONG _time)
@@ -647,8 +944,34 @@ void UpdateInput(Object* _Object)
 	{
 		if (GetAsyncKeyState(VK_RIGHT))
 			_Object->TransInfo.Position.x += 2;
+	}	
+}
+
+void UpdateInput1(Object* _Object)
+{
+	if (_Object->TransInfo.Position.y >= 20)
+	{
+		if (GetAsyncKeyState(VK_UP))
+			_Object->TransInfo.Position.y -= 1;
 	}
 	
+	if (_Object->TransInfo.Position.y < 45)
+	{
+		if (GetAsyncKeyState(VK_DOWN))
+			_Object->TransInfo.Position.y += 1;
+	}
+		  
+	if (_Object->TransInfo.Position.x > 2)
+	{
+		if (GetAsyncKeyState(VK_LEFT))
+			_Object->TransInfo.Position.x -= 2;
+	}
+
+	if (_Object->TransInfo.Position.x < 116)
+	{
+		if (GetAsyncKeyState(VK_RIGHT))
+			_Object->TransInfo.Position.x += 2;
+	}	
 }
 
 void ScoreP(const int _i)

@@ -24,132 +24,88 @@
 15. 밝은 흰색
 */
 
-
 int main(void)
 {
 	HideCursor(false);
 
 	system("mode con:cols=120 lines=60");
 
-	const int Scene_Logo = 0;
-	const int Scene_Main = 1;
-	const int Scene_Story1 = 2;
-	const int Scene_Stage1 = 3;
-	const int Scene_Story2 = 4;
-	const int Scene_Boss = 5;
-	const int Scene_Story3 = 6;
-	const int Scene_Ending = 7;
-
-	int SceneState = 0;
-	// 다시 메인으로
-
 	Object* Player = new Object;
-	PInitialize(Player, 60.0f, 50.0f);
+	PInitialize(Player, 60.0f, 45.0f);
 	Player->HP = 5;
-	Player->Player.Name = (char*)"123";	// 이후 setname
-	Logo* logo = new Logo;
+	sLogo* logo = new sLogo;
 
 	Object* Icon = new Object;
 	Initialize(Icon, 20, 52);
 
 	Object* Enemy[64] = { nullptr };
-	Object* Bullet[256] = { nullptr };
-	Object* EBullet[128] = { nullptr };
-	Object* Missile[8] = { nullptr };
-	Object* Item[2] = { nullptr };
 	Object* Ally[6] = { nullptr };
-
 	
-
 	BackGround* BackGround[64] = { nullptr };
 
-	Vector3 Direction;
+	tuto1 = true;
+	tuto2 = true;
+	tuto3 = true;
+	tuto4 = true;
+	tuto5 = true;
+	tuto6 = true;
 
-	ULONGLONG Time = GetTickCount64();
-	ULONGLONG Logo = GetTickCount64();
-	ULONGLONG Loading = GetTickCount64();
-	ULONGLONG BG = GetTickCount64();
-	ULONGLONG GameTime = GetTickCount64();
-	
-	
-
-	int Score = 0;
-	int Kill = 0;
-	int ECount = 0;
-	int Life = 2;	// 재도전 기회
-	int T;
-
-	bool loop = true;
-	bool Story = false;
-	bool Check = false;
-	bool OHeat = false;
-	bool Load = false;
-	bool Buff = false;
-
-	float Heat = 0.0f;
-	
 	int ScoreBoard[8] = {  };
 	char Initial[8][4] = { };
+	ULONGLONG Tuto = GetTickCount64();
 	
-	while (loop)
+	Tutorial(Player, Time, Tuto);
+		
+	while (!Exit)
 	{
-		switch(SceneState)
+		// 로고
+		if (first)
 		{
-		case Scene_Logo:
 			LogoScene(logo, Logo, Loading);
-			SceneState++;
-		case Scene_Main:
-			while (Main)
+			first = false;
+		}
+		// 메인
+		Time = GetTickCount64();
+		while (Main)
+		{
+			if (Time + 50 < GetTickCount64())
 			{
-				if (BG + 200 < GetTickCount64())
-				{
-					BG = GetTickCount64();
-
-					for (int i = 0; i < 64; ++i)
-					{
-						if (BackGround[i] == nullptr)
-						{
-							srand((GetTickCount64() + i * i) * GetTickCount64());
-							BackGround[i] = CreateBackGround(rand());
-
-							break;
-						}
-					}
-				}
-				for (int i = 0; i < 64; ++i)
-				{
-					if (BackGround[i])
-					{
-						OnDrawBG(BackGround[i]);
-
-						BackGround[i]->TransInfo.Position.y += 1;
-						if (BackGround[i]->TransInfo.Position.y >= 60)
-						{
-							delete BackGround[i];
-							BackGround[i] = nullptr;
-
-							break;
-						}
-					}
-				}
+				Time = GetTickCount64();
 				MainScene(Icon, ScoreBoard, Initial);
 				HideCursor(false);
-				SceneState++;
+				Story1 = true;
 			}
-		case Scene_Story1:
+			
+		}
+		tuto1 = true;
+		tuto2 = true;
+		tuto3 = true;
+		tuto4 = true;
+		tuto5 = true;
+		tuto6 = true; 
+	  
+		// 스토리1(튜토리얼)
 		
-		case Scene_Stage1:
-			ULONGLONG EnemyTime1 = GetTickCount64();
-			ULONGLONG Cooling1 = GetTickCount64();
-			ULONGLONG ERR1 = GetTickCount64();
-			ULONGLONG Loaded1 = GetTickCount64();
-			ULONGLONG DropItem1 = GetTickCount64();
-			ULONGLONG BuffTime1 = GetTickCount64();
-			ULONGLONG R1Time = GetTickCount64();
-			while (R1Time + 60000 > GetTickCount64())
+		/*while (Story1)
+		{
+			if (Time + 20 < GetTickCount64())
 			{
-				if (Time + 1000 < GetTickCount64())
+				Time = GetTickCount64();
+				system("cls");
+			}
+		}*/
+		EnemyTime1 = GetTickCount64();
+		Cooling1 = GetTickCount64();
+		ERR1 = GetTickCount64();
+		Loaded1 = GetTickCount64();
+		DropItem1 = GetTickCount64();
+		BuffTime1 = GetTickCount64();
+		ULONGLONG R1Time = GetTickCount64();
+		while (R1Time + 60000 > GetTickCount64())
+		{
+			if (Time + 15 < GetTickCount64())
 			{
+				Time = GetTickCount64();
 				system("cls");
 
 				// 배경
@@ -170,7 +126,7 @@ int main(void)
 				}
 
 				// 에너미 생성
-				if (EnemyTime1 + 1000 < GetTickCount64())
+				if (EnemyTime1 + 750 < GetTickCount64())
 				{
 					EnemyTime1 = GetTickCount64();
 					for (int i = 0; i < 64; ++i)
@@ -669,11 +625,7 @@ int main(void)
 				OnDrawText(T, 64.0f, 1.0f, 14);
 
 			}
-			}
-		case Scene_Story2:
-		case Scene_Boss:
-		case Scene_Story3:
-		case Scene_Ending:			
+			}		
 
 		/*
 			for (int i = 0; i < 6; ++i)
@@ -693,7 +645,6 @@ int main(void)
 				OnDrawObj(Ally[i], Ally[i]->TransInfo.Position.x, Ally[i]->TransInfo.Position.y);
 		}
 		*/
-		}
 	}
 		
 	return 0;
