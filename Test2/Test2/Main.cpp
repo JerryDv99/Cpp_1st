@@ -35,6 +35,15 @@ int main(void)
 	Player->HP = 5;
 	sLogo* logo = new sLogo;
 
+	Object* Enemy1 = new Object;
+	EInitialize(Enemy1, 60, 10);
+	Enemy1->Enemy.ETime = 1;
+
+	Object* Enemy2 = CreateEnemy(60, 10, 1);
+	Object* Enemy3 = CreateEnemy(60, 14, 1);
+	Enemy2->Enemy.ETime = 1;
+	Enemy3->Enemy.ETime = 1;
+
 	Object* Icon = new Object;
 	Initialize(Icon, 20, 52);
 
@@ -49,12 +58,10 @@ int main(void)
 	tuto4 = true;
 	tuto5 = true;
 	tuto6 = true;
+	Load = true;
 
 	int ScoreBoard[8] = {  };
 	char Initial[8][4] = { };
-	ULONGLONG Tuto = GetTickCount64();
-	
-	Tutorial(Player, Time, Tuto);
 		
 	while (!Exit)
 	{
@@ -83,17 +90,16 @@ int main(void)
 		tuto4 = true;
 		tuto5 = true;
 		tuto6 = true; 
-	  
+		tuto7 = true; 
+
 		// 스토리1(튜토리얼)
-		
-		/*while (Story1)
+		while (Story1)
 		{
-			if (Time + 20 < GetTickCount64())
-			{
-				Time = GetTickCount64();
-				system("cls");
-			}
-		}*/
+			Tutorial(Player, Time, Enemy1, Enemy2, Enemy3);
+		}
+		delete Enemy1;
+		delete Enemy2;
+		delete Enemy3;
 		EnemyTime1 = GetTickCount64();
 		Cooling1 = GetTickCount64();
 		ERR1 = GetTickCount64();
@@ -548,6 +554,7 @@ int main(void)
 				if (Loaded1 - GetTickCount64() <= -5000)
 					OnDrawText((char*)"Loaded", 111.0f, 1.0f, 10);
 
+
 				OnDrawObj(Player, Player->TransInfo.Position.x, Player->TransInfo.Position.y);
 
 				// 에너미 무빙
@@ -625,7 +632,7 @@ int main(void)
 				OnDrawText(T, 64.0f, 1.0f, 14);
 
 			}
-			}		
+		}		
 
 		/*
 			for (int i = 0; i < 6; ++i)
