@@ -81,8 +81,7 @@ int main(void)
 				MainScene(Icon, ScoreBoard, Initial);
 				HideCursor(false);
 				Story1 = true;
-			}
-			
+			}			
 		}
 		tuto1 = true;
 		tuto2 = true;
@@ -100,14 +99,15 @@ int main(void)
 		delete Enemy1;
 		delete Enemy2;
 		delete Enemy3;
+		Heat = 0.0f;
 		EnemyTime1 = GetTickCount64();
 		Cooling1 = GetTickCount64();
 		ERR1 = GetTickCount64();
 		Loaded1 = GetTickCount64();
 		DropItem1 = GetTickCount64();
 		BuffTime1 = GetTickCount64();
-		ULONGLONG R1Time = GetTickCount64();
-		while (R1Time + 60000 > GetTickCount64())
+
+		while (R1 && R1Time + 60000 > GetTickCount64())
 		{
 			if (Time + 15 < GetTickCount64())
 			{
@@ -455,6 +455,7 @@ int main(void)
 					}
 				}*/
 
+				
 				// 배경 출력
 				for (int i = 0; i < 64; ++i)
 				{
@@ -560,7 +561,6 @@ int main(void)
 				// 에너미 무빙
 				for (int i = 0; i < 64; ++i)
 				{
-
 					if (Enemy[i])
 					{
 						OnDrawObj(Enemy[i], Enemy[i]->TransInfo.Position.x, Enemy[i]->TransInfo.Position.y);
@@ -629,29 +629,157 @@ int main(void)
 					if (T >= (R1Time + 60000 - GetTickCount64()) / 1000)
 						T = 0;
 				}
-				OnDrawText(T, 64.0f, 1.0f, 14);
+				OnDrawText(T, 64.0f, 1.0f, 14);								
+			}
+		}	
+		
+		/*for (int i = 0; i < 128; ++i)
+		{
+			if (EBullet[i] != nullptr)
+			{
+				delete EBullet[i];
+				EBullet[i] != nullptr;
+			}
+		}	
+		for (int i = 0; i < 8; ++i)
+		{
+			if (Missile[i] != nullptr)
+			{
+				delete Missile[i];
+				Missile[i] = nullptr;
+			}
+		}
+		Time = GetTickCount64();
+		AllyB = GetTickCount64();
+		while (Story2)
+		{
+			if (Time + 15 < GetTickCount64())
+			{				
+				Time = GetTickCount64();
+				system("cls");
 
+				while (Player->TransInfo.Position.x != 60 && Player->TransInfo.Position.y != 56)
+					if (Player->TransInfo.Position.x > 60)
+						while (Player->TransInfo.Position.x < 60)
+						{
+							--Player->TransInfo.Position.x;
+							break;
+						}
+				if (Player->TransInfo.Position.x < 60)
+					while (Player->TransInfo.Position.x < 60)
+					{
+						++Player->TransInfo.Position.x;
+						break;
+					}
+				if (Player->TransInfo.Position.y < 56)
+					while (Player->TransInfo.Position.y < 56)
+					{
+						++Player->TransInfo.Position.y;
+						break;
+					}
+				if (Player->TransInfo.Position.x == 60 && Player->TransInfo.Position.y == 56)
+				{
+					for (int i = 0; i < 128; ++i)
+					{
+						if (Bullet[i] == nullptr)
+						{
+							if (AllyB + 50 < GetTickCount64())
+							{
+								AllyB = GetTickCount64();
+								Bullet[i] = CreateBullet(14, 58);
+								Bullet[i + 1] = CreateBullet(30, 58);
+								Bullet[i + 2] = CreateBullet(46, 58);
+								Bullet[i + 3] = CreateBullet(74, 58);
+								Bullet[i + 4] = CreateBullet(90, 58);
+								Bullet[i + 5] = CreateBullet(106, 58);
+
+								break;
+							}
+						}
+					}
+				}
+			}
+			for (int i = 0; i < 256; ++i)
+			{
+				if (Bullet[i] != nullptr)
+				{
+					if (Bullet[i]->TransInfo.Position.y <= 10)
+					{
+						for (int j = 0; j < 64; ++j)
+						{
+							if (Enemy[j] != nullptr)
+							{
+								delete Enemy[j];
+								Enemy[j] = nullptr;
+							}
+						}
+					}
+				}
+				if (Bullet[i] != nullptr)
+				{
+					if (Bullet[i]->TransInfo.Position.y <= 2)
+					{
+						delete Bullet[i];
+						Bullet[i] = nullptr;
+
+						break;
+					}
+				}
+			}
+			for (int i = 0; i < 128; ++i)
+			{
+				if (Bullet[i])
+				{
+					OnDrawText(Bullet[i]->Bullet.Texture, Bullet[i]->TransInfo.Position.x,
+						Bullet[i]->TransInfo.Position.y, 14);
+
+					Bullet[i]->TransInfo.Position.y -= 1;
+				}
+			}
+			for (int i = 0; i < 64; ++i)
+			{
+				if (Enemy[i])
+				{
+					OnDrawObj(Enemy[i], Enemy[i]->TransInfo.Position.x, Enemy[i]->TransInfo.Position.y);
+				}
+			}
+			for (int i = 0; i < 64; ++i)
+			{
+				for (int j = 0; j < 256; ++j)
+				{
+					if (Enemy[i] == nullptr && Bullet[j] == nullptr)
+					{
+						Story2 = false;
+						Story3 = true;
+					}
+				}
+			}
+			OnDrawObj(Player, Player->TransInfo.Position.x, Player->TransInfo.Position.y);
 			}
 		}		
-
-		/*
-			for (int i = 0; i < 6; ++i)
+		OnDrawText((char*)"TestTestTestTestTestTestTestTestTestTestTestTestTestTestTestTestTest", 60, 30);*/
+		/*while (Story3)
 		{
-			if (Ally[i] == nullptr)
+			for (int i = 0; i < 6; ++i)
 			{
-				if (i < 3)
-					Ally[i] = CreateAlly(14.0f + 15 * i, 50.0f, i);
-				else if (i >= 3)
-					Ally[i] = CreateAlly(30 + 15 * i, 50.0f, i);
-				break;
+				if (Ally[i] == nullptr)
+				{
+					if (i < 3)
+						Ally[i] = CreateAlly(14 + 16 * i, 50.0f, i);
+					else if (i >= 3)
+						Ally[i] = CreateAlly(26 + 16 * i, 50.0f, i);
+					break;
+				}
 			}
-		}
 			for (int i = 0; i < 6; ++i)
-		{
-			if (Ally[i])
-				OnDrawObj(Ally[i], Ally[i]->TransInfo.Position.x, Ally[i]->TransInfo.Position.y);
-		}
-		*/
+			{
+				if (Ally[i])
+					OnDrawObj(Ally[i], Ally[i]->TransInfo.Position.x, Ally[i]->TransInfo.Position.y);
+			}
+		}*/
+		
+		
+		
 	}
 		
 	return 0;

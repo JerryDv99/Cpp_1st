@@ -74,6 +74,7 @@ ULONGLONG ERR1 = GetTickCount64();
 ULONGLONG Loaded1 = GetTickCount64();
 ULONGLONG DropItem1 = GetTickCount64();
 ULONGLONG BuffTime1 = GetTickCount64();
+ULONGLONG AllyB = GetTickCount64();
 
 ULONGLONG Tuto1 = GetTickCount64();
 ULONGLONG Tuto2 = GetTickCount64();
@@ -82,13 +83,21 @@ ULONGLONG Tuto4 = GetTickCount64();
 ULONGLONG Tuto5 = GetTickCount64();
 ULONGLONG Tuto6 = GetTickCount64();
 
+ULONGLONG R1Time = GetTickCount64();
+
+
+
 Object* Bullet[256] = { nullptr };
 Object* EBullet[128] = { nullptr };
 Object* Missile[8] = { nullptr };
 Object* Item[2] = { nullptr };
 
+
+
 bool first = true;
 bool Story1 = false;
+bool Story2 = false;
+bool Story3 = false;
 bool loop = true;
 bool Story = false;
 bool Check = false;
@@ -97,10 +106,12 @@ bool Load = false;
 bool Buff = false;
 bool Exit = false;
 
+bool UI = true;
 bool E1V = false;
 bool E2V = false;
 bool E3V = false;
 
+bool R1 = false;
 bool RCheck = false;
 bool LCheck = false;
 bool Main = true;
@@ -553,17 +564,20 @@ void Tutorial(Object* _Player, ULONGLONG _time, Object* _E1, Object* _E2, Object
 		_time = GetTickCount64();
 		system("cls");
 
-		OnDrawText((char*)"┎ㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡ┒", 2, Height);
-		OnDrawText((char*)"ㅣ                                                                                                                 ㅣ", 2, Height + 1);
-		OnDrawText((char*)"ㅣ                                                                                                                 ㅣ", 2, Height + 2);
-		OnDrawText((char*)"ㅣ                                                                                                                 ㅣ", 2, Height + 3);
-		OnDrawText((char*)"ㅣ                                                                                                                 ㅣ", 2, Height + 4);
-		OnDrawText((char*)"ㅣ                                                                                                                 ㅣ", 2, Height + 5);
-		OnDrawText((char*)"ㅣ                                                                                                                 ㅣ", 2, Height + 6);
-		OnDrawText((char*)"ㅣ                                                                                                                 ㅣ", 2, Height + 7);
-		OnDrawText((char*)"ㅣ                                                                                                                 ㅣ", 2, Height + 8);
-		OnDrawText((char*)"┖ㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡ┚", 2, Height + 9);
-
+		if (UI)
+		{
+			OnDrawText((char*)"┎ㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡ┒", 2, Height);
+			OnDrawText((char*)"ㅣ                                                                                                                 ㅣ", 2, Height + 1);
+			OnDrawText((char*)"ㅣ                                                                                                                 ㅣ", 2, Height + 2);
+			OnDrawText((char*)"ㅣ                                                                                                                 ㅣ", 2, Height + 3);
+			OnDrawText((char*)"ㅣ                                                                                                                 ㅣ", 2, Height + 4);
+			OnDrawText((char*)"ㅣ                                                                                                                 ㅣ", 2, Height + 5);
+			OnDrawText((char*)"ㅣ                                                                                                                 ㅣ", 2, Height + 6);
+			OnDrawText((char*)"ㅣ                                                                                                                 ㅣ", 2, Height + 7);
+			OnDrawText((char*)"ㅣ                                                                                                                 ㅣ", 2, Height + 8);
+			OnDrawText((char*)"┖ㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡ┚", 2, Height + 9);
+		}
+		
 		if(tuto1)
 		{
 			OnDrawText((char*)"안녕하신가 신참, 나는 이 함대의 지휘관 로저스 제독일세. 자네 이름은 뭔가?", 60 - strlen("안녕하신가 신참, 나는 이 함대의 지휘관 로저스 제독일세. 자네 이름은 뭔가?") / 2, Height + 3);
@@ -629,7 +643,7 @@ void Tutorial(Object* _Player, ULONGLONG _time, Object* _E1, Object* _E2, Object
 			if (Tuto3 + 6000 > GetTickCount64())
 			{
 				OnDrawText((char*)"잘했네, 하지만 신참들 대부분이 허공에 총질을 하지", 60 - strlen("잘했네, 하지만 신참들 대부분이 허공에 총질을 하지") / 2, Height + 2);
-				OnDrawText((char*)"일반 무장은 발사 중일때 계속 뜨거워지고 과열되면 5초 동안 냉각에 들어가 발사가 불가능하다", 60 - strlen("일반 무장은 발사 중일때 계속 뜨거워지고 과열되면 5초 동안 냉각에 들어가 발사가 불가능하다") / 2, Height + 4, 12);
+				OnDrawText((char*)"일반 무장은 발사 중일때 계속 뜨거워지고 과열되면 3초 동안 냉각에 들어가 발사가 불가능하다", 60 - strlen("일반 무장은 발사 중일때 계속 뜨거워지고 과열되면 5초 동안 냉각에 들어가 발사가 불가능하다") / 2, Height + 4, 12);
 				OnDrawText((char*)"열 수치는 우측 상단에서 확인할 수 있고 발사 중이 아닐땐 냉각장치가 작동되어 열 수치가 점점 떨어지니 참고하도록", 60 - strlen("열 수치는 우측 상단에서 확인할 수 있고 발사 중이 아닐땐 냉각장치가 작동되어 열 수치가 점점 떨어지니 참고하도록") / 2, Height + 6);
 			}
 			if (Tuto3 + 6000 < GetTickCount64())
@@ -637,7 +651,7 @@ void Tutorial(Object* _Player, ULONGLONG _time, Object* _E1, Object* _E2, Object
 				Tuto4 = GetTickCount64();
 				E2V = true;
 				E3V = true;
-				tuto4 = false;
+				tuto4 = false;				
 			}
 		}
 		
@@ -661,10 +675,55 @@ void Tutorial(Object* _Player, ULONGLONG _time, Object* _E1, Object* _E2, Object
 		{
 			if (Tuto5 + 5000 > GetTickCount64())
 			{
-				OnDrawText((char*)"적들도 당연히 무장이 있고 공격을 해온다네, 그에 맞설 미사일 사용법에 대해 알려주지", 60 - strlen("적들도 당연히 무장이 있고 공격을 해온다네, 그에 맞설 다음은 미사일 사용법에 대해 알려주지") / 2, Height + 1);
-				OnDrawText((char*)"미사일 장전엔 5초가 소요되며 장전시간 또한 우측 상단에서 확인이 가능하지", 60 - strlen("미사일 장전엔 5초가 소요되며 장전시간 또한 우측 상단에서 확인이 가능하지") / 2, Height + 3);
-				OnDrawText((char*)"[ x ] 키를 눌러 미사일을 발사하면, 적 투사체를 파괴하며 나아가 경로 상의 적을 최대 3기까지 파괴 가능하다네", 60 - strlen("[ x ] 키를 눌러 미사일을 발사하면, 적 투사체를 파괴하며 나아가 경로 상의 적을 최대 3기까지 파괴 가능하다네") / 2, Height + 5);
-				OnDrawText((char*)"미사일로 적을 처치하면 보너스 점수가 크니 적재적소에 사용하도록", 60 - strlen("미사일로 적을 처치하면 보너스 점수가 크니 적재적소에 사용하도록") / 2, Height + 7);
+				OnDrawText((char*)"제군, 멀지 않은 지점에 다수의 적기가 출현했다. 이건 훈련이 아니라 실제 상황이다.", 60 - strlen("제군, 멀지 않은 지점에 다수의 적기가 출현했다. 이건 훈련이 아니라 실제 상황이다.") / 2, Height + 1);
+				OnDrawText((char*)"자네의 임무는 아군 비행대의 합류까지 시간을 끄는거다.", 60 - strlen("자네의 임무는 아군 비행대의 합류까지 시간을 끄는거다.") / 2, Height + 3);
+				OnDrawText((char*)"적의 군세를 줄이되 절대 무리하지 말고 죽지말게. 이건 명령이야", 60 - strlen("적의 군세를 줄이되 절대 무리하지 말고 죽지말게. 이건 명령이야") / 2, Height + 5);
+				OnDrawText((char*)"그럼, 건투를 빌겠다", 60 - strlen("그럼, 건투를 빌겠다") / 2, Height + 7);
+			}
+			if (Tuto5 + 5000 < GetTickCount64())
+			{
+				Tuto6 = GetTickCount64();
+				tuto6 = false;
+			}
+		}
+
+		if (!tuto6 && tuto7)
+		{
+			if (Tuto6 + 5000 > GetTickCount64())
+			{
+				OnDrawText((char*)"적기 격추시 500점, 미사일로 격추시 추가로 1500점을 획득합니다.", 60 - strlen("적기 격추시 500점, 미사일로 격추시 추가로 1500점을 획득합니다.") / 2, Height + 2, 14);
+				OnDrawText((char*)"주기적으로 드랍되는 아이템은 전투에 직접적인 도움을 주거나 HP를 회복시켜 줍니다.", 60 - strlen("주기적으로 드랍되는 아이템은 전투에 직접적인 도움을 주거나 HP를 회복시켜 줍니다.") / 2, Height + 4, 14);
+				OnDrawText((char*)"점수 결산시에 남은 HP에 비례한 추가 점수도 있으니 유의하고 전투에 임해주시기 바랍니다.", 60 - strlen("점수 결산시에 남은 HP에 비례한 추가 점수도 있으니 유의하고 전투에 임해주시기 바랍니다.") / 2, Height + 6, 14);
+			}
+			if (Tuto6 + 5000 < GetTickCount64())
+			{
+				Story = true;
+				tuto6 = false;
+				UI = false;
+				if(_Player->TransInfo.Position.x > 60)
+					while (_Player->TransInfo.Position.x < 60)
+					{
+						--_Player->TransInfo.Position.x;
+						break;
+					}
+				if(_Player->TransInfo.Position.x < 60)
+					while (_Player->TransInfo.Position.x < 60)
+					{
+						++_Player->TransInfo.Position.x;
+						break;
+					}					
+				if (_Player->TransInfo.Position.y < 56)
+					while (_Player->TransInfo.Position.y < 56)
+					{
+						++_Player->TransInfo.Position.y;
+						break;
+					}
+				if (_Player->TransInfo.Position.x == 60 && _Player->TransInfo.Position.y == 56)
+				{
+					Story = false;
+					Story1 = false;
+					R1 = true;
+				}
 			}
 		}
 
@@ -889,34 +948,37 @@ void Tutorial(Object* _Player, ULONGLONG _time, Object* _E1, Object* _E2, Object
 		if (!tuto3 && tuto4)
 			OnDrawText((char*)"Heat Gauge : [                    ]", 84.0f, 0.0f);
 
-		for (int i = 0; i < Heat; ++i)
+		if (tuto4)
 		{
-			OnDrawText((char*)"■", 98.0f + i * 2, 0.0f, 10);
-			if (7.9f >= Heat && Heat >= 5.0f)
+			for (int i = 0; i < Heat; ++i)
 			{
-				ERR1 = GetTickCount64();
-				OnDrawText((char*)"■", 98.0f + i * 2, 0.0f, 14);
-			}
-
-			if (9.9f >= Heat && Heat >= 8.0f)
-			{
-				ERR1 = GetTickCount64();
-				OnDrawText((char*)"■", 98.0f + i * 2, 0.0f, 12);
-			}
-			if (Heat >= 10.0f)
-			{
-				OHeat = true;
-				OnDrawText((char*)"[ O V E R H E A T ! !]", 97.0f, 0.0f, 12);
-
-				if (ERR1 + 3000 < GetTickCount64())
+				OnDrawText((char*)"■", 98.0f + i * 2, 0.0f, 10);
+				if (7.9f >= Heat && Heat >= 5.0f)
 				{
 					ERR1 = GetTickCount64();
-					OHeat = false;
-					Heat = 0.0f;
+					OnDrawText((char*)"■", 98.0f + i * 2, 0.0f, 14);
 				}
 
+				if (9.9f >= Heat && Heat >= 8.0f)
+				{
+					ERR1 = GetTickCount64();
+					OnDrawText((char*)"■", 98.0f + i * 2, 0.0f, 12);
+				}
+				if (Heat >= 10.0f)
+				{
+					OHeat = true;
+					OnDrawText((char*)"[ O V E R H E A T ! !]", 97.0f, 0.0f, 12);
+
+					if (ERR1 + 3000 < GetTickCount64())
+					{
+						ERR1 = GetTickCount64();
+						OHeat = false;
+						Heat = 0.0f;
+					}
+
+				}
 			}
-		}
+		}		
 	}
 	
 }
