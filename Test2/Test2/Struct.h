@@ -46,7 +46,7 @@ struct sBullet
 
 struct sMissile
 {
-	char* Texture = (char*)"¥Ë";
+	char* Texture[2] = { (char*)"¥Ë", (char*)"¢£" };
 	ULONGLONG MTime;
 };
 

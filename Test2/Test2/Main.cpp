@@ -5,7 +5,9 @@
 // v 0.4 HP, 스코어, 배경
 // v 0.5 아이템 드랍
 // v 0.6 로고, 메인, 점수판
-// 다음에 할거 : 초반 스토리, 튜토리얼
+// v 0.7 튜토리얼
+// v 0.8 보스 등장까지
+
 /*
 1. 파랑
 2. 매트릭스
@@ -62,7 +64,7 @@ int main(void)
 
 	int ScoreBoard[8] = {  };
 	char Initial[8][4] = { };
-		
+
 	while (!Exit)
 	{
 		// 로고
@@ -106,9 +108,10 @@ int main(void)
 		Loaded1 = GetTickCount64();
 		DropItem1 = GetTickCount64();
 		BuffTime1 = GetTickCount64();
+		Time = GetTickCount64();
 		//R1Time = GetTickCount64();
 		R1 = true;
-		while (R1 && R1Time + 60000 > GetTickCount64())
+		while (R1 && R1Time + 6000 > GetTickCount64())
 		{
 			if (Time + 15 < GetTickCount64())
 			{
@@ -193,7 +196,7 @@ int main(void)
 						{
 							if (Bullet[i] == nullptr)
 							{
-								if (!Buff)
+								if (!BBuff)
 								{
 									Bullet[i] = CreateBullet(
 										Player->TransInfo.Position.x - 2,
@@ -202,7 +205,7 @@ int main(void)
 										Player->TransInfo.Position.x + 2,
 										Player->TransInfo.Position.y + 1);
 								}
-								else if (Buff)
+								else if (BBuff)
 								{
 									Bullet[i] = CreateBullet(
 										Player->TransInfo.Position.x - 4,
@@ -249,12 +252,38 @@ int main(void)
 							if (Missile[i] == nullptr)
 							{
 								Load = false;
-								Missile[i] = CreateBullet(
-									Player->TransInfo.Position.x,
-									Player->TransInfo.Position.y - 1);
-								Missile[i]->Missile.MTime = GetTickCount64();
-								Missile[i]->Speed = 0;
-								Missile[i]->HP = 2;
+								if (!MBuff)
+								{
+									Missile[i] = CreateBullet(
+										Player->TransInfo.Position.x,
+										Player->TransInfo.Position.y - 1);
+									Missile[i]->Missile.MTime = GetTickCount64();
+									Missile[i]->Speed = 0;
+									Missile[i]->HP = 3;
+								}
+								else if (MBuff)
+								{
+									Missile[i] = CreateBullet(
+										Player->TransInfo.Position.x,
+										Player->TransInfo.Position.y - 1);
+									Missile[i]->Missile.MTime = GetTickCount64();
+									Missile[i]->Speed = 0.5;
+									Missile[i]->HP = 3;
+									Missile[i + 1] = CreateBullet(
+										Player->TransInfo.Position.x - 2,
+										Player->TransInfo.Position.y - 1);
+									Missile[i + 1]->Missile.MTime = GetTickCount64();
+									Missile[i + 1]->Speed = 0.5;
+									Missile[i + 1]->HP = 3;
+									Missile[i + 2] = CreateBullet(
+										Player->TransInfo.Position.x + 2,
+										Player->TransInfo.Position.y - 1);
+									Missile[i + 2]->Missile.MTime = GetTickCount64();
+									Missile[i + 2]->Speed = 0.5;
+									Missile[i + 2]->HP = 3;
+									
+								}
+								
 								Loaded1 = GetTickCount64();
 								break;
 							}
@@ -289,7 +318,7 @@ int main(void)
 								if (ECollision(Bullet[i], Enemy[j]))
 								{
 									ScoreP(500);
-									Kill++;
+									++Kill;
 									Score += 500;
 
 									delete Enemy[j];
@@ -326,7 +355,7 @@ int main(void)
 								{
 									ScoreP(2000);
 									Score += 2000;
-									Kill++;
+									++MKill;
 
 									if (Missile[i]->HP > 1)
 									{
@@ -412,7 +441,7 @@ int main(void)
 							if (Item[i]->Item.Option == 1)
 							{
 								BuffTime1 = GetTickCount64();
-								Buff = true;
+								BBuff = true;
 								delete Item[i];
 								Item[i] = nullptr;
 								break;
@@ -426,6 +455,14 @@ int main(void)
 									ScoreP(2000);
 									Score += 2000;
 								}
+								delete Item[i];
+								Item[i] = nullptr;
+								break;
+							}
+							else if (Item[i]->Item.Option == 3)
+							{
+								BuffTime1 = GetTickCount64();
+								MBuff = true;
 								delete Item[i];
 								Item[i] = nullptr;
 								break;
@@ -455,7 +492,14 @@ int main(void)
 						}
 					}
 				}*/
-
+				if (BBuff || MBuff)
+				{
+					if (BuffTime1 + 10000 < GetTickCount64())
+					{
+						BBuff = false;
+						MBuff = false;
+					}
+				}
 				
 				// 배경 출력
 				for (int i = 0; i < 64; ++i)
@@ -505,7 +549,7 @@ int main(void)
 				{
 					if (Missile[i])
 					{
-						OnDrawText(Missile[i]->Missile.Texture,
+						OnDrawText(Missile[i]->Missile.Texture[0],
 							Missile[i]->TransInfo.Position.x,
 							Missile[i]->TransInfo.Position.y, 10);
 
@@ -528,14 +572,7 @@ int main(void)
 						Item[i]->TransInfo.Position.y += 0.5f;
 					}
 				}
-
-				if (Buff)
-				{
-					if (BuffTime1 + 10000 < GetTickCount64())
-					{
-						Buff = false;
-					}
-				}
+				
 				// 미사일 쿨
 				if (!Load)
 				{
@@ -656,7 +693,17 @@ int main(void)
 				delete Missile[i];
 				Missile[i] = nullptr;
 			}
-		}	
+		}
+		for (int i = 0; i < 6; ++i)
+		{
+			if (Ally[i] == nullptr)
+			{
+				if (i < 3)
+					Ally[i] = CreateAlly(14 + 16 * i, 50.0f, i);
+				else if (i >= 3)
+					Ally[i] = CreateAlly(26 + 16 * i, 50.0f, i);
+			}
+		}
 		Story2 = true;
 		Time = GetTickCount64();
 		AllyB = GetTickCount64();
@@ -666,8 +713,22 @@ int main(void)
 			{				
 				Time = GetTickCount64();
 				system("cls");
+				if (BG + 200 < GetTickCount64())
+				{
+					BG = GetTickCount64();
 
-				if (Player->TransInfo.Position.x != 60 || Player->TransInfo.Position.y != 56)
+					for (int i = 0; i < 64; ++i)
+					{
+						if (BackGround[i] == nullptr)
+						{
+							srand((GetTickCount64() + i * i) * GetTickCount64());
+							BackGround[i] = CreateBackGround(rand());
+
+							break;
+						}
+					}
+				}
+				if (Player->TransInfo.Position.x != 60 || Player->TransInfo.Position.y != 50)
 				{
 					while (Player->TransInfo.Position.x > 60)
 					{
@@ -679,34 +740,43 @@ int main(void)
 						++Player->TransInfo.Position.x;
 						break;
 					}			
-					while (Player->TransInfo.Position.y < 56)
+					while (Player->TransInfo.Position.y < 50)
 					{
 						++Player->TransInfo.Position.y;
+						break;
+					}
+					while (Player->TransInfo.Position.y > 50)
+					{
+						--Player->TransInfo.Position.y;
 						break;
 					}
 				}
 					
 				
-				if (Player->TransInfo.Position.x == 60 && Player->TransInfo.Position.y == 56 && Enemy[0] != nullptr)
+				if (Player->TransInfo.Position.x == 60 && Player->TransInfo.Position.y == 50)
 				{
-					for (int i = 0; i < 256; ++i)
+					for (int i = 0; i < 7; i+=6)
 					{
-						if (Bullet[i] == nullptr && Bullet[i + 1] == nullptr &&
-							Bullet[i + 2] == nullptr && Bullet[i + 3] == nullptr &&
-							Bullet[i + 4] == nullptr && Bullet[i + 5] == nullptr)
+						if (AllyB + 150 < GetTickCount64())
 						{
-							Bullet[i] = CreateBullet(14, 58);
-							Bullet[i + 1] = CreateBullet(30, 58);
-							Bullet[i + 2] = CreateBullet(46, 58);
-							Bullet[i + 3] = CreateBullet(74, 58);
-							Bullet[i + 4] = CreateBullet(90, 58);
-							Bullet[i + 5] = CreateBullet(106, 58);
-							break;
-						}
+							AllyB = GetTickCount64();
+							if (Bullet[i] == nullptr && Bullet[i + 1] == nullptr &&
+								Bullet[i + 2] == nullptr && Bullet[i + 3] == nullptr &&
+								Bullet[i + 4] == nullptr && Bullet[i + 5] == nullptr)
+							{
+								Bullet[i] = CreateBullet(14, 58);
+								Bullet[i + 1] = CreateBullet(30, 58);
+								Bullet[i + 2] = CreateBullet(46, 58);
+								Bullet[i + 3] = CreateBullet(74, 58);
+								Bullet[i + 4] = CreateBullet(90, 58);
+								Bullet[i + 5] = CreateBullet(106, 58);
+								break;
+							}
+						}				
 					}
 				}
 				
-				for (int i = 0; i < 256; ++i)
+				for (int i = 0; i < 12; ++i)
 				{
 					if (Bullet[i] != nullptr)
 					{
@@ -733,7 +803,23 @@ int main(void)
 						}
 					}
 				}
-				for (int i = 0; i < 256; ++i)
+				for (int i = 0; i < 64; ++i)
+				{
+					if (BackGround[i])
+					{
+						OnDrawBG(BackGround[i]);
+
+						BackGround[i]->TransInfo.Position.y += 1;
+						if (BackGround[i]->TransInfo.Position.y >= 60)
+						{
+							delete BackGround[i];
+							BackGround[i] = nullptr;
+
+							break;
+						}
+					}
+				}
+				for (int i = 0; i < 12; ++i)
 				{
 					if (Bullet[i])
 					{
@@ -750,39 +836,235 @@ int main(void)
 						OnDrawObj(Enemy[i], Enemy[i]->TransInfo.Position.x, Enemy[i]->TransInfo.Position.y);
 					}
 				}
+				if (Enemy[0] == nullptr && Bullet[0] == nullptr)
+				{
+					Story2 = false;
+					Story3 = true;
+				}	
+				OnDrawObj(Player, Player->TransInfo.Position.x, Player->TransInfo.Position.y);
+			}
+		}
+		StoryTime = GetTickCount64();
+		while (Story3)
+		{
+			if (Time + 30 < GetTickCount64())
+			{
+				Time = GetTickCount64();
+				system("cls");
+
+				if (BG + 200 < GetTickCount64())
+				{
+					BG = GetTickCount64();
+
+					for (int i = 0; i < 64; ++i)
+					{
+						if (BackGround[i] == nullptr)
+						{
+							srand((GetTickCount64() + i * i) * GetTickCount64());
+							BackGround[i] = CreateBackGround(rand());
+
+							break;
+						}
+					}
+				}
+				
+				for (int i = 0; i < 12; ++i)
+				{
+					if (Bullet[i] != nullptr)
+					{
+						if (Bullet[i]->TransInfo.Position.y <= 4)
+						{
+							delete Bullet[i];
+							Bullet[i] = nullptr;
+
+							break;
+						}
+					}
+				}
+				if (StoryTime + 5000 < GetTickCount64() && Ally[0] != nullptr)
+				{
+					for (int i = 0; i < 6; ++i)
+					{
+						if (EMissile[i] == nullptr)
+						{
+							if (i < 3)
+							{
+								EMissile[i] = CreateBullet(14 + 16 * i, 0);
+								EMissile[i]->Speed = 3;
+							}
+							if (i >= 3)
+							{
+								EMissile[i] = CreateBullet(26 + 16 * i, 0);
+								EMissile[i]->Speed = 3;
+							}
+						}
+						
+					}
+				}
+				for (int i = 0; i < 8; ++i)
+				{
+					if (EMissile[i] != nullptr)
+					{
+						for (int j = 0; j < 6; ++j)
+						{
+							if (Ally[j] != nullptr)
+							{
+								if (EMissile[i]->TransInfo.Position.y >= 49)
+								{
+									delete EMissile[i];
+									EMissile[i] = nullptr;
+
+									delete Ally[j];
+									Ally[j] = nullptr;
+
+									break;
+								}
+							}
+						}
+					}
+				}
 				for (int i = 0; i < 64; ++i)
 				{
-					for (int j = 0; j < 256; ++j)
+					if (BackGround[i])
 					{
-						if (Enemy[i] == nullptr && Bullet[j] == nullptr)
+						OnDrawBG(BackGround[i]);
+
+						BackGround[i]->TransInfo.Position.y += 1;
+						if (BackGround[i]->TransInfo.Position.y >= 60)
 						{
-							Story2 = false;
-							Story3 = true;
+							delete BackGround[i];
+							BackGround[i] = nullptr;
+
+							break;
+						}
+					}
+				}
+				for (int i = 0; i < 8; ++i)
+				{
+					if (EMissile[i])
+					{
+						OnDrawText(EMissile[i]->Missile.Texture[1], EMissile[i]->TransInfo.Position.x, EMissile[i]->TransInfo.Position.y, 12);
+						EMissile[i]->TransInfo.Position.y += EMissile[i]->Speed;
+					}
+				}
+				for (int i = 0; i < 6; ++i)
+				{
+					if (Ally[i])
+						OnDrawObj(Ally[i], Ally[i]->TransInfo.Position.x, Ally[i]->TransInfo.Position.y);
+				}
+				for (int i = 0; i < 6; ++i)
+				{
+					if (Bullet[i])
+					{
+						OnDrawText(Bullet[i]->Bullet.Texture, Bullet[i]->TransInfo.Position.x,
+							Bullet[i]->TransInfo.Position.y, 14);
+
+						Bullet[i]->TransInfo.Position.y -= 1;
+					}
+				}
+				for (int i = 0; i < 64; ++i)
+				{
+					if (Enemy[i])
+						OnDrawObj(Enemy[i], Enemy[i]->TransInfo.Position.x, Enemy[i]->TransInfo.Position.y);
+					
+				}
+				OnDrawObj(Player, Player->TransInfo.Position.x, Player->TransInfo.Position.y);
+				if (StoryTime + 2500 < GetTickCount64() && StoryTime + 3000 > GetTickCount64())
+				{
+					for (int i = 0; i < 6; ++i)
+					{
+						if (i < 3)
+							Warning(14 + 16 * i, 0);
+						if (i >= 3)
+							Warning(26 + 16 * i, 0);
+					}				
+				}
+				if (StoryTime + 3500 < GetTickCount64() && StoryTime + 4000 > GetTickCount64())
+				{
+					for (int i = 0; i < 6; ++i)
+					{
+						if (i < 3)
+							Warning(15 + 16 * i, 0);
+						if (i >= 3)
+							Warning(26 + 16 * i, 0);
+					}				
+				}
+				if ((StoryTime + 1000 < GetTickCount64() && StoryTime + 2600 > GetTickCount64()) || (StoryTime + 4000 < GetTickCount64() && StoryTime + 5000 > GetTickCount64()))
+				{
+					OnDrawText((char*)"┎ㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡ┒", 60 - strlen("┎ㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡ┒") / 2, 24);
+					OnDrawText((char*)"ㅣ                             ㅣ", 60 - strlen("┎ㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡ┒") / 2, 25);
+					OnDrawText((char*)"ㅣ                             ㅣ", 60 - strlen("┎ㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡ┒") / 2, 26);
+					OnDrawText((char*)"ㅣ                             ㅣ", 60 - strlen("┎ㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡ┒") / 2, 27);
+					OnDrawText((char*)"┖ㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡ┚", 60 - strlen("┎ㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡ┒") / 2, 28);
+				}
+				if (StoryTime + 1000 < GetTickCount64() && StoryTime + 2500 > GetTickCount64())
+				{					
+					OnDrawText((char*)"살았다..! 지원이 왔어", 60 - strlen("살았다..! 지원이 왔어") / 2, 26);
+				}
+				if (StoryTime + 4000 < GetTickCount64() && StoryTime + 5000 > GetTickCount64())
+				{
+					OnDrawText((char*)"...!!!   위험해!!", 60 - strlen("...!!!   위험해!!") / 2, 26);
+				}
+				if ((StoryTime + 6500 < GetTickCount64() && StoryTime + 7400 > GetTickCount64()) || (StoryTime + 8500 < GetTickCount64() && StoryTime + 9400 > GetTickCount64()))
+					Warning2(23);
+				if (StoryTime + 9500 < GetTickCount64())
+				{
+					Story3 = false;
+					Story4 = true;
+				}
+			}
+			
+		}
+		Heat = 0.0f;
+		EnemyTime1 = GetTickCount64();
+		Cooling1 = GetTickCount64();
+		ERR1 = GetTickCount64();
+		Loaded1 = GetTickCount64();
+		DropItem1 = GetTickCount64();
+		BuffTime1 = GetTickCount64();
+		Time = GetTickCount64();
+		while (Story4)
+		{
+			if (Time + 15 < GetTickCount64())
+			{
+				Time = GetTickCount64();
+				system("cls");
+
+				if (BG + 200 < GetTickCount64())
+				{
+					BG = GetTickCount64();
+
+					for (int i = 0; i < 64; ++i)
+					{
+						if (BackGround[i] == nullptr)
+						{
+							srand((GetTickCount64() + i * i) * GetTickCount64());
+							BackGround[i] = CreateBackGround(rand());
+
+							break;
+						}
+					}
+				}
+				for (int i = 0; i < 64; ++i)
+				{
+					if (BackGround[i])
+					{
+						OnDrawBG(BackGround[i]);
+
+						BackGround[i]->TransInfo.Position.y += 1;
+						if (BackGround[i]->TransInfo.Position.y >= 60)
+						{
+							delete BackGround[i];
+							BackGround[i] = nullptr;
+
+							break;
 						}
 					}
 				}
 				OnDrawObj(Player, Player->TransInfo.Position.x, Player->TransInfo.Position.y);
 			}
+			BossScene();
 		}
-		while (Story3)
-		{
-			for (int i = 0; i < 6; ++i)
-			{
-				if (Ally[i] == nullptr)
-				{
-					if (i < 3)
-						Ally[i] = CreateAlly(14 + 16 * i, 50.0f, i);
-					else if (i >= 3)
-						Ally[i] = CreateAlly(26 + 16 * i, 50.0f, i);
-					break;
-				}
-			}
-			for (int i = 0; i < 6; ++i)
-			{
-				if (Ally[i])
-					OnDrawObj(Ally[i], Ally[i]->TransInfo.Position.x, Ally[i]->TransInfo.Position.y);
-			}
-		}		
 	}
 		
 	return 0;
