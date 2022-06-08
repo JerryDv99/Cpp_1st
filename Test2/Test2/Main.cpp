@@ -90,12 +90,12 @@ int main(void)
 		tuto5 = true;
 		tuto6 = true; 
 		tuto7 = true; 
-
+		Player->Player.Name = (char*)"rrr";
 		// 스토리1(튜토리얼)
-		while (Story1)
+		/*while (Story1)
 		{
 			Tutorial(Player, Time, Enemy1, Enemy2, Enemy3);
-		}
+		}*/
 		delete Enemy1;
 		delete Enemy2;
 		delete Enemy3;
@@ -106,7 +106,8 @@ int main(void)
 		Loaded1 = GetTickCount64();
 		DropItem1 = GetTickCount64();
 		BuffTime1 = GetTickCount64();
-
+		//R1Time = GetTickCount64();
+		R1 = true;
 		while (R1 && R1Time + 60000 > GetTickCount64())
 		{
 			if (Time + 15 < GetTickCount64())
@@ -631,16 +632,23 @@ int main(void)
 				}
 				OnDrawText(T, 64.0f, 1.0f, 14);								
 			}
-		}	
-		
-		/*for (int i = 0; i < 128; ++i)
+		}
+		for (int i = 0; i < 128; ++i)
 		{
 			if (EBullet[i] != nullptr)
 			{
 				delete EBullet[i];
 				EBullet[i] != nullptr;
 			}
-		}	
+		}
+		for (int i = 0; i < 256; ++i)
+		{
+			if (Bullet[i] != nullptr)
+			{
+				delete Bullet[i];
+				Bullet[i] != nullptr;
+			}
+		}
 		for (int i = 0; i < 8; ++i)
 		{
 			if (Missile[i] != nullptr)
@@ -648,7 +656,8 @@ int main(void)
 				delete Missile[i];
 				Missile[i] = nullptr;
 			}
-		}
+		}	
+		Story2 = true;
 		Time = GetTickCount64();
 		AllyB = GetTickCount64();
 		while (Story2)
@@ -658,107 +667,104 @@ int main(void)
 				Time = GetTickCount64();
 				system("cls");
 
-				while (Player->TransInfo.Position.x != 60 && Player->TransInfo.Position.y != 56)
-					if (Player->TransInfo.Position.x > 60)
-						while (Player->TransInfo.Position.x < 60)
-						{
-							--Player->TransInfo.Position.x;
-							break;
-						}
-				if (Player->TransInfo.Position.x < 60)
+				if (Player->TransInfo.Position.x != 60 || Player->TransInfo.Position.y != 56)
+				{
+					while (Player->TransInfo.Position.x > 60)
+					{
+						--Player->TransInfo.Position.x;
+						break;
+					}									
 					while (Player->TransInfo.Position.x < 60)
 					{
 						++Player->TransInfo.Position.x;
 						break;
-					}
-				if (Player->TransInfo.Position.y < 56)
+					}			
 					while (Player->TransInfo.Position.y < 56)
 					{
 						++Player->TransInfo.Position.y;
 						break;
 					}
-				if (Player->TransInfo.Position.x == 60 && Player->TransInfo.Position.y == 56)
+				}
+					
+				
+				if (Player->TransInfo.Position.x == 60 && Player->TransInfo.Position.y == 56 && Enemy[0] != nullptr)
 				{
-					for (int i = 0; i < 128; ++i)
+					for (int i = 0; i < 256; ++i)
 					{
-						if (Bullet[i] == nullptr)
+						if (Bullet[i] == nullptr && Bullet[i + 1] == nullptr &&
+							Bullet[i + 2] == nullptr && Bullet[i + 3] == nullptr &&
+							Bullet[i + 4] == nullptr && Bullet[i + 5] == nullptr)
 						{
-							if (AllyB + 50 < GetTickCount64())
-							{
-								AllyB = GetTickCount64();
-								Bullet[i] = CreateBullet(14, 58);
-								Bullet[i + 1] = CreateBullet(30, 58);
-								Bullet[i + 2] = CreateBullet(46, 58);
-								Bullet[i + 3] = CreateBullet(74, 58);
-								Bullet[i + 4] = CreateBullet(90, 58);
-								Bullet[i + 5] = CreateBullet(106, 58);
-
-								break;
-							}
+							Bullet[i] = CreateBullet(14, 58);
+							Bullet[i + 1] = CreateBullet(30, 58);
+							Bullet[i + 2] = CreateBullet(46, 58);
+							Bullet[i + 3] = CreateBullet(74, 58);
+							Bullet[i + 4] = CreateBullet(90, 58);
+							Bullet[i + 5] = CreateBullet(106, 58);
+							break;
 						}
 					}
 				}
-			}
-			for (int i = 0; i < 256; ++i)
-			{
-				if (Bullet[i] != nullptr)
+				
+				for (int i = 0; i < 256; ++i)
 				{
-					if (Bullet[i]->TransInfo.Position.y <= 10)
+					if (Bullet[i] != nullptr)
 					{
-						for (int j = 0; j < 64; ++j)
+						if (Bullet[i]->TransInfo.Position.y <= 10)
 						{
-							if (Enemy[j] != nullptr)
+							for (int j = 0; j < 64; ++j)
 							{
-								delete Enemy[j];
-								Enemy[j] = nullptr;
+								if (Enemy[j] != nullptr)
+								{
+									delete Enemy[j];
+									Enemy[j] = nullptr;
+								}
 							}
 						}
 					}
-				}
-				if (Bullet[i] != nullptr)
-				{
-					if (Bullet[i]->TransInfo.Position.y <= 2)
+					if (Bullet[i] != nullptr)
 					{
-						delete Bullet[i];
-						Bullet[i] = nullptr;
+						if (Bullet[i]->TransInfo.Position.y <= 2)
+						{
+							delete Bullet[i];
+							Bullet[i] = nullptr;
 
-						break;
+							break;
+						}
 					}
 				}
-			}
-			for (int i = 0; i < 128; ++i)
-			{
-				if (Bullet[i])
+				for (int i = 0; i < 256; ++i)
 				{
-					OnDrawText(Bullet[i]->Bullet.Texture, Bullet[i]->TransInfo.Position.x,
-						Bullet[i]->TransInfo.Position.y, 14);
-
-					Bullet[i]->TransInfo.Position.y -= 1;
-				}
-			}
-			for (int i = 0; i < 64; ++i)
-			{
-				if (Enemy[i])
-				{
-					OnDrawObj(Enemy[i], Enemy[i]->TransInfo.Position.x, Enemy[i]->TransInfo.Position.y);
-				}
-			}
-			for (int i = 0; i < 64; ++i)
-			{
-				for (int j = 0; j < 256; ++j)
-				{
-					if (Enemy[i] == nullptr && Bullet[j] == nullptr)
+					if (Bullet[i])
 					{
-						Story2 = false;
-						Story3 = true;
+						OnDrawText(Bullet[i]->Bullet.Texture, Bullet[i]->TransInfo.Position.x,
+							Bullet[i]->TransInfo.Position.y, 14);
+
+						Bullet[i]->TransInfo.Position.y -= 1;
 					}
 				}
+				for (int i = 0; i < 64; ++i)
+				{
+					if (Enemy[i])
+					{
+						OnDrawObj(Enemy[i], Enemy[i]->TransInfo.Position.x, Enemy[i]->TransInfo.Position.y);
+					}
+				}
+				for (int i = 0; i < 64; ++i)
+				{
+					for (int j = 0; j < 256; ++j)
+					{
+						if (Enemy[i] == nullptr && Bullet[j] == nullptr)
+						{
+							Story2 = false;
+							Story3 = true;
+						}
+					}
+				}
+				OnDrawObj(Player, Player->TransInfo.Position.x, Player->TransInfo.Position.y);
 			}
-			OnDrawObj(Player, Player->TransInfo.Position.x, Player->TransInfo.Position.y);
-			}
-		}		
-		OnDrawText((char*)"TestTestTestTestTestTestTestTestTestTestTestTestTestTestTestTestTest", 60, 30);*/
-		/*while (Story3)
+		}
+		while (Story3)
 		{
 			for (int i = 0; i < 6; ++i)
 			{
@@ -776,10 +782,7 @@ int main(void)
 				if (Ally[i])
 					OnDrawObj(Ally[i], Ally[i]->TransInfo.Position.x, Ally[i]->TransInfo.Position.y);
 			}
-		}*/
-		
-		
-		
+		}		
 	}
 		
 	return 0;
