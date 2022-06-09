@@ -62,6 +62,7 @@ void Warning2(const int _y);
 
 void BossScene();
 
+void BossTuto();
 
 Vector3 Direction;
 
@@ -121,6 +122,7 @@ bool R1 = false;
 bool RCheck = false;
 bool LCheck = false;
 bool Main = true;
+bool BR = false;
 
 bool tuto1 = false;
 bool tuto2 = false;
@@ -1205,36 +1207,94 @@ void Warning2(const int _y)
 
 void BossScene()
 {
-	float Width = 6.0f;
-	float Height = 0.0f;
-	OnDrawText((char*)"MMMMFVVVVFVVIMMMMMMMMMMNMNNMNNMMMMMNNNNNUUUUU******VVVUUVVV*****VUVFIMMMMMIFIMMMIFFFIIIIVVVVFVVVNNMMMNNMMVMNN", Width, Height, 6);
+	float Width = 5.0f;
+	float Height = 2.0f;
+
+	OnDrawText((char*)"MMMMFVVVVFVVIMMMMMMMMMMNMNNMNNMMMMMNNNNNUUUUU******VVVUUVVV*****VUVFIMMMMMIFIMMMIFFFIIIIVVVVFVVVNNMMMNNMMVMNNM", Width, Height, 6);
 	OnDrawText((char*)"MMM::.:.::.:::::.:::..:****:::..:****:::I**VNBF*****VVUUVV*****VFFF*::::*::*:::::*****:::**::*********:****MMM", Width, Height + 1, 6);
 	OnDrawText((char*)"MMM::*********::::::.:::***:::..:**:::*:IVVVVFFV*****VVVV*****VVFIII:..::**::::******:::::::**:***********VMMM", Width, Height + 2, 6);
 	OnDrawText((char*)" MMMVM*::**::*****::::::*****:..::***:**IVFVVVVVI*****VV*****NBVFIII**:****::::*******:::*******:******NNVMNM ", Width, Height + 3, 6);
-	OnDrawText((char*)"  VV  NN************:******V**:::*******IIVVVVIIIV**********VVVVVIIV********:::*VVV**************VVFFIIM  VV  ", Width, Height + 4, 6);
+	OnDrawText((char*)"      NN************:******V**:::*******IIVVVVIIIV**********VVVVVIIV********:::*VVV**************VVFFIIM      ", Width, Height + 4, 6);
 	OnDrawText((char*)"        NMMMFVVVV***::******************IVIVVVFVFVV********IVVVVVIIM:.*V*******V*********VVVFIIIMMMNNN        ", Width, Height + 5, 6);
-	OnDrawText((char*)"          VV  NNNM*VVVVVVV*NNNVVFVVFFF**BNFFVVFFFVVV******IFVVIVFIII**VV*NFVVFF*VVVVFVVVVV:MNNNN  VV          ", Width, Height + 6, 6);
-	OnDrawText((char*)"                LNNFNNMFIIIIUUBUUFUUVVVUUUVFVVVVFFVVV****VIFFVVVFIMIUUUVUVUUUUU*VMIIIIUFUUUN/                 ", Width, Height + 7, 6);
-	OnDrawText((char*)"                  VV  IIIIIIII VV IIIIIIII  FVVVFFVVVV**VVVFFVVVFV  IIIIIIII VV IIIIIIII  VV                  ", Width, Height + 8, 6);
-	OnDrawText((char*)"                      VVIIIIVV    VVIIIIVV  VVFIV   VVVVVV   IFVVF  VVIIIIVV    VVIIIIVV                      ", Width, Height + 9, 6);
-	OnDrawText((char*)"                       VIIIIV     VVIIIIVV  NIFVVV   UUUU   VVFFNF  VVIIIIVV     VIIIIV                       ", Width, Height + 10, 6);
-	OnDrawText((char*)"                       VVIIVV      VVIIVV    VVVVVV   II   VVVMVV    VVIIVV      VVIIVV                       ", Width, Height + 11, 6);
-	OnDrawText((char*)"                        VVVV       VVIIVV     FMVVVV      VVVMVV     VVIIVV       VVVV                        ", Width, Height + 12, 6);
-	OnDrawText((char*)"                                    VVVV       FMFVVV    NVFNVV       VVVV                                    ", Width, Height + 13, 6);
-	OnDrawText((char*)"                                                VMIVVV  VVVVVV                                                ", Width, Height + 14, 6);
+	OnDrawText((char*)"              NNNM*VVVVVVV*NNNVVFVVFFF**BNFFVVFFFVVV******IFVVIVFIII**VV*NFVVFF*VVVVFVVVVV:MNNNN              ", Width, Height + 6, 6);
+	OnDrawText((char*)"                 LNFNNMFIIIIUUBUUFUUVVVUUUVFVVVVFFVVV****VIFFVVVFIMIUUUVUVUUUUU*VMIIIIUFUUUN/                 ", Width, Height + 7, 6);
+	OnDrawText((char*)"                      IIIIIIII    IIIIIIII  FVVV   VVV**VVV   VVFV  IIIIIIII    IIIIIIII                      ", Width, Height + 8, 6);
+	OnDrawText((char*)"                      VVIIIIVV    VVIIIIVV  VVFI    VVVVVV    FVVF  VVIIIIVV    VVIIIIVV                      ", Width, Height + 9, 6);
+	OnDrawText((char*)"                       VIIIIV     VVIIIIVV  NIFVV    UUUU    VFFNF  VVIIIIVV     VIIIIV                       ", Width, Height + 10, 6);
+	OnDrawText((char*)"                       VVIIVV      VVIIVV    VVVVV    II    VVMVV    VVIIVV      VVIIVV                       ", Width, Height + 11, 6);
+	OnDrawText((char*)"                        VVVV       VVIIVV     FMVVV        VVMVV     VVIIVV       VVVV                        ", Width, Height + 12, 6);
+	OnDrawText((char*)"                                    VVVV       FMFVV      VFNVV       VVVV                                    ", Width, Height + 13, 6);
+	OnDrawText((char*)"                                                VMIVV    VVVVV                                                ", Width, Height + 14, 6);
 	OnDrawText((char*)"                                                 VVVVVVVVVVVV                                                 ", Width, Height + 15, 6);
 	OnDrawText((char*)"                                                  VUUUUUUUUV                                                  ", Width, Height + 16, 6);
 	OnDrawText((char*)"                                                   VUUUUUUV                                                   ", Width, Height + 17, 6);
+	OnDrawText((char*)"                                                     VUUV                                                     ", Width, Height + 18, 6);
 
 
+	OnDrawText((char*)"**", 54, Height + 8, 12);
+	OnDrawText((char*)"**", 64, Height + 8, 12);
+	OnDrawText((char*)"***", 54, Height + 9, 12);
+	OnDrawText((char*)"***", 63, Height + 9, 12);
+	OnDrawText((char*)"***", 55, Height + 10, 12);
+	OnDrawText((char*)"***", 62, Height + 10, 12);
+	OnDrawText((char*)"***", 56, Height + 11, 12);
+	OnDrawText((char*)"***", 61, Height + 11, 12);
+	OnDrawText((char*)"**::**", 57, Height + 12, 12);
+	OnDrawText((char*)"****", 58, Height + 13, 12);
+	OnDrawText((char*)"**", 59, Height + 14, 12);
+	OnDrawText((char*)"VV", 7, Height + 4, 13);
+	OnDrawText((char*)"VV", 111, Height + 4, 13);
+	OnDrawText((char*)"VV", 15, Height + 6, 13);
+	OnDrawText((char*)"VV", 103, Height + 6, 13);
+	OnDrawText((char*)"VV", 24, Height + 8, 13);
+	OnDrawText((char*)"VV", 36, Height + 8, 13);
+	OnDrawText((char*)"VV", 82, Height + 8, 13);
+	OnDrawText((char*)"VV", 94, Height + 8, 13);
+}
 
-	OnDrawText((char*)"                                                 ***      ***                                                 ", Width, Height + 17, 12);
-	OnDrawText((char*)"                                                  ***    ***                                                  ", Width, Height + 17, 12);
-	OnDrawText((char*)"                                                   ***  ***                                                   ", Width, Height + 17, 12);
-	OnDrawText((char*)"                                                    **::**                                                    ", Width, Height + 17, 12);
-	OnDrawText((char*)"                                                     ****                                                     ", Width, Height + 17, 12);
-	OnDrawText((char*)"                                                      **                                                      ", Width, Height + 17, 12);
-	OnDrawText((char*)"  VV                                                                                                      VV  ", Width, Height + 17, 12);
-	OnDrawText((char*)"          VV                                                                                      VV          ", Width, Height + 17, 12);
-	OnDrawText((char*)"                  VV           VV                                            VV           VV                  ", Width, Height + 17, 12);
+void BossTuto()
+{
+	int Width = 60 - strlen("┎ㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡ┒") / 2;
+	int Height = 12;
+	OnDrawText((char*)"┎ㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡ┒", Width, Height, 14);
+	OnDrawText((char*)"ㅣ                                                                                                         ㅣ", Width, Height + 1, 14);
+	OnDrawText((char*)"ㅣ                                                                                                         ㅣ", Width, Height + 2, 14);
+	OnDrawText((char*)"ㅣ                                                                                                         ㅣ", Width, Height + 3, 14);
+	OnDrawText((char*)"ㅣ                                                                                                         ㅣ", Width, Height + 4, 14);
+	OnDrawText((char*)"ㅣ                                                                                                         ㅣ", Width, Height + 5, 14);
+	OnDrawText((char*)"ㅣ                                                                                                         ㅣ", Width, Height + 6, 14);
+	OnDrawText((char*)"ㅣ                                                                                                         ㅣ", Width, Height + 7, 14);
+	OnDrawText((char*)"ㅣ                                                                                                         ㅣ", Width, Height + 8, 14);
+	OnDrawText((char*)"ㅣ                                                                                                         ㅣ", Width, Height + 9, 14);
+	OnDrawText((char*)"ㅣ                                                                                                         ㅣ", Width, Height + 10, 14);
+	OnDrawText((char*)"ㅣ                                                                                                         ㅣ", Width, Height + 11, 14);
+	OnDrawText((char*)"ㅣ                                                                                                         ㅣ", Width, Height + 12, 14);
+	OnDrawText((char*)"ㅣ                                                                                                         ㅣ", Width, Height + 13, 14);
+	OnDrawText((char*)"ㅣ                                                                                                         ㅣ", Width, Height + 14, 14);
+	OnDrawText((char*)"ㅣ                                                                                                         ㅣ", Width, Height + 15, 14);
+	OnDrawText((char*)"ㅣ                                                                                                         ㅣ", Width, Height + 16, 14);
+	OnDrawText((char*)"ㅣ                                                                                                         ㅣ", Width, Height + 17, 14);
+	OnDrawText((char*)"ㅣ                                                                                                         ㅣ", Width, Height + 18, 14);
+	OnDrawText((char*)"ㅣ                                                                                                         ㅣ", Width, Height + 19, 14);
+	OnDrawText((char*)"ㅣ                                                                                                         ㅣ", Width, Height + 20, 14);
+	OnDrawText((char*)"ㅣ                                                                                                         ㅣ", Width, Height + 21, 14);
+	OnDrawText((char*)"ㅣ                                                                                                         ㅣ", Width, Height + 22, 14);
+	OnDrawText((char*)"ㅣ                                                                                                         ㅣ", Width, Height + 23, 14);
+	OnDrawText((char*)"ㅣ                                                                                                         ㅣ", Width, Height + 24, 14);
+	OnDrawText((char*)"ㅣ                                                                                                         ㅣ", Width, Height + 25, 14);
+	OnDrawText((char*)"ㅣ                                                                                                         ㅣ", Width, Height + 26, 14);
+	OnDrawText((char*)"ㅣ                                                                                                         ㅣ", Width, Height + 27, 14);
+	OnDrawText((char*)"ㅣ                                                                                                         ㅣ", Width, Height + 28, 14);
+	OnDrawText((char*)"ㅣ                                                                                                         ㅣ", Width, Height + 29, 14);
+	OnDrawText((char*)"ㅣ                                                                                                         ㅣ", Width, Height + 30, 14);
+	OnDrawText((char*)"ㅣ                                                                                                         ㅣ", Width, Height + 31, 14);
+	OnDrawText((char*)"ㅣ                                                                                                         ㅣ", Width, Height + 32, 14);
+	OnDrawText((char*)"ㅣ                                                                                                         ㅣ", Width, Height + 33, 14);
+	OnDrawText((char*)"ㅣ                                                                                                         ㅣ", Width, Height + 34, 14);
+	OnDrawText((char*)"ㅣ                                                                                                         ㅣ", Width, Height + 35, 14);
+	OnDrawText((char*)"ㅣ                                                                                                         ㅣ", Width, Height + 36, 14);
+	OnDrawText((char*)"┖ㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡ┚", Width, Height + 37, 14);
+
+
+	OnDrawText((char*)"확인하고 전투 시작 [ SPACE BAR ]", 60 - strlen("확인하고 전투 시작 [ SPACE BAR ]") / 2, Height + 35, 11);
 }

@@ -57,6 +57,19 @@ struct sItem
 	int Option;
 };
 
+struct Hitbox
+{
+	char* Texture = (char*)"HHHH";
+	ULONGLONG HTime;
+	Transform TransInfo;
+};
+
+struct BOSS
+{
+	Hitbox Hitbox;
+	int HP = 60;
+};
+
 struct Object
 {
 	Icon Icon;
@@ -76,37 +89,6 @@ struct BackGround
 	int Color;
 	Transform TransInfo;
 };
-
-//struct Boss
-//{
-//	char* Texture[17] = { (char*)"MMMMMMMMMMNNMNNMNNVVMMMNNNMMNNVVMMMVMMVMMVVNMVVVIMF*MVI*MMMMMVNMNFFVVVMMMNMMNNNMNMMMMMMMIIMMIIVVVVVVVIVVIMMM",
-//						  (char*)"MMV**:*:***::***:.*::::*****:::..****:::**MIMIM*VM*VF:NVVN VF*VIMM**:..::*:.....****::.:*:.:*VV**VVV**V*V*MM",
-//						  (char*)"MMV*VVFVMMIVVMV**::*.::*V***.:..:*V*:::*:VIMF:FMI*.*I*M*:M IV:*NN F.:::*V*:..::*VVV*:*:::::*:*IIVVVFVIVV*VMM",
-//						  (char*)"VVNNV*V***V*:*VVV**:.::::VVIV*...:*FV*:**NINV*F VVV**M**V  M**F N F*:*VIV*:..*VIMV*::*:**VVIFV:*:V***VVVNNVV",
-//						  (char*)"    NMNMMIVV*****VVV*****IIMF*:::*VVVMV**VMV*FIMVNV*****M NI*VFVMNIVVNFVVV**:*FNIMFVVV*VV****VVFINNMMNNN    ",
-//						  (char*)"    VV    VV    VMMFV**VV***VNVVV****NF*V NINNIM  M*FVM*N  MVNNMN I.:MI*VVVNVIV*:*VVVV*MNNNV    VV    VV    ",
-//						  (char*)"                VV *MM  NMIFVV***VVVIMF**M MF M   V:*VV*V   INMM  MVMMIVV**V*VVIMN NN M *FVV                ",
-//						  (char*)"                       MM   NMMIMIFVVVVI*V MIMM  NVFMNNNF   MIMN  FVIFFIMM  FNVNNN NMN                      ",
-//						  (char*)"                        VM*MN*M     MMMNMVNMVV*M IFNVNMMNI  IV**MNV NMNN NN  M*NIVIVV                       ",
-//						  (char*)"                       I*MVVMM     MI NMNINFVI   MVV*NIFMM    F*INFNNM NMMN NNN M*MIV                       ",
-//						  (char*)"                       MVMNVIM     V*N*MI   IVVVV*V**VVNVVVVVFVM    N*IVV       IVMNV                       ",
-//						  (char*)"                       NFMNFIN     VV FVM     MIIIVIIVVNV*IVVM      I* NV       MMINVM                      ",
-//						  (char*)"                       NVMMI*N     VFM I        MFFVMM M*MFM        IIMNM       VNIM*M                      ",
-//						  (char*)"                                   VMMNFV       MMV:IMMV*VMN        VMMNVF                                  ",
-//						  (char*)"                                                 MNV*VMVV                                                   ",
-//						  (char*)"                                                    NVVI                                                    " };
-//			
-//	int HP;
-//	Transform TransInfo;
-//	HitBox HitZone;
-//};
-//
-//struct HitBox
-//{
-//	char* Texture = (char*)"MMMM";
-//	int Color = 12;
-//	Transform TransInfo;
-//};
 
 struct sLogo
 {
