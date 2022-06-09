@@ -60,7 +60,7 @@ void Warning(const int _x, const int _y);
 
 void Warning2(const int _y);
 
-void BossScene();
+void BossScene(const int _y);
 
 void BossTuto();
 
@@ -1205,10 +1205,10 @@ void Warning2(const int _y)
     
 }
 
-void BossScene()
+void BossScene(const int _y)
 {
 	float Width = 5.0f;
-	float Height = 2.0f;
+	float Height = _y;
 
 	OnDrawText((char*)"MMMMFVVVVFVVIMMMMMMMMMMNMNNMNNMMMMMNNNNNUUUUU******VVVUUVVV*****VUVFIMMMMMIFIMMMIFFFIIIIVVVVFVVVNNMMMNNMMVMNNM", Width, Height, 6);
 	OnDrawText((char*)"MMM::.:.::.:::::.:::..:****:::..:****:::I**VNBF*****VVUUVV*****VFFF*::::*::*:::::*****:::**::*********:****MMM", Width, Height + 1, 6);
@@ -1294,6 +1294,12 @@ void BossTuto()
 	OnDrawText((char*)"ㅣ                                                                                                         ㅣ", Width, Height + 35, 14);
 	OnDrawText((char*)"ㅣ                                                                                                         ㅣ", Width, Height + 36, 14);
 	OnDrawText((char*)"┖ㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡ┚", Width, Height + 37, 14);
+
+	OnDrawText((char*)"___  ____ ____ ____    ____ _  _ _ ___  ____", 60 - strlen("___  ____ ____ ____    ____ _  _ _ ___  ____") / 2, Height + 1, 11);
+	OnDrawText((char*)"|__] |  | [__  [__     | __ |  | | |  | |___", 60 - strlen("___  ____ ____ ____    ____ _  _ _ ___  ____") / 2, Height + 2, 11); 
+	OnDrawText((char*)"|__] |__| ___] ___]    |__] |__| | |__/ |___", 60 - strlen("___  ____ ____ ____    ____ _  _ _ ___  ____") / 2, Height + 3, 11); 
+
+
 
 
 	OnDrawText((char*)"확인하고 전투 시작 [ SPACE BAR ]", 60 - strlen("확인하고 전투 시작 [ SPACE BAR ]") / 2, Height + 35, 11);
