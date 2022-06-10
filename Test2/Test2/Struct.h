@@ -67,6 +67,7 @@ struct Hitbox
 struct BOSS
 {
 	Hitbox Hitbox;
+	ULONGLONG BTime;
 	int HP = 60;
 };
 
