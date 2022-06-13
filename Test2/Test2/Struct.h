@@ -62,6 +62,7 @@ struct Hitbox
 	char* Texture = (char*)"HHHH";
 	ULONGLONG HTime;
 	Transform TransInfo;
+	int Option;
 };
 
 struct Bulletb

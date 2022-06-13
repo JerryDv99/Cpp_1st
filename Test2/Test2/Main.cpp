@@ -7,7 +7,9 @@
 // v 0.6 로고, 메인, 점수판
 // v 0.7 튜토리얼
 // v 0.8 보스 등장씬, 도우미
-
+// v 0.9 보스전
+// 
+// 
 // 만들거 : fail / 재도전 씬, 다 깨면 점수 계산, 받아서 점수표에 올리는거, 보스전, 튜토리얼 선택
 /*
 1. 파랑
@@ -54,6 +56,26 @@ int main(void)
 	Object* Ally[6] = { nullptr };
 	
 	BOSS* Boss = new BOSS;
+
+	HB[0] = new Hitbox;
+	HInitialize(HB[0], 8, 4);
+	HB[1] = new Hitbox;
+	HInitialize(HB[1], 20, 6);
+	HB[2] = new Hitbox;
+	HInitialize(HB[2], 29, 7);
+	HB[3] = new Hitbox;
+	HInitialize(HB[3], 41, 7);
+	HB[4] = new Hitbox;
+	HInitialize(HB[4], 75, 7);
+	HB[5] = new Hitbox;
+	HInitialize(HB[5], 87, 7);
+	HB[6] = new Hitbox;
+	HInitialize(HB[6], 96, 6);
+	HB[7] = new Hitbox;
+	HInitialize(HB[7], 108, 4);
+
+
+
 	BackGround* BackGround[64] = { nullptr };
 
 	tuto1 = true;
@@ -69,6 +91,41 @@ int main(void)
 
 	while (!Exit)
 	{
+		Life = 2;
+		Heat = 0;
+		Score = 0;
+		HCount = 0;
+		ECount = 0;
+		Kill = 0;
+		MKill = 0;
+		Main = true;
+		PSA = false;
+		BSA = false;
+		UI = true;
+		E1V = false;
+		E2V = false;
+		E3V = false;
+
+		R1 = false;
+		RCheck = false;
+		LCheck = false;
+		ECheck = false;
+		first = true;
+		Story1 = false;
+		Story2 = false;
+		Story3 = false;
+		Story4 = false;
+		Story = false;
+		Check = false;
+		OHeat = false;
+		Load = false;
+		BBuff = false;
+		MBuff = false;
+		Exit = false;
+		Player->HP = 5;
+		Player->TransInfo.Position.x = 60;
+		Player->TransInfo.Position.y = 45;
+		Player->Player.Name = nullptr;
 		// 로고
 		if (first)
 		{
@@ -102,9 +159,6 @@ int main(void)
 			if (GetAsyncKeyState(VK_TAB) && Player->Player.Name != nullptr)
 				break;
 		}
-		delete Enemy1;
-		delete Enemy2;
-		delete Enemy3;
 		Heat = 0.0f;
 		EnemyTime = GetTickCount64();
 		Cooling = GetTickCount64();
@@ -420,6 +474,7 @@ int main(void)
 							if (PCollision(EBullet[i], Player))
 							{
 								Player->HP--;
+								HCount++;
 								PSA = true;
 								SpArmorP = GetTickCount64();
 
@@ -1202,10 +1257,10 @@ int main(void)
 					OnDrawText((char*)"                      IIIIIIII    IIIIIIII  FVVV   VVV**VVV   VVFV  IIIIIIII    IIIIIIII                      ", 5, 0, 6);
 					OnDrawText((char*)"**", 54, 0, 12);
 					OnDrawText((char*)"**", 64, 0, 12);
-					OnDrawText((char*)"VV", 24, 0, 12);
-					OnDrawText((char*)"VV", 36, 0, 12);
-					OnDrawText((char*)"VV", 94, 0, 12);
-					OnDrawText((char*)"VV", 82, 0, 12);
+					OnDrawText((char*)"VV", 24, 0, 13);
+					OnDrawText((char*)"VV", 36, 0, 13);
+					OnDrawText((char*)"VV", 94, 0, 13);
+					OnDrawText((char*)"VV", 82, 0, 13);
 					OnDrawText((char*)"                      VVIIIIVV    VVIIIIVV  VVFI    VVVVVV    FVVF  VVIIIIVV    VVIIIIVV                      ", 5, 1, 6);
 					OnDrawText((char*)"***", 54, 1, 12);
 					OnDrawText((char*)"***", 63, 1, 12);
@@ -1232,10 +1287,10 @@ int main(void)
 					OnDrawText((char*)"                      IIIIIIII    IIIIIIII  FVVV   VVV**VVV   VVFV  IIIIIIII    IIIIIIII                      ", 5, 1, 6);
 					OnDrawText((char*)"**", 54, 1, 12);
 					OnDrawText((char*)"**", 64, 1, 12);
-					OnDrawText((char*)"VV", 24, 1, 12);
-					OnDrawText((char*)"VV", 36, 1, 12);
-					OnDrawText((char*)"VV", 82, 1, 12);
-					OnDrawText((char*)"VV", 94, 1, 12);
+					OnDrawText((char*)"VV", 24, 1, 13);
+					OnDrawText((char*)"VV", 36, 1, 13);
+					OnDrawText((char*)"VV", 82, 1, 13);
+					OnDrawText((char*)"VV", 94, 1, 13);
 					OnDrawText((char*)"                      VVIIIIVV    VVIIIIVV  VVFI    VVVVVV    FVVF  VVIIIIVV    VVIIIIVV                      ", 5, 2, 6);
 					OnDrawText((char*)"***", 54, 2, 12);
 					OnDrawText((char*)"***", 63, 2, 12);
@@ -1259,16 +1314,16 @@ int main(void)
 				if ((StoryTime + 1200 < GetTickCount64()) && (StoryTime + 1299 > GetTickCount64()))
 				{
 					OnDrawText((char*)"              NNNM*VVVVVVV*NNNVVFVVFFF**BNFFVVFFFVVV******IFVVIVFIII**VV*NFVVFF*VVVVFVVVVV:MNNNN              ", 5, 0, 6);
-					OnDrawText((char*)"VV", 15, 0, 12);
-					OnDrawText((char*)"VV", 103, 0, 12);
+					OnDrawText((char*)"VV", 15, 0, 13);
+					OnDrawText((char*)"VV", 103, 0, 13);
 					OnDrawText((char*)"                LNNFNNMFIIIIUUBUUFUUVVVUUUVFVVVVFFVVV****VIFFVVVFIMIUUUVUVUUUUU*VMIIIIUFUUUN/                 ", 5, 1, 6);
 					OnDrawText((char*)"                      IIIIIIII    IIIIIIII  FVVV   VVV**VVV   VVFV  IIIIIIII    IIIIIIII                      ", 5, 2, 6);
 					OnDrawText((char*)"**", 54, 2, 12);
 					OnDrawText((char*)"**", 64, 2, 12);
-					OnDrawText((char*)"VV", 24, 2, 12);
-					OnDrawText((char*)"VV", 36, 2, 12);
-					OnDrawText((char*)"VV", 82, 2, 12);
-					OnDrawText((char*)"VV", 94, 2, 12);
+					OnDrawText((char*)"VV", 24, 2, 13);
+					OnDrawText((char*)"VV", 36, 2, 13);
+					OnDrawText((char*)"VV", 82, 2, 13);
+					OnDrawText((char*)"VV", 94, 2, 13);
 					OnDrawText((char*)"                      VVIIIIVV    VVIIIIVV  VVFI    VVVVVV    FVVF  VVIIIIVV    VVIIIIVV                      ", 5, 3, 6);
 					OnDrawText((char*)"***", 54, 3, 12);
 					OnDrawText((char*)"***", 63, 3, 12);
@@ -1293,16 +1348,16 @@ int main(void)
 				{
 					OnDrawText((char*)"        NMMMFVVVV***::******************IVIVVVFVFVV********IVVVVVIIM:.*V*******V*********VVVFIIIMMMNNN        ", 5, 0, 6);
 					OnDrawText((char*)"              NNNM*VVVVVVV*NNNVVFVVFFF**BNFFVVFFFVVV******IFVVIVFIII**VV*NFVVFF*VVVVFVVVVV:MNNNN              ", 5, 1, 6);
-					OnDrawText((char*)"VV", 15, 1, 12);
-					OnDrawText((char*)"VV", 103, 1, 12);
+					OnDrawText((char*)"VV", 15, 1, 13);
+					OnDrawText((char*)"VV", 103, 1, 13);
 					OnDrawText((char*)"                LNNFNNMFIIIIUUBUUFUUVVVUUUVFVVVVFFVVV****VIFFVVVFIMIUUUVUVUUUUU*VMIIIIUFUUUN/                 ", 5, 2, 6);
 					OnDrawText((char*)"                      IIIIIIII    IIIIIIII  FVVV   VVV**VVV   VVFV  IIIIIIII    IIIIIIII                      ", 5, 3, 6);
 					OnDrawText((char*)"**", 54, 3, 12);
 					OnDrawText((char*)"**", 64, 3, 12);
-					OnDrawText((char*)"VV", 24, 3, 12);
-					OnDrawText((char*)"VV", 36, 3, 12);
-					OnDrawText((char*)"VV", 82, 3, 12);
-					OnDrawText((char*)"VV", 94, 3, 12);
+					OnDrawText((char*)"VV", 24, 3, 13);
+					OnDrawText((char*)"VV", 36, 3, 13);
+					OnDrawText((char*)"VV", 82, 3, 13);
+					OnDrawText((char*)"VV", 94, 3, 13);
 					OnDrawText((char*)"                      VVIIIIVV    VVIIIIVV  VVFI    VVVVVV    FVVF  VVIIIIVV    VVIIIIVV                      ", 5, 4, 6);
 					OnDrawText((char*)"***", 54, 4, 12);
 					OnDrawText((char*)"***", 63, 4, 12);
@@ -1326,20 +1381,20 @@ int main(void)
 				if ((StoryTime + 1400 < GetTickCount64()) && (StoryTime + 1499 > GetTickCount64()))
 				{
 					OnDrawText((char*)"      NN************:******V**:::*******IIVVVVIIIV**********VVVVVIIV********:::*VVV**************VVFFIIM      ", 5, 0, 6);
-					OnDrawText((char*)"VV", 7, 0, 12);
-					OnDrawText((char*)"VV", 111, 0, 12);
+					OnDrawText((char*)"VV", 7, 0, 13);
+					OnDrawText((char*)"VV", 111, 0, 13);
 					OnDrawText((char*)"        NMMMFVVVV***::******************IVIVVVFVFVV********IVVVVVIIM:.*V*******V*********VVVFIIIMMMNNN        ", 5, 1, 6);
 					OnDrawText((char*)"              NNNM*VVVVVVV*NNNVVFVVFFF**BNFFVVFFFVVV******IFVVIVFIII**VV*NFVVFF*VVVVFVVVVV:MNNNN              ", 5, 2, 6);
-					OnDrawText((char*)"VV", 15, 2, 12);
-					OnDrawText((char*)"VV", 103, 2, 12);
+					OnDrawText((char*)"VV", 15, 2, 13);
+					OnDrawText((char*)"VV", 103, 2, 13);
 					OnDrawText((char*)"                LNNFNNMFIIIIUUBUUFUUVVVUUUVFVVVVFFVVV****VIFFVVVFIMIUUUVUVUUUUU*VMIIIIUFUUUN/                 ", 5, 3, 6);
 					OnDrawText((char*)"                      IIIIIIII    IIIIIIII  FVVV   VVV**VVV   VVFV  IIIIIIII    IIIIIIII                      ", 5, 4, 6);
 					OnDrawText((char*)"**", 54, 4, 12);
 					OnDrawText((char*)"**", 64, 4, 12);
-					OnDrawText((char*)"VV", 24, 4, 12);
-					OnDrawText((char*)"VV", 36, 4, 12);
-					OnDrawText((char*)"VV", 82, 4, 12);
-					OnDrawText((char*)"VV", 94, 4, 12);
+					OnDrawText((char*)"VV", 24, 4, 13);
+					OnDrawText((char*)"VV", 36, 4, 13);
+					OnDrawText((char*)"VV", 82, 4, 13);
+					OnDrawText((char*)"VV", 94, 4, 13);
 					OnDrawText((char*)"                      VVIIIIVV    VVIIIIVV  VVFI    VVVVVV    FVVF  VVIIIIVV    VVIIIIVV                      ", 5, 5, 6);
 					OnDrawText((char*)"***", 54, 5, 12);
 					OnDrawText((char*)"***", 63, 5, 12);
@@ -1364,20 +1419,20 @@ int main(void)
 				{
 					OnDrawText((char*)" MMMVM*::**::*****::::::*****:..::***:**IVFVVVVVI*****VV*****NBVFIII**:****::::*******:::*******:******NNVMNM ", 5, 0, 6);
 					OnDrawText((char*)"      NN************:******V**:::*******IIVVVVIIIV**********VVVVVIIV********:::*VVV**************VVFFIIM      ", 5, 1, 6);
-					OnDrawText((char*)"VV", 7, 1, 12);
-					OnDrawText((char*)"VV", 111, 1, 12);
+					OnDrawText((char*)"VV", 7, 1, 13);
+					OnDrawText((char*)"VV", 111, 1, 13);
 					OnDrawText((char*)"        NMMMFVVVV***::******************IVIVVVFVFVV********IVVVVVIIM:.*V*******V*********VVVFIIIMMMNNN        ", 5, 2, 6);
 					OnDrawText((char*)"              NNNM*VVVVVVV*NNNVVFVVFFF**BNFFVVFFFVVV******IFVVIVFIII**VV*NFVVFF*VVVVFVVVVV:MNNNN              ", 5, 3, 6);
-					OnDrawText((char*)"VV", 15, 3, 12);
-					OnDrawText((char*)"VV", 103, 3, 12);
+					OnDrawText((char*)"VV", 15, 3, 13);
+					OnDrawText((char*)"VV", 103, 3, 13);
 					OnDrawText((char*)"                LNNFNNMFIIIIUUBUUFUUVVVUUUVFVVVVFFVVV****VIFFVVVFIMIUUUVUVUUUUU*VMIIIIUFUUUN/                 ", 5, 4, 6);
 					OnDrawText((char*)"                      IIIIIIII    IIIIIIII  FVVV   VVV**VVV   VVFV  IIIIIIII    IIIIIIII                      ", 5, 5, 6);
 					OnDrawText((char*)"**", 54, 5, 12);
 					OnDrawText((char*)"**", 64, 5, 12);
-					OnDrawText((char*)"VV", 24, 5, 12);
-					OnDrawText((char*)"VV", 36, 5, 12);
-					OnDrawText((char*)"VV", 82, 5, 12);
-					OnDrawText((char*)"VV", 94, 5, 12);
+					OnDrawText((char*)"VV", 24, 5, 13);
+					OnDrawText((char*)"VV", 36, 5, 13);
+					OnDrawText((char*)"VV", 82, 5, 13);
+					OnDrawText((char*)"VV", 94, 5, 13);
 					OnDrawText((char*)"                      VVIIIIVV    VVIIIIVV  VVFI    VVVVVV    FVVF  VVIIIIVV    VVIIIIVV                      ", 5, 6, 6);
 					OnDrawText((char*)"***", 54, 6, 12);
 					OnDrawText((char*)"***", 63, 6, 12);
@@ -1403,20 +1458,20 @@ int main(void)
 					OnDrawText((char*)"MMM::*********::::::.:::***:::..:**:::*:IVVVVFFV*****VVVV*****VVFIII:..::**::::******:::::::**:***********VMMM", 5, 0, 6);
 					OnDrawText((char*)" MMMVM*::**::*****::::::*****:..::***:**IVFVVVVVI*****VV*****NBVFIII**:****::::*******:::*******:******NNVMNM ", 5, 1, 6);
 					OnDrawText((char*)"      NN************:******V**:::*******IIVVVVIIIV**********VVVVVIIV********:::*VVV**************VVFFIIM      ", 5, 2, 6);
-					OnDrawText((char*)"VV", 7, 2, 12);
-					OnDrawText((char*)"VV", 111, 2, 12);
+					OnDrawText((char*)"VV", 7, 2, 13);
+					OnDrawText((char*)"VV", 111, 2, 13);
 					OnDrawText((char*)"        NMMMFVVVV***::******************IVIVVVFVFVV********IVVVVVIIM:.*V*******V*********VVVFIIIMMMNNN        ", 5, 3, 6);
 					OnDrawText((char*)"              NNNM*VVVVVVV*NNNVVFVVFFF**BNFFVVFFFVVV******IFVVIVFIII**VV*NFVVFF*VVVVFVVVVV:MNNNN              ", 5, 4, 6);
-					OnDrawText((char*)"VV", 15, 4, 12);
-					OnDrawText((char*)"VV", 103, 4, 12);
+					OnDrawText((char*)"VV", 15, 4, 13);
+					OnDrawText((char*)"VV", 103, 4, 13);
 					OnDrawText((char*)"                LNNFNNMFIIIIUUBUUFUUVVVUUUVFVVVVFFVVV****VIFFVVVFIMIUUUVUVUUUUU*VMIIIIUFUUUN/                 ", 5, 5, 6);
 					OnDrawText((char*)"                      IIIIIIII    IIIIIIII  FVVV   VVV**VVV   VVFV  IIIIIIII    IIIIIIII                      ", 5, 6, 6);
 					OnDrawText((char*)"**", 54, 6, 12);
 					OnDrawText((char*)"**", 64, 6, 12);
-					OnDrawText((char*)"VV", 24, 6, 12);
-					OnDrawText((char*)"VV", 36, 6, 12);
-					OnDrawText((char*)"VV", 82, 6, 12);
-					OnDrawText((char*)"VV", 94, 6, 12);
+					OnDrawText((char*)"VV", 24, 6, 13);
+					OnDrawText((char*)"VV", 36, 6, 13);
+					OnDrawText((char*)"VV", 82, 6, 13);
+					OnDrawText((char*)"VV", 94, 6, 13);
 					OnDrawText((char*)"                      VVIIIIVV    VVIIIIVV  VVFI    VVVVVV    FVVF  VVIIIIVV    VVIIIIVV                      ", 5, 7, 6);
 					OnDrawText((char*)"***", 54, 7, 12);
 					OnDrawText((char*)"***", 63, 7, 12);
@@ -1443,20 +1498,20 @@ int main(void)
 					OnDrawText((char*)"MMM::*********::::::.:::***:::..:**:::*:IVVVVFFV*****VVVV*****VVFIII:..::**::::******:::::::**:***********VMMM", 5, 1, 6);
 					OnDrawText((char*)" MMMVM*::**::*****::::::*****:..::***:**IVFVVVVVI*****VV*****NBVFIII**:****::::*******:::*******:******NNVMNM ", 5, 2, 6);
 					OnDrawText((char*)"      NN************:******V**:::*******IIVVVVIIIV**********VVVVVIIV********:::*VVV**************VVFFIIM      ", 5, 3, 6);
-					OnDrawText((char*)"VV", 7, 3, 12);
-					OnDrawText((char*)"VV", 111, 3, 12);
+					OnDrawText((char*)"VV", 7, 3, 13);
+					OnDrawText((char*)"VV", 111, 3, 13);
 					OnDrawText((char*)"        NMMMFVVVV***::******************IVIVVVFVFVV********IVVVVVIIM:.*V*******V*********VVVFIIIMMMNNN        ", 5, 4, 6);
 					OnDrawText((char*)"              NNNM*VVVVVVV*NNNVVFVVFFF**BNFFVVFFFVVV******IFVVIVFIII**VV*NFVVFF*VVVVFVVVVV:MNNNN              ", 5, 5, 6);
-					OnDrawText((char*)"VV", 15, 5, 12);
-					OnDrawText((char*)"VV", 103, 5, 12);
+					OnDrawText((char*)"VV", 15, 5, 13);
+					OnDrawText((char*)"VV", 103, 5, 13);
 					OnDrawText((char*)"                LNNFNNMFIIIIUUBUUFUUVVVUUUVFVVVVFFVVV****VIFFVVVFIMIUUUVUVUUUUU*VMIIIIUFUUUN/                 ", 5, 6, 6);
 					OnDrawText((char*)"                      IIIIIIII    IIIIIIII  FVVV   VVV**VVV   VVFV  IIIIIIII    IIIIIIII                      ", 5, 7, 6);
 					OnDrawText((char*)"**", 54, 7, 12);
 					OnDrawText((char*)"**", 64, 7, 12);
-					OnDrawText((char*)"VV", 24, 7, 12);
-					OnDrawText((char*)"VV", 36, 7, 12);
-					OnDrawText((char*)"VV", 82, 7, 12);
-					OnDrawText((char*)"VV", 94, 7, 12);
+					OnDrawText((char*)"VV", 24, 7, 13);
+					OnDrawText((char*)"VV", 36, 7, 13);
+					OnDrawText((char*)"VV", 82, 7, 13);
+					OnDrawText((char*)"VV", 94, 7, 13);
 					OnDrawText((char*)"                      VVIIIIVV    VVIIIIVV  VVFI    VVVVVV    FVVF  VVIIIIVV    VVIIIIVV                      ", 5, 8, 6);
 					OnDrawText((char*)"***", 54, 8, 12);
 					OnDrawText((char*)"***", 63, 8, 12);
@@ -1484,20 +1539,20 @@ int main(void)
 					OnDrawText((char*)"MMM::*********::::::.:::***:::..:**:::*:IVVVVFFV*****VVVV*****VVFIII:..::**::::******:::::::**:***********VMMM", 5, 2, 6);
 					OnDrawText((char*)" MMMVM*::**::*****::::::*****:..::***:**IVFVVVVVI*****VV*****NBVFIII**:****::::*******:::*******:******NNVMNM ", 5, 3, 6);
 					OnDrawText((char*)"      NN************:******V**:::*******IIVVVVIIIV**********VVVVVIIV********:::*VVV**************VVFFIIM      ", 5, 4, 6);
-					OnDrawText((char*)"VV", 7, 4, 12);
-					OnDrawText((char*)"VV", 111, 4, 12);
+					OnDrawText((char*)"VV", 7, 4, 13);
+					OnDrawText((char*)"VV", 111, 4, 13);
 					OnDrawText((char*)"        NMMMFVVVV***::******************IVIVVVFVFVV********IVVVVVIIM:.*V*******V*********VVVFIIIMMMNNN        ", 5, 5, 6);
 					OnDrawText((char*)"              NNNM*VVVVVVV*NNNVVFVVFFF**BNFFVVFFFVVV******IFVVIVFIII**VV*NFVVFF*VVVVFVVVVV:MNNNN              ", 5, 6, 6);
-					OnDrawText((char*)"VV", 15, 6, 12);
-					OnDrawText((char*)"VV", 103, 6, 12);
+					OnDrawText((char*)"VV", 15, 6, 13);
+					OnDrawText((char*)"VV", 103, 6, 13);
 					OnDrawText((char*)"                LNNFNNMFIIIIUUBUUFUUVVVUUUVFVVVVFFVVV****VIFFVVVFIMIUUUVUVUUUUU*VMIIIIUFUUUN/                 ", 5, 7, 6);
 					OnDrawText((char*)"                      IIIIIIII    IIIIIIII  FVVV   VVV**VVV   VVFV  IIIIIIII    IIIIIIII                      ", 5, 8, 6);
 					OnDrawText((char*)"**", 54, 8, 12);
 					OnDrawText((char*)"**", 64, 8, 12);
-					OnDrawText((char*)"VV", 24, 8, 12);
-					OnDrawText((char*)"VV", 36, 8, 12);
-					OnDrawText((char*)"VV", 82, 8, 12);
-					OnDrawText((char*)"VV", 94, 8, 12);
+					OnDrawText((char*)"VV", 24, 8, 13);
+					OnDrawText((char*)"VV", 36, 8, 13);
+					OnDrawText((char*)"VV", 82, 8, 13);
+					OnDrawText((char*)"VV", 94, 8, 13);
 					OnDrawText((char*)"                      VVIIIIVV    VVIIIIVV  VVFI    VVVVVV    FVVF  VVIIIIVV    VVIIIIVV                      ", 5, 9, 6);
 					OnDrawText((char*)"***", 54, 9, 12);
 					OnDrawText((char*)"***", 63, 9, 12);
@@ -1542,9 +1597,12 @@ int main(void)
 		DropItem = GetTickCount64();
 		BuffTime = GetTickCount64();
 		Time = GetTickCount64();
+		ClearTime = GetTickCount64();
 		Load = false;
+		OHeat = false;
 		Boss->BTime = GetTickCount64();
 		Boss->MTime = GetTickCount64();
+
 		while (Boss->HP > 0)
 		{
 			if (Time + 20 < GetTickCount64())
@@ -1661,16 +1719,34 @@ int main(void)
 				{
 					if (bBullet[i] != nullptr)
 					{
+						for (int j = 0; j < 8; ++j)
+						{
+							if (Missile[j] != nullptr)
+							{
+								if (ECollision(Missile[j], bBullet[i]))
+								{
+									delete bBullet[i];
+									bBullet[i] = nullptr;
+
+									break;
+								}
+							}
+						}
+					}
+					if (bBullet[i] != nullptr)
+					{
 						if (!PSA)
 						{
 							if (PCollision(bBullet[i], Player))
 							{
 								Player->HP--;
+								HCount++;
 								SpArmorP = GetTickCount64();
 								PSA = true;
+								delete bBullet[i];
+								bBullet[i] = nullptr;
 							}
-						}
-						
+						}						
 					}
 					if (bBullet[i] != nullptr)
 					{
@@ -1689,9 +1765,82 @@ int main(void)
 						}
 					}
 				}
+				
+				if (Boss->MTime + 10000 < GetTickCount64())
+				{
+					Boss->MTime = GetTickCount64();
+					for (int i = 0; i < 24; ++i)
+					{
+						if (bMissile[i] == nullptr && bMissile[i + 1] == nullptr && bMissile[i + 2] == nullptr &&
+							bMissile[i + 3] == nullptr && bMissile[i + 4] == nullptr && bMissile[i + 5] == nullptr &&
+							bMissile[i + 6] == nullptr && bMissile[i + 7] == nullptr && bMissile[i + 8] == nullptr &&
+							bMissile[i + 9] == nullptr && bMissile[i + 10] == nullptr && bMissile[i + 11] == nullptr &&
+							bMissile[i + 12] == nullptr && bMissile[i + 13] == nullptr && bMissile[i + 14] == nullptr && bMissile[i + 15] == nullptr
+							)
+						{
+							bMissile[i] = CreateBullet(7, 6);
+							bMissile[i + 1] = CreateBullet(8, 6);
+							bMissile[i + 2] = CreateBullet(111, 6);
+							bMissile[i + 3] = CreateBullet(112, 6);
+							bMissile[i + 4] = CreateBullet(15, 8);
+							bMissile[i + 5] = CreateBullet(16, 8);
+							bMissile[i + 6] = CreateBullet(103, 8);
+							bMissile[i + 7] = CreateBullet(104, 8);
+							bMissile[i + 8] = CreateBullet(24, 10);
+							bMissile[i + 9] = CreateBullet(25, 10);
+							bMissile[i + 10] = CreateBullet(36, 10);
+							bMissile[i + 11] = CreateBullet(37, 10);
+							bMissile[i + 12] = CreateBullet(82, 10);
+							bMissile[i + 13] = CreateBullet(83, 10);
+							bMissile[i + 14] = CreateBullet(94, 10);
+							bMissile[i + 15] = CreateBullet(95, 10);
+						}
+					}
+				}
 
-
-
+				for (int i = 0; i < 32; ++i)
+				{
+					if (bMissile[i] != nullptr)
+					{
+						for (int j = 0; j < 8; ++j)
+						{
+							if (Missile[j] != nullptr)
+							{
+								if (ECollision(Missile[j], bMissile[i]))
+								{
+									delete Missile[j];
+									Missile[j] = nullptr;
+									
+									delete bMissile[i];
+									bMissile[i] = nullptr;
+								}
+							}								
+						}
+					}
+					if (bMissile[i] != nullptr)
+					{
+						if (!PSA)
+						{
+							if (PCollision(bMissile[i], Player))
+							{
+								Player->HP--;
+								HCount++;
+								SpArmorP = GetTickCount64();
+								PSA = true;
+								delete bMissile[i];
+								bMissile[i] = nullptr;
+							}
+						}
+					}
+					if (bMissile[i] != nullptr)
+					{
+						if (bMissile[i]->TransInfo.Position.y >= 59)
+						{
+							delete bMissile[i];
+							bMissile[i] = nullptr;
+						}
+					}
+				}
 
 				// E
 				if (EnemyTime + 750 < GetTickCount64())
@@ -1841,7 +1990,7 @@ int main(void)
 					}
 				}
 
-				if (DropItem + 15000 < GetTickCount64())
+				if (DropItem + 11000 < GetTickCount64())
 				{
 					DropItem = GetTickCount64();
 					for (int i = 0; i < 2; ++i)
@@ -1869,8 +2018,89 @@ int main(void)
 					if (SpArmorP + 1500 < GetTickCount64())
 						PSA = false;
 				}
+
+				if (BSA)
+				{
+					if (SpArmorB + 3000 < GetTickCount64())
+						BSA = false;
+				}
+
+				for (int i = 0; i < 256; ++i)
+				{
+					if (Bullet[i] != nullptr)
+					{
+						for (int j = 0; j < 8; ++j)
+						{
+							if (HB[j]->Option == 1)
+							{
+								if (Hit(HB[j], Bullet[i]))
+								{
+									HB[j]->Option = 2;
+									HB[j]->HTime = GetTickCount64();
+									Boss->HP--;
+									ScoreP(2000);
+									Score += 2000;
+								}
+							}							
+						}
+						if (!BSA)
+						{
+							if (BridgeHit(Bullet[i], 2))
+							{
+								BSA = true;
+								SpArmorB = GetTickCount64();
+								Boss->HP--;
+								ScoreP(2000);
+								Score += 2000;
+							}
+						}
+					}
+				}
+
+				for (int i = 0; i < 32; ++i)
+				{
+					if (Missile[i] != nullptr)
+					{
+						for (int j = 0; j < 8; ++j)
+						{
+							if (HB[j]->Option == 1)
+							{
+								if (Hit(HB[j], Missile[i]))
+								{
+									HB[j]->Option = 2;
+									HB[j]->HTime = GetTickCount64();
+									Boss->HP -= 2;
+									ScoreP(4000);
+									Score += 4000;
+								}
+							}							
+						}
+						if (!BSA)
+						{
+							if (BridgeHit(Missile[i], 2))
+							{
+								BSA = true;
+								SpArmorB = GetTickCount64();
+								Boss->HP -= 5;
+								ScoreP(10000);
+								Score += 10000;
+							}
+						}
+					}
+				}
+				for (int i = 0; i < 8; ++i)
+				{
+					if (HB[i] != nullptr)
+					{
+						if (HB[i]->Option == 2)
+						{
+							if (HB[i]->HTime + 3000 < GetTickCount64())
+								HB[i]->Option = 1;
+						}
+					}
+				}
 				// 플레이어 뷸렛 / 에너미 충돌
-				for (int i = 0; i < 128; ++i)
+				for (int i = 0; i < 256; ++i)
 				{
 					if (Bullet[i] != nullptr)
 					{
@@ -1896,7 +2126,7 @@ int main(void)
 						}
 						if (Bullet[i] != nullptr)
 						{
-							if (Bullet[i]->TransInfo.Position.y <= 4)
+							if (Bullet[i]->TransInfo.Position.y <= 3)
 							{
 								delete Bullet[i];
 								Bullet[i] = nullptr;
@@ -1941,7 +2171,7 @@ int main(void)
 						}
 						if (Missile[i] != nullptr)
 						{
-							if (Missile[i]->TransInfo.Position.y <= 4)
+							if (Missile[i]->TransInfo.Position.y <= 3)
 							{
 								delete Missile[i];
 								Missile[i] = nullptr;
@@ -1953,7 +2183,7 @@ int main(void)
 
 				// 에너미 뷸렛 / 미사일 충돌
 				for (int i = 0; i < 256; ++i)
-				{
+				{	
 					if (EBullet[i] != nullptr)
 					{
 						for (int j = 0; j < 8; ++j)
@@ -1978,6 +2208,7 @@ int main(void)
 							if (PCollision(EBullet[i], Player))
 							{
 								Player->HP--;
+								HCount++;
 								PSA = true;
 								SpArmorP = GetTickCount64();
 								delete EBullet[i];
@@ -2046,7 +2277,6 @@ int main(void)
 					}
 				}
 
-
 				for (int i = 0; i < 64; ++i)
 				{
 					if (BackGround[i])
@@ -2063,7 +2293,14 @@ int main(void)
 						}
 					}
 				}
+
 				BossScene(2);
+				for (int i = 0; i < 8; ++i)
+				{
+					if (HB[i])
+						OnDrawHB(HB[i]);
+				}
+				OnDrawBridge(2);
 
 				for (int i = 0; i < 128; ++i)
 				{
@@ -2078,6 +2315,29 @@ int main(void)
 					}
 				}
 
+				if (Boss->MTime + 8000 < GetTickCount64() && Boss->MTime + 8999)
+				{
+					OnDrawText((char*)"!!", 7, 7, 14);
+					OnDrawText((char*)"!!", 111, 7, 14);
+					OnDrawText((char*)"!!", 15, 9, 14);
+					OnDrawText((char*)"!!", 103, 9, 14);
+					OnDrawText((char*)"!!", 24, 11, 14);
+					OnDrawText((char*)"!!", 36, 11, 14);
+					OnDrawText((char*)"!!", 82, 11, 14);
+					OnDrawText((char*)"!!", 94, 11, 14);
+				}
+				if (Boss->MTime + 9000 < GetTickCount64() && Boss->MTime + 9999)
+				{
+					OnDrawText((char*)"!!", 7, 7, 12);
+					OnDrawText((char*)"!!", 111, 7, 12);
+					OnDrawText((char*)"!!", 15, 9, 12);
+					OnDrawText((char*)"!!", 103, 9, 12);
+					OnDrawText((char*)"!!", 24, 11, 12);
+					OnDrawText((char*)"!!", 36, 11, 12);
+					OnDrawText((char*)"!!", 82, 11, 12);
+					OnDrawText((char*)"!!", 94, 11, 12);
+				}
+
 				for (int i = 0; i < 256; ++i)
 				{
 					if (Bullet[i])
@@ -2090,6 +2350,14 @@ int main(void)
 					}
 				}
 
+				for (int i = 0; i < 32; ++i)
+				{
+					if (bMissile[i])
+					{
+						OnDrawText(bMissile[i]->bMissile.Texture, bMissile[i]->TransInfo.Position.x, bMissile[i]->TransInfo.Position.y, 13);
+						bMissile[i]->TransInfo.Position.y += 2.5;
+					}
+				}
 				// EB
 				for (int i = 0; i < 256; ++i)
 				{
@@ -2230,6 +2498,64 @@ int main(void)
 				}
 			}
 		}
+		for (int i = 0; i < 64; ++i)
+		{
+			if (Enemy[i] != nullptr)
+			{
+				delete Enemy[i];
+				Enemy[i] = nullptr;
+			}
+		}
+		for (int i = 0; i < 256; ++i)
+		{
+			if (Bullet[i] != nullptr)
+			{
+				delete Bullet[i];
+				Bullet[i] = nullptr;
+			}
+		}
+		for (int i = 0; i < 128; ++i)
+		{
+			if (bBullet[i] != nullptr)
+			{
+				delete bBullet[i];
+				bBullet[i] = nullptr;
+			}
+		}
+		for (int i = 0; i < 256; ++i)
+		{
+			if (EBullet[i] != nullptr)
+			{
+				delete EBullet[i];
+				EBullet[i] = nullptr;
+			}
+		}
+		for (int i = 0; i < 8; ++i)
+		{
+			if (Missile[i] != nullptr)
+			{
+				delete Missile[i];
+				Missile[i] = nullptr;
+			}
+		}
+		for (int i = 0; i < 32; ++i)
+		{
+			if (bMissile[i] != nullptr)
+			{
+				delete bMissile[i];
+				bMissile[i] = nullptr;
+			}
+		}
+		for (int i = 0; i < 2; ++i)
+		{
+			if (Item[i] != nullptr)
+			{
+				delete Item[i];
+				Item[i] = nullptr;
+			}
+		}
+
+		
 	}
 	return 0;
 }

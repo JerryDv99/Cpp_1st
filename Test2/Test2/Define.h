@@ -6,6 +6,8 @@ void PInitialize(Object* _Player, float _PosX = 0, float _PosY = 0, float _PosZ 
 
 void EInitialize(Object* _Enemy, float _PosX = 0, float _PosY = 0, float _PosZ = 0);
 
+void HInitialize(Hitbox* _HB, float _PosX = 0, float _PosY = 0, float _PosZ = 0);
+
 void ItemInit(Object* _Item, int _rand);
 
 char* SetName();
@@ -21,6 +23,12 @@ void OnDrawBG(BackGround* _BG);
 void OnDrawText(const char* _str, const float _x, const float _y, const int _Color = 15);
 
 void OnDrawText(const int _Value, const float _x, const float _y, const int _Color = 15);
+
+void OnDrawObj(Object* _Object, const float _x, const float _y);
+
+void OnDrawHB(Hitbox* _HB);
+
+void OnDrawBridge(const float _y);
 
 void HideCursor(const bool _Visible);
 
@@ -66,6 +74,10 @@ void BossTuto();
 
 Object* BossBullet(const float _x, const float _y);
 
+bool Hit(const Hitbox* _HB, const Object* _Object);
+
+bool BridgeHit(const Object* _Object, const int _y);
+
 Vector3 Direction;
 
 ULONGLONG Time = GetTickCount64();
@@ -81,6 +93,7 @@ ULONGLONG DropItem = GetTickCount64();
 ULONGLONG BuffTime = GetTickCount64();
 ULONGLONG AllyB = GetTickCount64();
 ULONGLONG StoryTime = GetTickCount64();
+ULONGLONG ClearTime = GetTickCount64();
 
 ULONGLONG Tuto1 = GetTickCount64();
 ULONGLONG Tuto2 = GetTickCount64();
@@ -92,6 +105,7 @@ ULONGLONG Tuto6 = GetTickCount64();
 ULONGLONG R1Time = GetTickCount64();
 
 ULONGLONG SpArmorP = GetTickCount64();
+ULONGLONG SpArmorB = GetTickCount64();
 
 Object* Bullet[256] = { nullptr };
 Object* EBullet[256] = { nullptr };
@@ -101,13 +115,16 @@ Object* Item[2] = { nullptr };
 Object* bBullet[128] = { nullptr };
 Object* bMissile[32] = { nullptr };
 
+Hitbox* HB[8] = { nullptr };
+
 Vector3 Dir[128] = {};
+
+
 bool first = true;
 bool Story1 = false;
 bool Story2 = false;
 bool Story3 = false;
 bool Story4 = false;
-bool loop = true;
 bool Story = false;
 bool Check = false;
 bool OHeat = false;
@@ -136,6 +153,7 @@ bool tuto6 = false;
 bool tuto7 = false;
 
 bool PSA = false;
+bool BSA = false;
 
 int Score = 0;
 int Kill = 0;
@@ -143,6 +161,7 @@ int MKill = 0;
 int ECount = 0;
 int Life = 2;	// 재도전 기회
 int T;
+int HCount = 0;
 
 float Heat = 0.0f;
 
@@ -174,7 +193,20 @@ void EInitialize(Object* _Enemy, float _PosX , float _PosY, float _PosZ)
 	_Enemy->TransInfo.Scale = Vector3((float)strlen(_Enemy->Enemy.Texture[0]), 4.0f);
 
 	_Enemy->Enemy.ETime = 0;
-}  
+} 
+
+void HInitialize(Hitbox* _HB, float _PosX, float _PosY, float _PosZ)
+{
+	_HB->TransInfo.Position = Vector3(_PosX, _PosY);
+
+	_HB->TransInfo.Rotation = Vector3(0.0f, 0.0f);
+
+	_HB->TransInfo.Scale = Vector3(4, 1);
+
+	_HB->Option = 1;
+
+	_HB->HTime = 0;
+}
 
 void ItemInit(Object* _Item, int _rand)
 {
@@ -317,6 +349,47 @@ void OnDrawObj(Object* _Object, const float _x, const float _y)
 			_Object->TransInfo.Position.y - 3,
 			_Object->Enemy.Color[3]);
 	}	
+}
+
+void OnDrawHB(Hitbox* _HB)
+{
+	if (_HB->Option == 1)
+		OnDrawText((char*)_HB->Texture, _HB->TransInfo.Position.x, _HB->TransInfo.Position.y, 12);
+	else if (_HB->Option == 2)
+		OnDrawText((char*)_HB->Texture, _HB->TransInfo.Position.x, _HB->TransInfo.Position.y, 8);
+}
+
+void OnDrawBridge(const float _y)
+{
+	if (!BSA)
+	{
+		OnDrawText((char*)"**", 54, _y + 8, 12);
+		OnDrawText((char*)"**", 64, _y + 8, 12);
+		OnDrawText((char*)"***", 54, _y + 9, 12);
+		OnDrawText((char*)"***", 63, _y + 9, 12);
+		OnDrawText((char*)"***", 55, _y + 10, 12);
+		OnDrawText((char*)"***", 62, _y + 10, 12);
+		OnDrawText((char*)"***", 56, _y + 11, 12);
+		OnDrawText((char*)"***", 61, _y + 11, 12);
+		OnDrawText((char*)"**::**", 57, _y + 12, 12);
+		OnDrawText((char*)"****", 58, _y + 13, 12);
+		OnDrawText((char*)"**", 59, _y + 14, 12);
+	}
+	else if (BSA)
+	{
+		OnDrawText((char*)"**", 54, _y + 8, 8);
+		OnDrawText((char*)"**", 64, _y + 8, 8);
+		OnDrawText((char*)"***", 54, _y + 9, 8);
+		OnDrawText((char*)"***", 63, _y + 9, 8);
+		OnDrawText((char*)"***", 55, _y + 10, 8);
+		OnDrawText((char*)"***", 62, _y + 10, 8);
+		OnDrawText((char*)"***", 56, _y + 11, 8);
+		OnDrawText((char*)"***", 61, _y + 11, 8);
+		OnDrawText((char*)"**::**", 57, _y + 12, 8);
+		OnDrawText((char*)"****", 58, _y + 13, 8);
+		OnDrawText((char*)"**", 59, _y + 14, 8);
+	}
+
 }
 
 void HideCursor(const bool _Visible)
@@ -1032,7 +1105,7 @@ void EnemyMove(Object* _Enemy, Vector3 _Direction , int _x, int _option)
 			if (_Enemy->TransInfo.Position.x < 114)
 				_Enemy->TransInfo.Position.x += 2;
 		case 3:
-			if (_Enemy->TransInfo.Position.y < 38)
+			if (_Enemy->TransInfo.Position.y < 35)
 				_Enemy->TransInfo.Position.y++;
 		case 4:
 			if (_Enemy->TransInfo.Position.y > 30)
@@ -1040,7 +1113,7 @@ void EnemyMove(Object* _Enemy, Vector3 _Direction , int _x, int _option)
 		case 5:
 			if (_Enemy->TransInfo.Position.x > 4 &&
 				_Enemy->TransInfo.Position.x < 114 &&
-				_Enemy->TransInfo.Position.y < 38 &&
+				_Enemy->TransInfo.Position.y < 35 &&
 				_Enemy->TransInfo.Position.y > 30)
 			{
 				_Enemy->TransInfo.Position.x += _Direction.x;
@@ -1247,19 +1320,19 @@ void BossScene(const int _y)
 	float Height = _y;
 
 	OnDrawText((char*)"MMMMFVVVVFVVIMMMMMMMMMMNMNNMNNMMMMMNNNNNUUUUU******VVVUUVVV*****VUVFIMMMMMIFIMMMIFFFIIIIVVVVFVVVNNMMMNNMMVMNNM", Width, Height, 6);
-	OnDrawText((char*)"MMM::.:.::.:::::.:::..:****:::..:****:::I**VNBF*****VVUUVV*****VFFF*::::*::*:::::*****:::**::*********:****MMM", Width, Height + 1, 6);
-	OnDrawText((char*)"MMM::*********::::::.:::***:::..:**:::*:IVVVVFFV*****VVVV*****VVFIII:..::**::::******:::::::**:***********VMMM", Width, Height + 2, 6);
-	OnDrawText((char*)"MMMVM*::**::*****::::::*****:..::***:**IVFVVVVVI*****VV*****NBVFIII**:****::::*******:::*******:******NNVMNM", Width + 1, Height + 3, 6);
-	OnDrawText((char*)"NN************:******V**:::*******IIVVVVIIIV**********VVVVVIIV********:::*VVV**************VVFFIIM", Width + 6, Height + 4, 6);
-	OnDrawText((char*)"NMMMFVVVV***::******************IVIVVVFVFVV********IVVVVVIIM:.*V*******V*********VVVFIIIMMMNNN", Width + 8, Height + 5, 6);
+	OnDrawText((char*)"MMM::.:.::.:::::.:::..:****:::..:****:::**IVNBF*****VVUUVV*****VFFF*::::*::*:::::*****:::**::*********:****MMM", Width, Height + 1, 6);
+	OnDrawText((char*)"MMM    *******::::::.:::***:::..:**:::*:**IVVFFV*****VVVV*****VVFIII:..::**::::******:::::::**:********    MMM", Width, Height + 2, 6);
+	OnDrawText((char*)"MMMVM*::**::*****::::::*****:..::***:****IVVVVVI*****VV*****NBVFIII**:****::::*******:::*******:******NNVMNM", Width + 1, Height + 3, 6);
+	OnDrawText((char*)"NN******    **:******V**:::*********IVVVIIIV**********VVVVVIIV********:::*VVV********    **VVFFIIM", Width + 6, Height + 4, 6);
+	OnDrawText((char*)"NMMMFVVVV***::**    ********    **IVVVFVFVV********IVVVVVIIM:**    ****V**    ***VVVFIIIMMMNNN", Width + 8, Height + 5, 6);
 	OnDrawText((char*)"NNNM*VVVVVVV*NNNVVFVVFFF**BNFFVVFFFVVV******IFVVIVFIII**VV*NFVVFF*VVVVFVVVVV:MNNNN", Width + 14, Height + 6, 6);
 	OnDrawText((char*)"LNFNNMFIIIIUUBUUFUUVVVUUUVFVVVVFFVVV****VIFFVVVFIMIUUUVUVUUUUU*VMIIIIUFUUUN/", Width + 17, Height + 7, 6);
 	OnDrawText((char*)"IIIIIIII    IIIIIIII  FVVV   VVV**VVV   VVFV  IIIIIIII    IIIIIIII", Width + 22, Height + 8, 6);
 	OnDrawText((char*)"VVIIIIVV    VVIIIIVV  VVFI    VVVVVV    FVVF  VVIIIIVV    VVIIIIVV", 60 - strlen("VVIIIIVV    VVIIIIVV  VVFI    VVVVVV    FVVF  VVIIIIVV    VVIIIIVV") / 2, Height + 9, 6);
 	OnDrawText((char*)"VIIIIV     VVIIIIVV  NIFVV    UUUU    VFFNF  VVIIIIVV     VIIIIV", 60 - strlen("VIIIIV     VVIIIIVV  NIFVV    UUUU    VFFNF  VVIIIIVV     VIIIIV") / 2, Height + 10, 6);
 	OnDrawText((char*)"VVIIVV      VVIIVV    VVVVV    II    VVMVV    VVIIVV      VVIIVV", 60 - strlen("VVIIVV      VVIIVV    VVVVV    II    VVMVV    VVIIVV      VVIIVV") / 2, Height + 11, 6);
-	OnDrawText((char*)"VVVV       VVIIVV     FMVVV        VVMVV     VVIIVV       VVVV", 60 - strlen("VVVV       VVIIVV     FMVVV        VVMVV     VVIIVV       VVVV") / 2, Height + 12, 6);
-	OnDrawText((char*)"VVVV       FMFVV      VFNVV       VVVV", 60 - strlen("VVVV       FMFVV      VFNVV       VVVV") / 2, Height + 13, 6);
+	OnDrawText((char*)"VVVV       VVIIVV     VMVVV        VVMVV     VVIIVV       VVVV", 60 - strlen("VVVV       VVIIVV     FMVVV        VVMVV     VVIIVV       VVVV") / 2, Height + 12, 6);
+	OnDrawText((char*)"VVVV       VMFVV      VFNVV       VVVV", 60 - strlen("VVVV       FMFVV      VFNVV       VVVV") / 2, Height + 13, 6);
 	OnDrawText((char*)"VMIVV    VVVVV", 60 - strlen("VMIVV    VVVVV") / 2, Height + 14, 6);
 	OnDrawText((char*)"VVVVVVVVVVVV", 60 - strlen("VVVVVVVVVVVV") / 2, Height + 15, 6);
 	OnDrawText((char*)"VUUUUUUUUV", 60 - strlen("VUUUUUUUUV") / 2, Height + 16, 6);
@@ -1267,25 +1340,15 @@ void BossScene(const int _y)
 	OnDrawText((char*)"VUUV", 60 - strlen("VUUV") / 2, Height + 18, 6);
 
 
-	OnDrawText((char*)"**", 54, Height + 8, 12);
-	OnDrawText((char*)"**", 64, Height + 8, 12);
-	OnDrawText((char*)"***", 54, Height + 9, 12);
-	OnDrawText((char*)"***", 63, Height + 9, 12);
-	OnDrawText((char*)"***", 55, Height + 10, 12);
-	OnDrawText((char*)"***", 62, Height + 10, 12);
-	OnDrawText((char*)"***", 56, Height + 11, 12);
-	OnDrawText((char*)"***", 61, Height + 11, 12);
-	OnDrawText((char*)"**::**", 57, Height + 12, 12);
-	OnDrawText((char*)"****", 58, Height + 13, 12);
-	OnDrawText((char*)"**", 59, Height + 14, 12);
-	OnDrawText((char*)"VV", 7, Height + 4, 12);
-	OnDrawText((char*)"VV", 111, Height + 4, 12);
-	OnDrawText((char*)"VV", 15, Height + 6, 12);
-	OnDrawText((char*)"VV", 103, Height + 6, 12);
-	OnDrawText((char*)"VV", 24, Height + 8, 12);
-	OnDrawText((char*)"VV", 36, Height + 8, 12);
-	OnDrawText((char*)"VV", 82, Height + 8, 12);
-	OnDrawText((char*)"VV", 94, Height + 8, 12);
+	
+	OnDrawText((char*)"VV", 7, Height + 4, 13);
+	OnDrawText((char*)"VV", 111, Height + 4, 13);
+	OnDrawText((char*)"VV", 15, Height + 6, 13);
+	OnDrawText((char*)"VV", 103, Height + 6, 13);
+	OnDrawText((char*)"VV", 24, Height + 8, 13);
+	OnDrawText((char*)"VV", 36, Height + 8, 13);
+	OnDrawText((char*)"VV", 82, Height + 8, 13);
+	OnDrawText((char*)"VV", 94, Height + 8, 13);
 }
 
 void BossTuto()
@@ -1370,4 +1433,24 @@ Object* BossBullet(const float _x, const float _y)
 	Initialize(_Bullet, _x, _y);
 	
 	return _Bullet;
+}
+
+bool Hit(const Hitbox* _HB, const Object* _Object)
+{
+	if (_Object->TransInfo.Position.y <= ( _HB->TransInfo.Position.y + 0.5f )&&
+		_Object->TransInfo.Position.y >= ( _HB->TransInfo.Position.y - 1 ) &&
+		_Object->TransInfo.Position.x >= _HB->TransInfo.Position.x &&
+		_Object->TransInfo.Position.x <= _HB->TransInfo.Position.x + 4)
+		return true;
+	return false;
+}
+
+bool BridgeHit(const Object* _Object, const int _y)
+{
+	if ((_Object->TransInfo.Position.y <= _y + 14 && _Object->TransInfo.Position.y >= _y + 11 && _Object->TransInfo.Position.x >= 59 && _Object->TransInfo.Position.x <= 60) || 
+		(_Object->TransInfo.Position.y <= _y + 12 && _Object->TransInfo.Position.y >= _y + 10 && ((_Object->TransInfo.Position.x >= 57 && _Object->TransInfo.Position.x <= 58) || (_Object->TransInfo.Position.x >= 61 && _Object->TransInfo.Position.x <= 62))) ||
+		(_Object->TransInfo.Position.y <= _y + 10 && _Object->TransInfo.Position.y >= _y + 8 && ((_Object->TransInfo.Position.x >= 54 && _Object->TransInfo.Position.x <= 56) || (_Object->TransInfo.Position.x >= 63 && _Object->TransInfo.Position.x <= 65))))
+		return true;
+
+	return false;
 }
