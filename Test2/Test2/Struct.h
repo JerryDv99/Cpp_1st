@@ -64,10 +64,20 @@ struct Hitbox
 	Transform TransInfo;
 };
 
+struct Bulletb
+{
+	char* Texture = (char*)"¢³";
+};
+
+struct Missileb
+{
+	char* Texture = (char*)"V";
+};
 struct BOSS
 {
-	Hitbox Hitbox;
+	Hitbox Hitbox;	
 	ULONGLONG BTime;
+	ULONGLONG MTime;
 	int HP = 60;
 };
 
@@ -76,6 +86,8 @@ struct Object
 	Icon Icon;
 	Player Player;
 	Enemy Enemy;
+	Bulletb bBullet;
+	Missileb bMissile;
 	sBullet Bullet;
 	sMissile Missile;
 	sItem Item;

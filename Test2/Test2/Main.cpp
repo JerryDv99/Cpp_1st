@@ -94,15 +94,17 @@ int main(void)
 		tuto5 = true;
 		tuto6 = true; 
 		tuto7 = true; 
-		Player->Player.Name = (char*)"rrr";
+
 		// 스토리1(튜토리얼)
-		/*while (Story1)
+		while (Story1)
 		{
 			Tutorial(Player, Time, Enemy1, Enemy2, Enemy3);
-		}*/
-		//delete Enemy1;
-		//delete Enemy2;
-		//delete Enemy3;
+			if (GetAsyncKeyState(VK_TAB) && Player->Player.Name != nullptr)
+				break;
+		}
+		delete Enemy1;
+		delete Enemy2;
+		delete Enemy3;
 		Heat = 0.0f;
 		EnemyTime = GetTickCount64();
 		Cooling = GetTickCount64();
@@ -413,15 +415,21 @@ int main(void)
 
 					if (EBullet[i] != nullptr)
 					{
-						if (PCollision(EBullet[i], Player))
+						if (!PSA)
 						{
-							Player->HP--;
+							if (PCollision(EBullet[i], Player))
+							{
+								Player->HP--;
+								PSA = true;
+								SpArmorP = GetTickCount64();
 
-							delete EBullet[i];
-							EBullet[i] = nullptr;
+								delete EBullet[i];
+								EBullet[i] = nullptr;
 
-							break;
+								break;
+							}
 						}
+						
 					}
 
 					if (EBullet[i] != nullptr)
@@ -503,7 +511,9 @@ int main(void)
 						MBuff = false;
 					}
 				}
-				
+				if (SpArmorP + 1500 < GetTickCount64())
+					PSA = false;
+
 				// 배경 출력
 				for (int i = 0; i < 64; ++i)
 				{
@@ -596,8 +606,17 @@ int main(void)
 				if (Loaded - GetTickCount64() <= -5000)
 					OnDrawText((char*)"Loaded", 111.0f, 1.0f, 10);
 
-
-				OnDrawObj(Player, Player->TransInfo.Position.x, Player->TransInfo.Position.y);
+				if (!PSA)
+					OnDrawObj(Player, Player->TransInfo.Position.x, Player->TransInfo.Position.y);
+				else if (PSA)
+				{
+					if (SpArmorP + 250 < GetTickCount64() && SpArmorP + 499 > GetTickCount64())
+						OnDrawObj(Player, Player->TransInfo.Position.x, Player->TransInfo.Position.y);
+					if (SpArmorP + 750 < GetTickCount64() && SpArmorP + 999 > GetTickCount64())
+						OnDrawObj(Player, Player->TransInfo.Position.x, Player->TransInfo.Position.y);
+					if (SpArmorP + 1250 < GetTickCount64() && SpArmorP + 1499 > GetTickCount64())
+						OnDrawObj(Player, Player->TransInfo.Position.x, Player->TransInfo.Position.y);
+				}
 
 				// 에너미 무빙
 				for (int i = 0; i < 64; ++i)
@@ -1525,6 +1544,7 @@ int main(void)
 		Time = GetTickCount64();
 		Load = false;
 		Boss->BTime = GetTickCount64();
+		Boss->MTime = GetTickCount64();
 		while (Boss->HP > 0)
 		{
 			if (Time + 20 < GetTickCount64())
@@ -1548,8 +1568,127 @@ int main(void)
 					}
 				}
 
+				if (Boss->BTime + 2500 < GetTickCount64() && Boss->BTime + 2550 > GetTickCount64())
+				{					
+					for (int i = 0; i < 120; ++i)
+					{
+						if (bBullet[i] == nullptr && bBullet[i + 1] == nullptr && bBullet[i + 2] == nullptr &&
+							bBullet[i + 3] == nullptr && bBullet[i + 4] == nullptr && bBullet[i + 5] == nullptr &&
+							bBullet[i + 6] == nullptr && bBullet[i + 7] == nullptr)
+						{
+							bBullet[i] = BossBullet(29, 15);
+							Dir[i] = GetDirection(Player, bBullet[i]);
+							bBullet[i + 1] = BossBullet(31, 15);
+							Dir[i + 1] = GetDirection(Player, bBullet[i + 1]);
+							bBullet[i + 2] = BossBullet(41, 16);
+							Dir[i + 2] = GetDirection(Player, bBullet[i + 2]);
+							bBullet[i + 3] = BossBullet(43, 16);	    
+							Dir[i + 3] = GetDirection(Player, bBullet[i + 3]);
+							bBullet[i + 4] = BossBullet(75, 16);	       
+							Dir[i + 4] = GetDirection(Player, bBullet[i + 4]);
+							bBullet[i + 5] = BossBullet(77, 16);	       
+							Dir[i + 5] = GetDirection(Player, bBullet[i + 5]);
+							bBullet[i + 6] = BossBullet(87, 15);	       
+							Dir[i + 6] = GetDirection(Player, bBullet[i + 6]);
+							bBullet[i + 7] = BossBullet(89, 15);	       
+							Dir[i + 7] = GetDirection(Player, bBullet[i + 7]);
+							
+							break;
+						}					
+					}
+				}
+				if (Boss->BTime + 2800 < GetTickCount64() && Boss->BTime + 2850 > GetTickCount64())
+				{
+					for (int i = 0; i < 120; ++i)
+					{
+						if (bBullet[i] == nullptr && bBullet[i + 1] == nullptr && bBullet[i + 2] == nullptr &&
+							bBullet[i + 3] == nullptr && bBullet[i + 4] == nullptr && bBullet[i + 5] == nullptr &&
+							bBullet[i + 6] == nullptr && bBullet[i + 7] == nullptr)
+						{
+							bBullet[i] = BossBullet(29, 15);
+							Dir[i] = GetDirection(Player, bBullet[i]);
+							bBullet[i + 1] = BossBullet(31, 15);
+							Dir[i + 1] = GetDirection(Player, bBullet[i + 1]);
+							bBullet[i + 2] = BossBullet(41, 16);
+							Dir[i + 2] = GetDirection(Player, bBullet[i + 2]);
+							bBullet[i + 3] = BossBullet(43, 16);
+							Dir[i + 3] = GetDirection(Player, bBullet[i + 3]);
+							bBullet[i + 4] = BossBullet(77, 16);
+							Dir[i + 4] = GetDirection(Player, bBullet[i + 4]);
+							bBullet[i + 5] = BossBullet(79, 16);
+							Dir[i + 5] = GetDirection(Player, bBullet[i + 5]);
+							bBullet[i + 6] = BossBullet(89, 15);
+							Dir[i + 6] = GetDirection(Player, bBullet[i + 6]);
+							bBullet[i + 7] = BossBullet(91, 15);
+							Dir[i + 7] = GetDirection(Player, bBullet[i + 7]);
 
+							break;
+						}
+					}
+				}
+				if (Boss->BTime + 3100 < GetTickCount64())
+				{
+					Boss->BTime = GetTickCount64();
+					for (int i = 0; i < 120; ++i)
+					{
+						if (bBullet[i] == nullptr && bBullet[i + 1] == nullptr && bBullet[i + 2] == nullptr &&
+							bBullet[i + 3] == nullptr && bBullet[i + 4] == nullptr && bBullet[i + 5] == nullptr &&
+							bBullet[i + 6] == nullptr && bBullet[i + 7] == nullptr)
+						{
+							bBullet[i] = BossBullet(29, 15);
+							Dir[i] = GetDirection(Player, bBullet[i]);
+							bBullet[i + 1] = BossBullet(31, 15);
+							Dir[i + 1] = GetDirection(Player, bBullet[i + 1]);
+							bBullet[i + 2] = BossBullet(41, 16);
+							Dir[i + 2] = GetDirection(Player, bBullet[i + 2]);
+							bBullet[i + 3] = BossBullet(43, 16);
+							Dir[i + 3] = GetDirection(Player, bBullet[i + 3]);
+							bBullet[i + 4] = BossBullet(77, 16);
+							Dir[i + 4] = GetDirection(Player, bBullet[i + 4]);
+							bBullet[i + 5] = BossBullet(79, 16);
+							Dir[i + 5] = GetDirection(Player, bBullet[i + 5]);
+							bBullet[i + 6] = BossBullet(89, 15);
+							Dir[i + 6] = GetDirection(Player, bBullet[i + 6]);
+							bBullet[i + 7] = BossBullet(91, 15);
+							Dir[i + 7] = GetDirection(Player, bBullet[i + 7]);
 
+							break;
+						}
+					}
+				}
+
+				for (int i = 0; i < 128; ++i)
+				{
+					if (bBullet[i] != nullptr)
+					{
+						if (!PSA)
+						{
+							if (PCollision(bBullet[i], Player))
+							{
+								Player->HP--;
+								SpArmorP = GetTickCount64();
+								PSA = true;
+							}
+						}
+						
+					}
+					if (bBullet[i] != nullptr)
+					{
+						if (bBullet[i]->TransInfo.Position.y >= 59)
+						{
+							delete bBullet[i];
+							bBullet[i] = nullptr;
+						}						
+					}
+					if (bBullet[i] != nullptr)
+					{
+						if (bBullet[i]->TransInfo.Position.x <= 0 || bBullet[i]->TransInfo.Position.x >= 120)
+						{
+							delete bBullet[i];
+							bBullet[i] = nullptr;
+						}
+					}
+				}
 
 
 
@@ -1725,6 +1864,11 @@ int main(void)
 					}
 				}
 
+				if (PSA)
+				{
+					if (SpArmorP + 1500 < GetTickCount64())
+						PSA = false;
+				}
 				// 플레이어 뷸렛 / 에너미 충돌
 				for (int i = 0; i < 128; ++i)
 				{
@@ -1829,15 +1973,19 @@ int main(void)
 
 					if (EBullet[i] != nullptr)
 					{
-						if (PCollision(EBullet[i], Player))
+						if (!PSA)
 						{
-							Player->HP--;
+							if (PCollision(EBullet[i], Player))
+							{
+								Player->HP--;
+								PSA = true;
+								SpArmorP = GetTickCount64();
+								delete EBullet[i];
+								EBullet[i] = nullptr;
 
-							delete EBullet[i];
-							EBullet[i] = nullptr;
-
-							break;
-						}
+								break;
+							}
+						}						
 					}
 
 					if (EBullet[i] != nullptr)
@@ -1899,7 +2047,6 @@ int main(void)
 				}
 
 
-
 				for (int i = 0; i < 64; ++i)
 				{
 					if (BackGround[i])
@@ -1917,6 +2064,20 @@ int main(void)
 					}
 				}
 				BossScene(2);
+
+				for (int i = 0; i < 128; ++i)
+				{
+					if (bBullet[i])
+					{
+						OnDrawText(bBullet[i]->bBullet.Texture,
+							bBullet[i]->TransInfo.Position.x,
+							bBullet[i]->TransInfo.Position.y, 12);
+
+						bBullet[i]->TransInfo.Position.x += Dir[i].x;
+						bBullet[i]->TransInfo.Position.y += 1.5f;
+					}
+				}
+
 				for (int i = 0; i < 256; ++i)
 				{
 					if (Bullet[i])
@@ -1984,36 +2145,40 @@ int main(void)
 						}
 					}
 				}
-
-				
-
-				
-
-				OnDrawObj(Player, Player->TransInfo.Position.x, Player->TransInfo.Position.y);
-
+				if(!PSA)
+					OnDrawObj(Player, Player->TransInfo.Position.x, Player->TransInfo.Position.y);
+				else if (PSA)
+				{
+					if(SpArmorP + 250 < GetTickCount64() && SpArmorP + 499 > GetTickCount64())
+						OnDrawObj(Player, Player->TransInfo.Position.x, Player->TransInfo.Position.y);
+					if(SpArmorP + 750 < GetTickCount64() && SpArmorP + 999 > GetTickCount64())
+						OnDrawObj(Player, Player->TransInfo.Position.x, Player->TransInfo.Position.y);
+					if(SpArmorP + 1250 < GetTickCount64() && SpArmorP + 1499 > GetTickCount64())
+						OnDrawObj(Player, Player->TransInfo.Position.x, Player->TransInfo.Position.y);
+				}
 				if (!Load)
 				{
 					if (Loaded - GetTickCount64() >= -999)
-						OnDrawText(5, 113.0f, 1.0f, 14);
+						OnDrawText(5, 78.0f, 0, 14);
 					else if (Loaded - GetTickCount64() >= -1999)
-						OnDrawText(4, 113.0f, 1.0f, 14);
+						OnDrawText(4, 78.0f, 0, 14);
 					else if (Loaded - GetTickCount64() >= -2999)
-						OnDrawText(3, 113.0f, 1.0f, 14);
+						OnDrawText(3, 78.0f, 0, 14);
 					else if (Loaded - GetTickCount64() >= -3999)
-						OnDrawText(2, 113.0f, 1.0f, 14);
+						OnDrawText(2, 78.0f, 0, 14);
 					else if (Loaded - GetTickCount64() >= -4999)
-						OnDrawText(1, 113.0f, 1.0f, 14);
+						OnDrawText(1, 78.0f, 0, 14);
 					else if (Loaded - GetTickCount64() <= -5000 &&
 						Loaded - GetTickCount64() >= -5049)
 						Load = true;
 				}
 				if (Loaded - GetTickCount64() <= -5000)
-					OnDrawText((char*)"Loaded", 111.0f, 1.0f, 10);
+					OnDrawText((char*)"Loaded", 76.0f, 0.0f, 10);
 
 				OnDrawText((char*)"SCORE : ", 1.0f, 0.0f);
 				OnDrawText(Score, 9.0f, 0.0f, 14);
 
-				OnDrawText((char*)"Missile : ", 101.0f, 1.0f);
+				OnDrawText((char*)"Missile : ", 66.0f, 0.0f);
 
 				OnDrawText((char*)"Heat Gauge : [                    ]", 84.0f, 0.0f);
 
@@ -2047,16 +2212,21 @@ int main(void)
 					}
 				}
 				
-				OnDrawText((char*)"HP : ", 50.0f, 0.0f, 10);
+				OnDrawText((char*)"HP : ", 40.0f, 0.0f, 10);
 				for (int i = 1; i <= Player->HP; ++i)
 				{
-					OnDrawText((char*)"♥", 54.0f + i * 2, 0.0f, 10);
+					OnDrawText((char*)"♥", 44.0f + i * 2, 0.0f, 10);
 					if (Player->HP <= 3)
-						OnDrawText((char*)"♥", 54.0f + i * 2, 0.0f, 14);
+						OnDrawText((char*)"♥", 44.0f + i * 2, 0.0f, 14);
 					if (Player->HP == 1)
-						OnDrawText((char*)"♥", 54.0f + i * 2, 0.0f, 12);
+						OnDrawText((char*)"♥", 44.0f + i * 2, 0.0f, 12);
 					//if (i <= 0)
 					// 게임 엔드
+				}
+
+				for (int i = 0; i < Boss->HP; ++i)
+				{
+					OnDrawText((char*)"■", 0 + i * 2, 1, 12);
 				}
 			}
 		}

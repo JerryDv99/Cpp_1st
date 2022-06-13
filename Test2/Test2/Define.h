@@ -64,6 +64,8 @@ void BossScene(const int _y);
 
 void BossTuto();
 
+Object* BossBullet(const float _x, const float _y);
+
 Vector3 Direction;
 
 ULONGLONG Time = GetTickCount64();
@@ -89,16 +91,17 @@ ULONGLONG Tuto6 = GetTickCount64();
 
 ULONGLONG R1Time = GetTickCount64();
 
-
+ULONGLONG SpArmorP = GetTickCount64();
 
 Object* Bullet[256] = { nullptr };
 Object* EBullet[256] = { nullptr };
 Object* Missile[8] = { nullptr };
 Object* EMissile[8] = { nullptr };
 Object* Item[2] = { nullptr };
+Object* bBullet[128] = { nullptr };
+Object* bMissile[32] = { nullptr };
 
-
-
+Vector3 Dir[128] = {};
 bool first = true;
 bool Story1 = false;
 bool Story2 = false;
@@ -131,6 +134,8 @@ bool tuto4 = false;
 bool tuto5 = false;
 bool tuto6 = false;
 bool tuto7 = false;
+
+bool PSA = false;
 
 int Score = 0;
 int Kill = 0;
@@ -592,8 +597,8 @@ void Tutorial(Object* _Player, ULONGLONG _time, Object* _E1, Object* _E2, Object
 		if(tuto1)
 		{
 			OnDrawText((char*)"안녕하신가 신참, 나는 이 함대의 지휘관 로저스 제독일세. 자네 이름은 뭔가?", 60 - strlen("안녕하신가 신참, 나는 이 함대의 지휘관 로저스 제독일세. 자네 이름은 뭔가?") / 2, Height + 3);
-			OnDrawText((char*)"이름 ", 52, Height + 6);
-			_Player->Player.Name = SetName();	
+			OnDrawText((char*)"이름", 52, Height + 6);
+			_Player->Player.Name = SetName();
 			Tuto1 = GetTickCount64();
 			tuto1 = false;
 		}
@@ -996,7 +1001,7 @@ void EnemyMove(Object* _Enemy, Vector3 _Direction , int _x, int _option)
 			if (_Enemy->TransInfo.Position.x > 4)
 				_Enemy->TransInfo.Position.x -= 2;
 		case 2:
-			if (_Enemy->TransInfo.Position.x < 116)
+			if (_Enemy->TransInfo.Position.x < 114)
 				_Enemy->TransInfo.Position.x += 2;
 		case 3:
 			if (_Enemy->TransInfo.Position.y < 56)
@@ -1006,7 +1011,7 @@ void EnemyMove(Object* _Enemy, Vector3 _Direction , int _x, int _option)
 				_Enemy->TransInfo.Position.y--;
 		case 5:
 			if (_Enemy->TransInfo.Position.x > 4 &&
-				_Enemy->TransInfo.Position.x < 116 &&
+				_Enemy->TransInfo.Position.x < 114 &&
 				_Enemy->TransInfo.Position.y < 56 &&
 				_Enemy->TransInfo.Position.y > 40)
 			{
@@ -1024,7 +1029,7 @@ void EnemyMove(Object* _Enemy, Vector3 _Direction , int _x, int _option)
 			if (_Enemy->TransInfo.Position.x > 4)
 				_Enemy->TransInfo.Position.x -= 2;
 		case 2:
-			if (_Enemy->TransInfo.Position.x < 116)
+			if (_Enemy->TransInfo.Position.x < 114)
 				_Enemy->TransInfo.Position.x += 2;
 		case 3:
 			if (_Enemy->TransInfo.Position.y < 38)
@@ -1034,11 +1039,11 @@ void EnemyMove(Object* _Enemy, Vector3 _Direction , int _x, int _option)
 				_Enemy->TransInfo.Position.y--;
 		case 5:
 			if (_Enemy->TransInfo.Position.x > 4 &&
-				_Enemy->TransInfo.Position.x < 116 &&
+				_Enemy->TransInfo.Position.x < 114 &&
 				_Enemy->TransInfo.Position.y < 38 &&
 				_Enemy->TransInfo.Position.y > 30)
 			{
-				_Enemy->TransInfo.Position.x += 2 * _Direction.x;
+				_Enemy->TransInfo.Position.x += _Direction.x;
 				_Enemy->TransInfo.Position.y += _Direction.y;
 			}
 
@@ -1097,8 +1102,9 @@ bool ECollision(const Object* _Object, const Object* _Enemy)
 bool PCollision(const Object* _Object, const Object* _Player)
 {
 	if (_Object->TransInfo.Position.y >= _Player->TransInfo.Position.y &&
-		_Object->TransInfo.Position.y <= (_Player->TransInfo.Position.y + 3) && 
-		_Object->TransInfo.Position.x == _Player->TransInfo.Position.x)
+		_Object->TransInfo.Position.y <= _Player->TransInfo.Position.y + 3 && 
+		_Object->TransInfo.Position.x >= _Player->TransInfo.Position.x - 1 &&
+		_Object->TransInfo.Position.x <= _Player->TransInfo.Position.x + 1)
 		return true;
 	return false;
 }
@@ -1355,4 +1361,13 @@ void BossTuto()
 	OnDrawText((char*)"쏟아지는 적들을 물리치며 생존을, 자신 있다면 고득점을 목표로 싸우세요. 건투를 빕니다.", 60 - strlen("쏟아지는 적들을 물리치며 생존을, 자신 있다면 고득점을 목표로 싸우세요. 건투를 빕니다.") / 2, Height + 32);
 
 	OnDrawText((char*)"확인하고 전투 시작 [ ESC ]", 60 - strlen("확인하고 전투 시작 [ ESC ]") / 2, Height + 35, 11);
+}
+
+Object* BossBullet(const float _x, const float _y)
+{
+	Object* _Bullet = new Object;
+
+	Initialize(_Bullet, _x, _y);
+	
+	return _Bullet;
 }
