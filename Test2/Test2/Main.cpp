@@ -78,17 +78,15 @@ int main(void)
 
 	BackGround* BackGround[64] = { nullptr };
 
-	tuto1 = true;
-	tuto2 = true;
-	tuto3 = true;
-	tuto4 = true;
-	tuto5 = true;
-	tuto6 = true;
-	Load = true;
+	int ScoreBoard[8] = {1234567};
+	char Initial[8][4] = {"ALP"};
+	char Rank[8][4] = {"SSS"};
 
-	int ScoreBoard[8] = {  };
-	char Initial[8][4] = { };
+	while (true)
+	{
 
+		FailScene(1, CountDown);
+	}
 	while (!Exit)
 	{
 		Life = 2;
@@ -110,7 +108,6 @@ int main(void)
 		RCheck = false;
 		LCheck = false;
 		ECheck = false;
-		first = true;
 		Story1 = false;
 		Story2 = false;
 		Story3 = false;
@@ -139,7 +136,7 @@ int main(void)
 			if (Time + 50 < GetTickCount64())
 			{
 				Time = GetTickCount64();
-				MainScene(Icon, ScoreBoard, Initial);
+				MainScene(Icon, Rank, ScoreBoard, Initial);
 				HideCursor(false);
 				Story1 = true;
 			}			
@@ -1600,6 +1597,9 @@ int main(void)
 		ClearTime = GetTickCount64();
 		Load = false;
 		OHeat = false;
+		BP1 = true;
+		BP2 = true;
+		BP3 = true;
 		Boss->BTime = GetTickCount64();
 		Boss->MTime = GetTickCount64();
 
@@ -2207,16 +2207,16 @@ int main(void)
 						{
 							if (PCollision(EBullet[i], Player))
 							{
-								Player->HP--;
-								HCount++;
-								PSA = true;
-								SpArmorP = GetTickCount64();
-								delete EBullet[i];
-								EBullet[i] = nullptr;
+							Player->HP--;
+							HCount++;
+							PSA = true;
+							SpArmorP = GetTickCount64();
+							delete EBullet[i];
+							EBullet[i] = nullptr;
 
-								break;
+							break;
 							}
-						}						
+						}
 					}
 
 					if (EBullet[i] != nullptr)
@@ -2274,6 +2274,77 @@ int main(void)
 							delete Item[i];
 							Item[i] = nullptr;
 						}
+					}
+				}
+
+				if (LaserOn)
+				{
+					for (int i = 0; i < 64; ++i)
+					{
+						if (Enemy[i] != nullptr)
+						{
+							if (Enemy[i]->TransInfo.Position.x > 48 && Enemy[i]->TransInfo.Position.x < 72)
+							{
+								delete Enemy[i];
+								Enemy[i] = nullptr;
+							}
+						}
+					}
+					for (int j = 0; j < 256; ++j)
+					{
+						if (EBullet[j] != nullptr)
+						{
+							if (EBullet[j]->TransInfo.Position.x > 48 && EBullet[j]->TransInfo.Position.x < 72)
+							{
+								delete EBullet[j];
+								EBullet[j] = nullptr;
+							}
+						}
+					}
+					for (int k = 0; k < 256; ++k)
+					{
+						if (Bullet[k] != nullptr)
+						{
+							if (Bullet[k]->TransInfo.Position.x > 48 && Bullet[k]->TransInfo.Position.x < 72)
+							{
+								delete Bullet[k];
+								Bullet[k] = nullptr;
+							}
+						}
+					}
+					for (int l = 0; l < 128; ++l)
+					{
+						if (bBullet[l] != nullptr)
+						{
+							if (bBullet[l]->TransInfo.Position.x > 48 && bBullet[l]->TransInfo.Position.x < 72)
+							{
+								delete bBullet[l];
+								bBullet[l] = nullptr;
+							}
+						}
+					}
+					for (int m = 0; m < 8; ++m)
+					{
+						if (Missile[m] != nullptr)
+						{
+							if (Missile[m]->TransInfo.Position.x > 48 && Missile[m]->TransInfo.Position.x < 72)
+							{
+								delete Missile[m];
+								Missile[m] = nullptr;
+							}
+						}
+					}
+					if ((Player->TransInfo.Position.x >= 50 && Player->TransInfo.Position.x < 54) || (Player->TransInfo.Position.x >= 67 && Player->TransInfo.Position.x < 70))
+					{
+						Player->HP--;
+						SpArmorP = GetTickCount64();
+						PSA = true;
+					}
+					if (Player->TransInfo.Position.x >= 54 && Player->TransInfo.Position.x < 67)
+					{
+						Player->HP -= 3;
+						SpArmorP = GetTickCount64();
+						PSA = true;
 					}
 				}
 
@@ -2424,6 +2495,85 @@ int main(void)
 					if(SpArmorP + 1250 < GetTickCount64() && SpArmorP + 1499 > GetTickCount64())
 						OnDrawObj(Player, Player->TransInfo.Position.x, Player->TransInfo.Position.y);
 				}
+
+				if (BP1)
+				{
+					if (Boss->HP <= 45)
+					{
+						PTime = GetTickCount64();
+						BPa = true;
+						BP1 = false;
+					}
+				}
+
+				if (BPa)
+				{
+					if (PTime + 500 < GetTickCount64() && PTime + 1499 > GetTickCount64())
+						Pattern1(21);
+					if (PTime + 1500 < GetTickCount64() && PTime + 4499 > GetTickCount64())
+					{
+						LaserOn = true;
+						Patter2(21);
+					}
+					if (PTime + 4500 < GetTickCount64())
+					{
+						LaserOn = false;
+						BPa = false;
+					}
+				}
+
+				if (BP2)
+				{
+					if (Boss->HP <= 30)
+					{
+						PTime = GetTickCount64();
+						BPb = true;
+						BP2 = false;
+					}
+				}
+
+				if (BPb)
+				{
+					if (PTime + 500 < GetTickCount64() && PTime + 1499 > GetTickCount64())
+						Pattern1(21);
+					if (PTime + 1500 < GetTickCount64() && PTime + 4499 > GetTickCount64())
+					{
+						LaserOn = true;
+						Patter2(21);
+					}
+					if (PTime + 4500 < GetTickCount64())
+					{
+						LaserOn = false;
+						BPb = false;
+					}
+				}
+
+				if (BP3)
+				{
+					if (Boss->HP <= 15)
+					{
+						PTime = GetTickCount64();
+						BPc = true;
+						BP3 = false;
+					}
+				}
+
+				if (BPc)
+				{
+					if (PTime + 500 < GetTickCount64() && PTime + 1499 > GetTickCount64())
+						Pattern1(21);
+					if (PTime + 1500 < GetTickCount64() && PTime + 4499 > GetTickCount64())
+					{
+						LaserOn = true;
+						Patter2(21);
+					}
+					if (PTime + 4500 < GetTickCount64())
+					{
+						LaserOn = false;
+						BPc = false;
+					}
+				}
+
 				if (!Load)
 				{
 					if (Loaded - GetTickCount64() >= -999)
@@ -2450,7 +2600,6 @@ int main(void)
 
 				OnDrawText((char*)"Heat Gauge : [                    ]", 84.0f, 0.0f);
 
-				// 오버히트
 				for (int i = 0; i < Heat; ++i)
 				{
 					OnDrawText((char*)"■", 98.0f + i * 2, 0.0f, 10);
@@ -2555,7 +2704,6 @@ int main(void)
 			}
 		}
 
-		
 	}
 	return 0;
 }
