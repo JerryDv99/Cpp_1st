@@ -83,7 +83,13 @@ void Pattern1(const int _y);
 
 void Patter2(const int _y);
 
-bool FailScene(int _option, ULONGLONG _cd);
+bool RetryScene(Object* _Player);
+
+void FailScene();
+
+void Reset(Object* _Player, BOSS* _Boss);
+
+void DestroyScene(ULONGLONG _Dtime);
 
 Vector3 Direction;
 
@@ -102,6 +108,7 @@ ULONGLONG AllyB = GetTickCount64();
 ULONGLONG StoryTime = GetTickCount64();
 ULONGLONG PTime = GetTickCount64();
 ULONGLONG ClearTime = GetTickCount64();
+ULONGLONG Destroy = GetTickCount64();
 
 ULONGLONG Tuto1 = GetTickCount64();
 ULONGLONG Tuto2 = GetTickCount64();
@@ -151,7 +158,7 @@ bool LCheck = false;
 bool ECheck = false;
 bool Main = true;
 bool GoMain = false;
-
+bool Ending = true;
 bool tuto1;
 bool tuto2;
 bool tuto3;
@@ -171,8 +178,6 @@ bool BPb = false;
 bool BPc = false;
 
 bool LaserOn = false;
-
-bool revive = false;
 
 int Score = 0;
 int Kill = 0;
@@ -262,14 +267,15 @@ void SetCursorPosition(const float _x, const float _y)
 
 char* SetName()
 {
-	char Buffer[128] = "";
+	char Buffer[32] = "";
 
 	cout << " : "; cin >> Buffer;
-
+	Buffer[strlen(Buffer) - 1] = '\0';
 	char* pName = new char[strlen(Buffer) + 1];
-
-	strcpy(pName, Buffer);
-
+	pName[strlen(pName) - 1] = '\0';
+	strcpy(pName, Buffer);	
+	
+	Buffer[0] = '\0';
 	return pName;
 }
 
@@ -1732,7 +1738,7 @@ void Patter2(const int _y)
 	OnDrawText((char*)"■■", 66, _y + 38, 14);
 }
 
-bool FailScene(const int _option)
+bool RetryScene(Object* _Player)
 {
 	int Width = 60 - strlen("┎ㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡ┒") / 2;
 	int Height = 20;
@@ -1759,21 +1765,306 @@ bool FailScene(const int _option)
 	OnDrawText((char*)"ㅣ                                                                         ㅣ", Width, Height + 18, 15);
 	OnDrawText((char*)"┖ㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡ┚", Width, Height + 19, 15);
 
+	OnDrawText((char*)"저런, 체력이 모두 소진됐어요", 60 - strlen("저런, 체력이 모두 소진됐어요") / 2, Height + 4);
+	OnDrawText((char*)"아쉽지만 이번 생을 마무리 하거나 신비한 힘으로 부활하실 수 있습니다", 60 - strlen("아쉽지만 이번 생을 마무리 하거나 신비한 힘으로 부활하실 수 있습니다") / 2, Height + 6);
+	OnDrawText((char*)"[ R ] 키를 누르면 부활하여 다시 싸울 수 있습니다", 60 - strlen("[ R ] 키를 누르면 부활하여 다시 싸울 수 있습니다") / 2, Height + 10, 10);
+	OnDrawText((char*)"[ G ] 키를 누르면 게임을 종료하고 메인 화면으로 돌아갑니다", 60 - strlen("[ G ] 키를 누르면 게임을 종료하고 메인 화면으로 돌아갑니다") / 2, Height + 12, 12);
+	OnDrawText((char*)"남은 목숨 : ", 60 - strlen("남은 목숨 : ") / 2, Height + 16);
+	OnDrawText(Life, 60 + strlen("남은 목숨 : ") / 2, Height + 16, 14);
 
-
-	if (_option == 1)
-	{
-		OnDrawText((char*)"저런, 체력이 모두 소진됐어요", 60 - strlen("저런, 체력이 모두 소진됐어요") / 2, Height + 4);
-		OnDrawText((char*)"아쉽지만 이번 생을 마무리 하거나 신비한 힘으로 부활하실 수 있습니다", 60 - strlen("아쉽지만 이번 생을 마무리 하거나 신비한 힘으로 부활하실 수 있습니다") / 2, Height + 6);
-		OnDrawText((char*)"[ R ] 키를 누르면 부활하여 다시 싸울 수 있습니다", 60 - strlen("[ R ] 키를 누르면 부활하여 다시 싸울 수 있습니다") / 2, Height + 10, 10);
-		OnDrawText((char*)"[ G ] 키를 누르면 게임을 종료하고 메인 화면으로 돌아갑니다", 60 - strlen("[ G ] 키를 누르면 게임을 종료하고 메인 화면으로 돌아갑니다") / 2, Height + 12, 12);
-		OnDrawText((char*)"남은 목숨 : ", 60 - strlen("남은 목숨 : ") / 2, Height + 16);
-		OnDrawText(Life, 60 + strlen("남은 목숨 : ") / 2, Height + 16, 14);
-	}
-
+	
 	if (GetAsyncKeyState(0x47))
+	{
 		return true;
-
+	}
+	else if (GetAsyncKeyState(0x52))
+	{
+		_Player->HP = 5;
+		Life--;
+		PSA = true;
+		SpArmorP = GetTickCount64();
+		return false;
+	}
+	
 
 	return false;
+}
+
+void FailScene()
+{
+	int Width = 60 - strlen("┎ㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡ┒") / 2;
+	int Height = 21;
+
+	OnDrawText((char*)"┎ㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡ┒", Width, Height, 15);
+	OnDrawText((char*)"ㅣ                                                                             ㅣ", Width, Height + 1, 15);
+	OnDrawText((char*)"ㅣ                                                                             ㅣ", Width, Height + 2, 15);
+	OnDrawText((char*)"ㅣ                                                                             ㅣ", Width, Height + 3, 15);
+	OnDrawText((char*)"ㅣ                                                                             ㅣ", Width, Height + 4, 15);
+	OnDrawText((char*)"ㅣ                                                                             ㅣ", Width, Height + 5, 15);
+	OnDrawText((char*)"ㅣ                                                                             ㅣ", Width, Height + 6, 15);
+	OnDrawText((char*)"ㅣ                                                                             ㅣ", Width, Height + 7, 15);
+	OnDrawText((char*)"ㅣ                                                                             ㅣ", Width, Height + 8, 15);
+	OnDrawText((char*)"ㅣ                                                                             ㅣ", Width, Height + 9, 15);
+	OnDrawText((char*)"ㅣ                                                                             ㅣ", Width, Height + 10, 15);
+	OnDrawText((char*)"ㅣ                                                                             ㅣ", Width, Height + 11, 15);
+	OnDrawText((char*)"ㅣ                                                                             ㅣ", Width, Height + 12, 15);
+	OnDrawText((char*)"ㅣ                                                                             ㅣ", Width, Height + 13, 15);
+	OnDrawText((char*)"ㅣ                                                                             ㅣ", Width, Height + 14, 15);
+	OnDrawText((char*)"ㅣ                                                                             ㅣ", Width, Height + 15, 15);
+	OnDrawText((char*)"ㅣ                                                                             ㅣ", Width, Height + 16, 15);
+	OnDrawText((char*)"ㅣ                                                                             ㅣ", Width, Height + 16, 15);
+	OnDrawText((char*)"ㅣ                                                                             ㅣ", Width, Height + 17, 15);
+	OnDrawText((char*)"┖ㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡ┚", Width, Height + 18, 15);
+
+	OnDrawText((char*)"사기적인 힘을 빌렸음에도 단신으로 적을 무찌른 영웅이 되는데는 실패했습니다", 60 - strlen("사기적인 힘읇 빌렸음에도 단신으로 적을 무찌른 영웅이 되는데는 실패했습니다") / 2, Height + 5);
+	OnDrawText((char*)"당신의 이번 생의 여정은 끝났지만 왠지 다음 기회가 있을 것 같군요", 60 - strlen("당신의 이번 생의 여정은 끝났지만 왠지 다음 기회가 있을 것 같군요") / 2, Height + 8);
+	OnDrawText((char*)"[ M ] 키를 누르면 메인 화면으로 돌아갑니다. 수고하셨습니다.", 60 - strlen("[ M ] 키를 누르면 메인 화면으로 돌아갑니다. 수고하셨습니다.") / 2, Height + 13, 10);
+}
+
+void Reset(Object* _Player, BOSS* _Boss)
+{
+	system("cls");
+	rewind(stdin);
+	cin.clear();
+	Life = 2;
+	Heat = 0;
+	Score = 0;
+	HCount = 0;
+	ECount = 0;
+	Kill = 0;
+	MKill = 0;
+
+	Main = true;
+	PSA = false;
+	BSA = false;
+	UI = true;
+	E1V = false;
+	E2V = false;
+	E3V = false;
+
+	tuto1 = true;
+	tuto2 = true;
+	tuto3 = true;
+	tuto4 = true;
+	tuto5 = true;
+	tuto6 = true;
+	tuto7 = true;
+
+	R1 = false;
+	RCheck = false;
+	LCheck = false;
+	ECheck = false;
+	Story1 = false;
+	Story2 = false;
+	Story3 = false;
+	Story4 = false;
+	Story = false;
+	Check = false;
+	OHeat = false;
+	Load = false;
+	BBuff = false;
+	MBuff = false;
+	Exit = false;
+	Ending = true;
+
+	_Player->HP = 5;
+	_Player->TransInfo.Position.x = 60;
+	_Player->TransInfo.Position.y = 45;
+	_Player->Player.Name = nullptr;
+	_Boss->HP = 60;
+}
+
+void DestroyScene(ULONGLONG _Dtime)
+{
+	int Width = 5;
+	int Height = 2;
+
+	if (_Dtime + 2999 > GetTickCount64())
+	{
+		OnDrawText((char*)"MMMMFVVVVFVVIMMMMMMMMMMNMNNMNNMMMMMNNNNNUUUUU******VVVUUVVV*****VUVFIMMMMMIFIMMMIFFFIIIIVVVVFVVVNNMMMNNMMVMNNM", Width, Height, 6);
+		OnDrawText((char*)"MMM::.:.::.:::::.:::..:****:::..:****:::**IVNBF*****VVUUVV*****VFFF*::::*::*:::::*****:::**::*********:****MMM", Width, Height + 1, 6);
+		OnDrawText((char*)"MMM    *******::::::.:::***:::..:**:::*:**IVVFFV*****VVVV*****VVFIII:..::**::::******:::::::**:************MMM", Width, Height + 2, 6);
+		OnDrawText((char*)" MMMVM*::**::*****::::::*****:..::***:****IVVVVVI*****VV*****NBVFIII**:****::::*******:::*******:******NNVMNM ", Width, Height + 3, 6);
+		OnDrawText((char*)"      NN************:******V**:::*********IVVVIIIV**********VVVVVIIV********:::*VVV**************VVFFIIM      ", Width, Height + 4, 6);
+		OnDrawText((char*)"        NMMMFVVVV***::********************IVVVFVFVV********IVVVVVIIM:**********V*********VVVFIIIMMMNNN        ", Width, Height + 5, 6);
+		OnDrawText((char*)"              NNNM*VVVVVVV*NNNVVFVVFFF**BNFFVVFFFVVV******IFVVIVFIII**VV*NFVVFF*VVVVFVVVVV:MNNNN              ", Width, Height + 6, 6);
+		OnDrawText((char*)"                 LNFNNMFIIIIUUBUUFUUVVVUUUVFVVVVFFVVV****VIFFVVVFIMIUUUVUVUUUUU*VMIIIIUFUUUN/                 ", Width, Height + 7, 6);
+		OnDrawText((char*)"                      IIIIIIII    IIIIIIII  FVVV***VVV**VVV***VVFV  IIIIIIII    IIIIIIII                      ", Width, Height + 8, 6);
+		OnDrawText((char*)"                      VVIIIIVV    VVIIIIVV  VVFI****VVVVVV****FVVF  VVIIIIVV    VVIIIIVV                      ", Width, Height + 9, 6);
+		OnDrawText((char*)"                       VIIIIV     VVIIIIVV  NIFVV****UUUU****VFFNF  VVIIIIVV     VIIIIV                       ", Width, Height + 10, 6);
+		OnDrawText((char*)"                       VVIIVV      VVIIVV    VVVVV****II****VVMVV    VVIIVV      VVIIVV                       ", Width, Height + 11, 6);
+		OnDrawText((char*)"                        VVVV       VVIIVV     VMVVV***::***VVMVV     VVIIVV       VVVV                        ", Width, Height + 12, 6);
+		OnDrawText((char*)"                                    VVVV       VMFVV******VFNVV       VVVV                                    ", Width, Height + 13, 6);
+		OnDrawText((char*)"                                                VMIVV****VVVVV                                                ", Width, Height + 14, 6);
+		OnDrawText((char*)"                                                 VVVVVVVVVVVV                                                 ", Width, Height + 15, 6);
+		OnDrawText((char*)"                                                  VUUUUUUUUV                                                  ", Width, Height + 16, 6);
+		OnDrawText((char*)"                                                   VUUUUUUV                                                   ", Width, Height + 17, 6);
+		OnDrawText((char*)"                                                     VUUV                                                     ", Width, Height + 18, 6);
+	}
+	if (_Dtime + 3000 < GetTickCount64() && _Dtime + 3499 > GetTickCount64())
+	{
+		OnDrawText((char*)"MMMMFVVVVFVVIMMMMMMMMMMNMNNMNNMMMMMNNNNNUUUUU******VVVUUVVV*****VUVFIMMMMMIFIMMMIFFFIIIIVVVVFVVVNNMMMNNMMVMNNM", Width - 1, Height + 1, 6);
+		OnDrawText((char*)"MMM::.:.::.:::::.:::..:****:::..:****:::**IVNBF*****VVUUVV*****VFFF*::::*::*:::::*****:::**::*********:****MMM", Width - 1, Height + 1 + 1, 6);
+		OnDrawText((char*)"MMM    *******::::::.:::***:::..:**:::*:**IVVFFV*****VVVV*****VVFIII:..::**::::******:::::::**:************MMM", Width - 1, Height + 1 + 2, 6);
+		OnDrawText((char*)" MMMVM*::**::*****::::::*****:..::***:****IVVVVVI*****VV*****NBVFIII**:****::::*******:::*******:******NNVMNM ", Width - 1, Height + 1 + 3, 6);
+		OnDrawText((char*)"      NN************:******V**:  *********IVVVIIIV**********VVVVVIIV********:::*VVV**************VVFFIIM      ", Width - 1, Height + 1 + 4, 6);
+		OnDrawText((char*)"        NMMMFVVVV***::******       *******IVVVFVFVV********IVVVVVIIM:**********V*********VVVFIIIMMMNNN        ", Width - 1, Height + 1 + 5, 6);
+		OnDrawText((char*)"              NNNM*VVVVVVV          FF**BNFFVVFFFVVV******IFVVIVFIII**VV*NFVVFF*VVVVFVVVVV:MNNNN              ", Width - 1, Height + 1 + 6, 6);
+		OnDrawText((char*)"                 LNFNNMFII          VVVUUUVFVVVVFFVVV****VIFFVVVFIMIUUUVUVUUUUU*VMIIIIUFUUUN/                 ", Width - 1, Height + 1 + 7, 6);
+		OnDrawText((char*)"                      IIIII        IIIIIII  FVVV***VVV**VVV*  VVFV  IIIIIIII    IIIIIIII", Width - 1, Height + 1 + 8, 6);
+		OnDrawText((char*)"                      VVIII         IIIIVV  VVFI** *VVVVVV** *FVVF  VVIIIIVV    VVIIIIVV", Width - 1, Height + 1 + 9, 6);
+		OnDrawText((char*)"                       VIIIIV     VVIIIIVV  NIFVV** *UUUU****VFFNF  VVIIIIVV     VIIIIV ", Width - 1, Height + 1 + 10, 6);
+		OnDrawText((char*)"                       VVIIVV      VVIIVV    VVVVV****II*  *VVMVV    VVIIVV      VVIIVV ", Width - 1, Height + 1 + 11, 6);
+		OnDrawText((char*)"                        VVVV       VVIIVV     VMVVV** ::* *VVMVV     VVIIVV       VVVV  ", Width - 1, Height + 1 + 12, 6);
+		OnDrawText((char*)"                                    VVVV       VMFVV* ****VFNVV       VVVV              ", Width - 1, Height + 1 + 13, 6);
+		OnDrawText((char*)"                                                VMIVV** *VVVVV  ", Width - 1, Height + 1 + 14, 6);
+		OnDrawText((char*)"                                                 VVVVVVVVVVVV   ", Width - 1, Height + 1 + 15, 6);
+		OnDrawText((char*)"                                                  VUUUUUUUUV    ", Width - 1, Height + 1 + 16, 6);
+		OnDrawText((char*)"                                                   VUUUUUUV     ", Width - 1, Height + 1 + 17, 6);
+		OnDrawText((char*)"                                                     VUUV       ", Width - 1, Height + 1 + 18, 6);
+	}
+	if (_Dtime + 3500 < GetTickCount64() && _Dtime + 3999 > GetTickCount64())
+	{
+		OnDrawText((char*)"MMMMFVVVVFVVIMMMMMMMMMMNMNNMNNMMMMMNNNNNUUUUU******VVVUUVVV*****VUVFIMMMMMIFIMMMIFFFIIIIVVVVFVVVNNMMMNNMMVMNNM", Width - 4, Height + 2, 6);
+		OnDrawText((char*)"MMM::.:.::.:::::.:::..:****:::..:****:::**IVNBF*****VVUUVV*****VFFF*::::*::*:::::*****:::**::*********:****MMM", Width - 4, Height + 2 + 1, 6);
+		OnDrawText((char*)"MMM    *******::::::.:::***:::..:**:::*:**IVVFFV*****VVVV*****VVFIII:..::**::::******:::::::**:************MMM", Width - 4, Height + 2 + 2, 6);
+		OnDrawText((char*)" MMMVM*::**::*****::::::*****:..::***:****IVVVVVI*****VV**     VFIII**:****::::******    *  ****:******NNVMNM ", Width - 4, Height + 2 + 3, 6);
+		OnDrawText((char*)"      NN************:******V**:  *********IVVVIIIV******       V IIV********:::*VVV**        ****VVFFIIM      ", Width - 4, Height + 2 + 4, 6);
+		OnDrawText((char*)"        NMMMFVVVV***::******       *******IVVVFVFVV****          IIM:**********V***           IIM MNNN        ", Width - 4, Height + 2 + 5, 6);
+		OnDrawText((char*)"              NNNM*VVVVVVV          FF**BNFFVVFFFVVV***          III**VV*NFVVFF*VVVV         NNN              ", Width - 4, Height + 2 + 6, 6);
+		OnDrawText((char*)"                 LNFNNMFII          VVVUUUVFVVVVFFVVV****      VFIMIUUUVUVUUUUU*VMI                           ", Width - 4, Height + 2 + 7, 6);
+		OnDrawText((char*)"                      IIIII        IIIIIII  FVVV***VVV**VV    VVFV  IIIIIIII    I                             ", Width - 4, Height + 2 + 8, 6);
+		OnDrawText((char*)"                      VVIII         IIIIVV  VVFI** *VVVVVV** *FVVF  VVIIIIVV                                  ", Width - 4, Height + 2 + 9, 6);
+		OnDrawText((char*)"                       VIIIIV     VVIIIIVV  NIFVV**  UUUU****VFFNF  VVIIIIVV", Width - 4, Height + 2 + 10, 6);
+		OnDrawText((char*)"                       VVIIVV      VVIIVV    VVVVV**  II*  *VVMVV    VVIIVV ", Width - 4, Height + 2 + 11, 6);
+		OnDrawText((char*)"                        VVVV       VVIIVV     VMVVV** ::* *VVMVV     VVIIVV ", Width - 4, Height + 2 + 12, 6);
+		OnDrawText((char*)"                                    VVVV        MFVV* ****VFNVV       VVVV  ", Width - 4, Height + 2 + 13, 6);
+		OnDrawText((char*)"                                                VMIVV** *VVVVV              ", Width - 4, Height + 2 + 14, 6);
+		OnDrawText((char*)"                                                 VVVVVVVVVVVV               ", Width - 4, Height + 2 + 15, 6);
+		OnDrawText((char*)"                                                  VUUUUUUUUV                ", Width - 4, Height + 2 + 16, 6);
+		OnDrawText((char*)"                                                   VUUUUUUV                 ", Width - 4, Height + 2 + 17, 6);
+		OnDrawText((char*)"                                                     VUUV                   ", Width - 4, Height + 2 + 18, 6);
+	}																																			  
+	if (_Dtime + 4000 < GetTickCount64() && _Dtime + 4499 > GetTickCount64())
+	{
+		OnDrawText((char*)"      MMMMMNMNNMNNMMMMMNNNN          **VVVUUVVV*****VUVFIMMMMMIFIMMMIFFFIIIIVVVVFVVVNNMMMNNMMVMNNM", Width, Height + 4, 6);
+		OnDrawText((char*)"   :.:::..:****:::..:****:::*       ****VVUUVV*****VFFF*::       ::::*****:::**::*********:****MMM", Width, Height + 4 + 1, 6);
+		OnDrawText((char*)"  ::::::.:::***:::..:**:::*:**IVVFFV*****VVVV*****VVFIII:       :::******:::::::**:***  ****   MMM", Width, Height + 4 + 2, 6);
+		OnDrawText((char*)"   ***::::::*****:..::***:****IVVVVVI*****         VFIII**      :::******    *  ****:             ", Width, Height + 4 + 3, 6);
+		OnDrawText((char*)"    ****:******V**:  *********IVVVIIIV**           V IIV***      ::*VVV**        ****VVF          ", Width, Height + 4 + 4, 6);
+		OnDrawText((char*)"     ***::******       *******IVVVFVFVV*             IIM:**********V***           IIM M           ", Width, Height + 4 + 5, 6);
+		OnDrawText((char*)"      *VVVVVVV          FF**BNFFVVFFFVVV***          III**VV*NFVVFF*VVVV         NNN              ", Width, Height + 4 + 6, 6);
+		OnDrawText((char*)"         NMFII          VVVUUUVFVVVVFFVVV*         VFIMIUUUVUVUUUUU*VMI                           ", Width, Height + 4 + 7, 6);
+		OnDrawText((char*)"          IIIII        IIIIIII  FVVV***VVV**VV    VVFV  IIIIII      I                             ", Width, Height + 4 + 8, 6);
+		OnDrawText((char*)"          VVIII         IIIIVV  VVFI** *VVVVVV   *FVVF     II                                     ", Width, Height + 4 + 9, 6);
+		OnDrawText((char*)"           VI         VVIIIIVV  NIFVV**  UUUU** *VFFNF", Width, Height + 4 + 10, 6);
+		OnDrawText((char*)"                       VVIIVV    VVVVV**  II*  *VVMVV ", Width, Height + 4 + 11, 6);
+		OnDrawText((char*)"                       VVIIVV     VM  V** ::* *VVMVV  ", Width, Height + 4 + 12, 6);
+		OnDrawText((char*)"                        VVVV           V* ****VFNVV   ", Width, Height + 4 + 13, 6);
+		OnDrawText((char*)"                                       VV** *VVVVV    ", Width, Height + 4 + 14, 6);
+		OnDrawText((char*)"                                        VVVVVVVVV     ", Width, Height + 4 + 15, 6);
+		OnDrawText((char*)"                                        UUUUUUUV      ", Width, Height + 4 + 16, 6);
+		OnDrawText((char*)"                                       VUUUUUUV       ", Width, Height + 4 + 17, 6);
+		OnDrawText((char*)"                                         VUUV         ", Width, Height + 4 + 18, 6);
+	}
+	if (_Dtime + 4500 < GetTickCount64() && _Dtime + 4799 > GetTickCount64())
+	{
+		OnDrawText((char*)"          MMMMMNMNNMNNMMMMMNNNN          **VVVUUVVV*****VUVFIMMMMMIFIMMMIFFFIIIIVVVVFVVVNNM", 0, Height + 6, 6);
+		OnDrawText((char*)"       :.:::..:****:::..:****:::*       ****VVUUVV*****VFFF*::       ::::*****:::**::*******", 0, Height + 7, 6);
+		OnDrawText((char*)"      ::::::.:::***:::..:**:::*:**IVVFFV*****VVVV*****VVFIII:       :::******:::::::**:***  *", 0, Height + 8, 6);
+		OnDrawText((char*)"       ***::::::*****:..::***:****IVVVVVI*****         VFIII**      :::******    *  ***", 0, Height + 9, 6);
+		OnDrawText((char*)"        ****:******V**:  *********IVVVIIIV**           V IIV***      ::*VVV*", 0, Height + 10, 6);
+		OnDrawText((char*)"         ***::******       *******IVVVFVFVV*             IIM:**********V***  ", 0, Height + 11, 6);
+		OnDrawText((char*)"          *VVVVVVV          FF**BNFFVVFFFVVV***          III**VV*NFVVFF*VVVV", 0, Height + 12, 6);
+		OnDrawText((char*)"             NMFII          VVVUUUVFVVVVFFVVV*         VFIMIUUUVUVUUUUU*VMI                           ", 0, Height + 13, 6);
+		OnDrawText((char*)"              IIIII        IIIIIII  FVVV***VVV**VV    VVFV  IIIIII      I                             ", 0, Height + 14, 6);
+		OnDrawText((char*)"              VVIII         IIIIVV  VVFI** *VVVVVV   *FVVF     II                                     ", 0, Height + 15, 6);
+		OnDrawText((char*)"               VI         VVIIIIVV  NIFVV**  UUUU** *VFFNF                                            ", 0, Height + 16, 6);
+		OnDrawText((char*)"                           VVIIVV    VVVVV**  II*  *VVMVV                                             ", 0, Height + 17, 6);
+		OnDrawText((char*)"                           VVIIVV     VM  V** ::* *VVM                                             ", 0, Height + 18, 6);
+		OnDrawText((char*)"                            VVVV           V* ****VFNV                                             ", 0, Height + 19, 6);
+		OnDrawText((char*)"                                           VV** *VV                                                ", 0, Height + 20, 6);
+		OnDrawText((char*)"                                            VV VVVV                                                ", 0, Height + 21, 6);
+		OnDrawText((char*)"                                            UU UUU                                                 ", 0, Height + 22, 6);
+		OnDrawText((char*)"                                           VU UU                                                   ", 0, Height + 23, 6);
+	}
+	if (_Dtime + 4800 < GetTickCount64() && _Dtime + 4099 > GetTickCount64())
+	{
+		OnDrawText((char*)"     MMMMMNMNNMNNMMMMMNNNN          **VVVUUVVV*****VUVFIMM             IIIIVVVV", 0, Height + 6, 6);
+		OnDrawText((char*)"  :.:::..:****:::..:****:::*       ****VVUUVV*****VFFF*::           *****:::**:*", 0, Height + 7, 6);
+		OnDrawText((char*)" ::::::.:::***:::..:**:::*:**IVVFFV*****VVVV*****VVFIII:             ***::::::: *", 0, Height + 8, 6);
+		OnDrawText((char*)"  ***::::::*****:..::***:****IVVVVVI*****         VFIII**      ::   ****    *  ***", 0, Height + 9, 6);
+		OnDrawText((char*)"   ****:******V**:  *********IVVVIIIV**           V IIV***      ::* VV*", 0, Height + 10, 6);
+		OnDrawText((char*)"    ***::******       *******IVVVFVFVV*             IIM:**********V***  ", 0, Height + 11, 6);
+		OnDrawText((char*)"     *VVVVVVV          FF**BNFFVVFFFVVV***          III**VV*NFVVV", 0, Height + 12, 6);
+		OnDrawText((char*)"        NMFII          VVVUUUVFVVVVFFVVV*         VFIMIUUUVUVUUU", 0, Height + 13, 6);
+		OnDrawText((char*)"         IIIII        IIIIIII  FVVV***VVV**VV    VVFV  IIIIII   ", 0, Height + 14, 6);
+		OnDrawText((char*)"         VVIII         IIIIVV  VVFI** *VVVVVV   *FVVF     II    ", 0, Height + 15, 6);
+		OnDrawText((char*)"          VI         VVIIIIVV  NIFVV**  UUUU** *VFFNF           ", 0, Height + 16, 6);
+		OnDrawText((char*)"                      VVIIVV    VVVVV**  II*  *VVMVV            ", 0, Height + 17, 6);
+		OnDrawText((char*)"                      VVIIVV     VM  V** ::* *VVM", 0, Height + 18, 6);
+		OnDrawText((char*)"                       VVVV           V* ****VFNV", 0, Height + 19, 6);
+		OnDrawText((char*)"                                      VV** *VV  ", 0, Height + 20, 6);
+		OnDrawText((char*)"                                       VV VVVV  ", 0, Height + 21, 6);
+		OnDrawText((char*)"                                       UU UUU", 0, Height + 22, 6);
+		OnDrawText((char*)"                                      VU UU  ", 0, Height + 23, 6);
+	}
+
+
+
+
+	if (_Dtime + 5100 < GetTickCount64() && _Dtime + 5399 > GetTickCount64())
+	{
+		OnDrawText((char*)"MMNMNN         NN          **VVVUUVVV*****VUVFIMMMMMIFIMMMIFFFIIIIVVVVFV", 0, Height + 6, 6);
+		OnDrawText((char*)".:****:      ***:::*       ****VVUUVV*****VFFF*::       ::::*****:::**::**", 0, Height + 7, 6);
+		OnDrawText((char*)":::***:::..:**:::*:**IVVFFV*****VVVV*****VVFIII:       :::******:::::::*  *", 0, Height + 8, 6);
+		OnDrawText((char*)":::   **:..::***:****IVVVVVI*****         VFIII**      :::******  *", 0, Height + 9, 6);
+		OnDrawText((char*)"******V**:  *********IVVVIIIV**           V IIV***      ::*VVV*", 0, Height + 10, 6);
+		OnDrawText((char*)":******       *******IVVVF   V*             IIM:**********V***  ", 0, Height + 11, 6);
+		OnDrawText((char*)"VVVVV          FF**BNFFVVFF                 III**VV*NFVVFF*VVVV", 0, Height + 12, 6);
+		OnDrawText((char*)"NMFII          VVVUUUVFVVVVFF             VFIMIUUUVUVUU  ", 0, Height + 13, 6);
+		OnDrawText((char*)"              IIIIIII  FVVV***             FV  IIIIII    ", 0, Height + 14, 6);
+		OnDrawText((char*)"               IIIIVV  V                *FVVF     II     ", 0, Height + 15, 6);
+		OnDrawText((char*)"             VVIIIIVV  NIFVV**  UUUU** *VFF              ", 0, Height + 16, 6);
+		OnDrawText((char*)"              VVIIVV    VVVVV**  II*        ", 0, Height + 17, 6);
+		OnDrawText((char*)"              VVIIVV     VM  V** ::* *VVM", 0, Height + 18, 6);
+		OnDrawText((char*)"               VVVV              ****  NV", 0, Height + 19, 6);
+		OnDrawText((char*)"                              V    *VV   ", 0, Height + 20, 6);
+		OnDrawText((char*)"                                   VVV   ", 0, Height + 21, 6);
+		OnDrawText((char*)"                                         ", 0, Height + 22, 6);
+	}
+	if (_Dtime + 5400 < GetTickCount64() && _Dtime + 5699 > GetTickCount64())
+	{
+		OnDrawText((char*)"     NN          **VVVUUVVV*****VUVFIMMMI", 0, Height + 6, 6);
+		OnDrawText((char*)"   ***:::*       ****VVUUVV*****VFFF*:: ***", 0, Height + 7, 6);
+		OnDrawText((char*)".:**:::*:**IVVFFV*****VVVV*****VVFIII:  *  *", 0, Height + 8, 6);
+		OnDrawText((char*)".::***:****IVVVVVI*****         VFIII** *  *", 0, Height + 9, 6);
+		OnDrawText((char*)"  *********IVVVIIIV**           V IIV***", 0, Height + 10, 6);
+		OnDrawText((char*)"    *******I VVF   V*             IIM:** ", 0, Height + 11, 6);
+		OnDrawText((char*)"     FF**BNFFVVFF                 III**V", 0, Height + 12, 6);
+		OnDrawText((char*)"     VVVUUUVFVVVVFF  ", 0, Height + 13, 6);
+		OnDrawText((char*)"       IIII  FVVV*** ", 0, Height + 14, 6);
+		OnDrawText((char*)"        IVV  V       ", 0, Height + 15, 6);
+		OnDrawText((char*)"   V     VV  NIFVV**  UUUU** *VFF  ", 0, Height + 16, 6);
+		OnDrawText((char*)"    VV  VV    VVVVV**  II*        ", 0, Height + 17, 6);
+		OnDrawText((char*)"    VVIIVV     VM  V** ::* *VVM", 0, Height + 18, 6);
+		OnDrawText((char*)"     VVVV              ****  NV", 0, Height + 19, 6);
+		OnDrawText((char*)"                    V    *VV   ", 0, Height + 20, 6);
+	}
+	if (_Dtime + 5700 < GetTickCount64() && _Dtime + 5999 > GetTickCount64())
+	{		
+		OnDrawText((char*)"IVVFFV*****VVVV*  *", 0, Height + 8, 6);
+		OnDrawText((char*)"IVVVVVI*****      *", 0, Height + 9, 6);
+		OnDrawText((char*)"IVVVIIIV**     ", 0, Height + 10, 6);
+		OnDrawText((char*)"I VVF   V*     ", 0, Height + 11, 6);
+		OnDrawText((char*)"FFVVFF         ", 0, Height + 12, 6);
+		OnDrawText((char*)"VFVVVVFF  ", 0, Height + 13, 6);
+		OnDrawText((char*)"  FVVV*** ", 0, Height + 14, 6);
+		OnDrawText((char*)"  V       ", 0, Height + 15, 6);
+		OnDrawText((char*)"  NIFVV**  UUUU** *VFF  ", 0, Height + 16, 6);
+		OnDrawText((char*)"   VVVVV**  II*        ", 0, Height + 17, 6);
+		OnDrawText((char*)"    VM  V** ::* *VVM", 0, Height + 18, 6);
+		OnDrawText((char*)"            ****  NV", 0, Height + 19, 6);
+		OnDrawText((char*)"         V    *VV   ", 0, Height + 20, 6);
+	}
 }

@@ -5,7 +5,6 @@
 #include <Windows.h>
 #include <string>
 #include <math.h>
-
 using namespace std;
 
 #include "Struct.h"

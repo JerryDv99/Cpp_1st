@@ -82,47 +82,9 @@ int main(void)
 	char Initial[8][4] = {"ALP"};
 	char Rank[8][4] = {"SSS"};
 
-	while (true)
-	{
-
-		FailScene(1, CountDown);
-	}
 	while (!Exit)
 	{
-		Life = 2;
-		Heat = 0;
-		Score = 0;
-		HCount = 0;
-		ECount = 0;
-		Kill = 0;
-		MKill = 0;
-		Main = true;
-		PSA = false;
-		BSA = false;
-		UI = true;
-		E1V = false;
-		E2V = false;
-		E3V = false;
-
-		R1 = false;
-		RCheck = false;
-		LCheck = false;
-		ECheck = false;
-		Story1 = false;
-		Story2 = false;
-		Story3 = false;
-		Story4 = false;
-		Story = false;
-		Check = false;
-		OHeat = false;
-		Load = false;
-		BBuff = false;
-		MBuff = false;
-		Exit = false;
-		Player->HP = 5;
-		Player->TransInfo.Position.x = 60;
-		Player->TransInfo.Position.y = 45;
-		Player->Player.Name = nullptr;
+		Reset(Player, Boss);
 		// 로고
 		if (first)
 		{
@@ -141,14 +103,8 @@ int main(void)
 				Story1 = true;
 			}			
 		}
-		tuto1 = true;
-		tuto2 = true;
-		tuto3 = true;
-		tuto4 = true;
-		tuto5 = true;
-		tuto6 = true; 
-		tuto7 = true; 
-
+		rewind(stdin);
+		cin.clear();
 		// 스토리1(튜토리얼)
 		while (Story1)
 		{
@@ -167,7 +123,9 @@ int main(void)
 		R1Time = GetTickCount64();
 		Load = false;
 		R1 = true;
-		while (R1 && R1Time + 6000 > GetTickCount64())
+		GoMain = false;
+		ECount = 0;
+		while (R1 && R1Time + 6000 > GetTickCount64() && !GoMain)
 		{
 			if (Time + 20 < GetTickCount64())
 			{
@@ -434,7 +392,7 @@ int main(void)
 						}
 						if (Missile[i] != nullptr)
 						{
-							if (Missile[i]->TransInfo.Position.y <= 4)
+							if (Missile[i]->TransInfo.Position.y <= 2)
 							{
 								delete Missile[i];
 								Missile[i] = nullptr;
@@ -542,19 +500,6 @@ int main(void)
 					}
 				}
 
-				// Enemy 20 이상일 때 fail
-				/*for (int i = 0; i < 64; ++i)
-				{
-					if (Enemy[i] != nullptr)
-					{
-						ECount++;
-						if (ECount >= 20)
-						{
-							ECount = 0;
-							// 게임 엔드
-						}
-					}
-				}*/
 				if (BBuff || MBuff)
 				{
 					if (BuffTime + 10000 < GetTickCount64())
@@ -563,9 +508,23 @@ int main(void)
 						MBuff = false;
 					}
 				}
-				if (SpArmorP + 1500 < GetTickCount64())
-					PSA = false;
-
+				if (PSA)
+				{
+					if (SpArmorP + 1500 < GetTickCount64())
+						PSA = false;
+				}			
+				if (Player->HP <= 0 && Life > 0)
+					GoMain = RetryScene(Player);
+				else if (Player->HP <= 0 && Life <= 0)
+				{
+					FailScene();
+					while (!GoMain)
+					{
+						if(GetAsyncKeyState(0x4D))
+							GoMain = true;
+					}
+					
+				}
 				// 배경 출력
 				for (int i = 0; i < 64; ++i)
 				{
@@ -731,8 +690,6 @@ int main(void)
 						OnDrawText((char*)"♥", 54.0f + i * 2, 0.0f, 14);
 					if (Player->HP == 1)
 						OnDrawText((char*)"♥", 54.0f + i * 2, 0.0f, 12);
-					//if (i <= 0)
-					// 게임 엔드
 				}
 
 				OnDrawText((char*)"남은 시간 : ", 50.0f, 1.0f, 14);
@@ -1043,7 +1000,7 @@ int main(void)
 						OnDrawText(Bullet[i]->Bullet.Texture, Bullet[i]->TransInfo.Position.x,
 							Bullet[i]->TransInfo.Position.y, 14);
 
-						Bullet[i]->TransInfo.Position.y -= 1;
+						Bullet[i]->TransInfo.Position.y -= 2;
 					}
 				}
 				for (int i = 0; i < 64; ++i)
@@ -1600,10 +1557,11 @@ int main(void)
 		BP1 = true;
 		BP2 = true;
 		BP3 = true;
+		GoMain = false;
 		Boss->BTime = GetTickCount64();
 		Boss->MTime = GetTickCount64();
 
-		while (Boss->HP > 0)
+		while (Boss->HP > 0 && !GoMain)
 		{
 			if (Time + 20 < GetTickCount64())
 			{
@@ -2011,14 +1969,15 @@ int main(void)
 						BBuff = false;
 						MBuff = false;
 					}
-				}
-
+				}				
+				
 				if (PSA)
 				{
 					if (SpArmorP + 1500 < GetTickCount64())
+					{
 						PSA = false;
+					}
 				}
-
 				if (BSA)
 				{
 					if (SpArmorB + 3000 < GetTickCount64())
@@ -2055,6 +2014,23 @@ int main(void)
 							}
 						}
 					}
+				}
+				if (Player->HP <= 0 && Life > 0)
+				{
+					while (!GetAsyncKeyState(0x47) && !GetAsyncKeyState(0x52))
+					{
+						GoMain = RetryScene(Player);
+					}
+				}
+				else if (Player->HP <= 0 && Life <= 0)
+				{
+					FailScene();
+					while (!GoMain)
+					{
+						if (GetAsyncKeyState(0x4D))
+							GoMain = true;
+					}
+
 				}
 
 				for (int i = 0; i < 32; ++i)
@@ -2365,6 +2341,7 @@ int main(void)
 					}
 				}
 
+
 				BossScene(2);
 				for (int i = 0; i < 8; ++i)
 				{
@@ -2637,8 +2614,6 @@ int main(void)
 						OnDrawText((char*)"♥", 44.0f + i * 2, 0.0f, 14);
 					if (Player->HP == 1)
 						OnDrawText((char*)"♥", 44.0f + i * 2, 0.0f, 12);
-					//if (i <= 0)
-					// 게임 엔드
 				}
 
 				for (int i = 0; i < Boss->HP; ++i)
@@ -2703,6 +2678,77 @@ int main(void)
 				Item[i] = nullptr;
 			}
 		}
+		Destroy = GetTickCount64();
+		while (Ending)
+		{
+			if (Time + 50 < GetTickCount64())
+			{
+				Time = GetTickCount64();
+				system("cls");
+				if (BG + 200 < GetTickCount64())
+				{
+					BG = GetTickCount64();
+
+					for (int i = 0; i < 64; ++i)
+					{
+						if (BackGround[i] == nullptr)
+						{
+							srand((GetTickCount64() + i * i) * GetTickCount64());
+							BackGround[i] = CreateBackGround(rand());
+
+							break;
+						}
+					}
+				}
+				if (Player->TransInfo.Position.x != 60 || Player->TransInfo.Position.y != 50)
+				{
+					while (Player->TransInfo.Position.x > 60)
+					{
+						--Player->TransInfo.Position.x;
+						break;
+					}
+					while (Player->TransInfo.Position.x < 60)
+					{
+						++Player->TransInfo.Position.x;
+						break;
+					}
+					while (Player->TransInfo.Position.y < 50)
+					{
+						++Player->TransInfo.Position.y;
+						break;
+					}
+					while (Player->TransInfo.Position.y > 50)
+					{
+						--Player->TransInfo.Position.y;
+						break;
+					}
+				}
+				for (int i = 0; i < 64; ++i)
+				{
+					if (BackGround[i])
+					{
+						OnDrawBG(BackGround[i]);
+
+						BackGround[i]->TransInfo.Position.y += 1;
+						if (BackGround[i]->TransInfo.Position.y >= 60)
+						{
+							delete BackGround[i];
+							BackGround[i] = nullptr;
+
+							break;
+						}
+					}
+				}				
+				if (Boss->HP <= 0 && (Player->TransInfo.Position.x == 60 && Player->TransInfo.Position.y == 50))
+				{
+					DestroyScene(Destroy);
+				}
+				else if(Boss->HP <= 0 && !(Player->TransInfo.Position.x == 60 && Player->TransInfo.Position.y == 50))
+					BossScene(2);
+				OnDrawObj(Player, Player->TransInfo.Position.x, Player->TransInfo.Position.y);
+			}
+		}
+		
 
 	}
 	return 0;
