@@ -1571,7 +1571,6 @@ void Pattern1(const int _y)
 	OnDrawText((char*)"|!!|", 50, _y + 36, 12);
 	OnDrawText((char*)"|!!|", 50, _y + 37, 12);
 	OnDrawText((char*)"|!!|", 50, _y + 38, 12);
-	OnDrawText((char*)"|!!|", 50, _y + 39, 12);
 
 	OnDrawText((char*)"|!!|", 66, _y, 12);
 	OnDrawText((char*)"|!!|", 66, _y + 1, 12);
@@ -1612,7 +1611,6 @@ void Pattern1(const int _y)
 	OnDrawText((char*)"|!!|", 66, _y + 36, 12);
 	OnDrawText((char*)"|!!|", 66, _y + 37, 12);
 	OnDrawText((char*)"|!!|", 66, _y + 38, 12);
-	OnDrawText((char*)"|!!|", 66, _y + 39, 12);
 }
 
 void Patter2(const int _y)
