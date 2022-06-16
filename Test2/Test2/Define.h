@@ -91,6 +91,8 @@ void Reset(Object* _Player, BOSS* _Boss);
 
 void DestroyScene(ULONGLONG _Dtime);
 
+int ClearScene(Object* _Player, ULONGLONG _End, ULONGLONG _t);
+
 Vector3 Direction;
 
 ULONGLONG Time = GetTickCount64();
@@ -109,6 +111,7 @@ ULONGLONG StoryTime = GetTickCount64();
 ULONGLONG PTime = GetTickCount64();
 ULONGLONG ClearTime = GetTickCount64();
 ULONGLONG Destroy = GetTickCount64();
+ULONGLONG ENDING = GetTickCount64();
 
 ULONGLONG Tuto1 = GetTickCount64();
 ULONGLONG Tuto2 = GetTickCount64();
@@ -146,6 +149,7 @@ bool Load = false;
 bool BBuff = false;
 bool MBuff = false;
 bool Exit = false;
+bool Clear = false;
 
 bool UI = true;
 bool E1V = false;
@@ -179,6 +183,9 @@ bool BPc = false;
 
 bool LaserOn = false;
 
+bool HPP = false;
+bool LFP = false;
+
 int Score = 0;
 int Kill = 0;
 int MKill = 0;
@@ -187,6 +194,8 @@ int Life = 2;	// 재도전 기회
 int T;
 int R;
 int HCount = 0;
+int CTime = 0;
+int PRank = 0;
 
 float Heat = 0.0f;
 
@@ -1822,8 +1831,7 @@ void FailScene()
 void Reset(Object* _Player, BOSS* _Boss)
 {
 	system("cls");
-	rewind(stdin);
-	cin.clear();
+
 	Life = 2;
 	Heat = 0;
 	Score = 0;
@@ -1831,6 +1839,7 @@ void Reset(Object* _Player, BOSS* _Boss)
 	ECount = 0;
 	Kill = 0;
 	MKill = 0;
+	PRank = 0;
 
 	Main = true;
 	PSA = false;
@@ -1839,6 +1848,7 @@ void Reset(Object* _Player, BOSS* _Boss)
 	E1V = false;
 	E2V = false;
 	E3V = false;
+	Clear = false;
 
 	tuto1 = true;
 	tuto2 = true;
@@ -1863,8 +1873,9 @@ void Reset(Object* _Player, BOSS* _Boss)
 	BBuff = false;
 	MBuff = false;
 	Exit = false;
-	Ending = true;
+	Ending = false;
 
+	
 	_Player->HP = 5;
 	_Player->TransInfo.Position.x = 60;
 	_Player->TransInfo.Position.y = 45;
@@ -2066,3 +2077,311 @@ void DestroyScene(ULONGLONG _Dtime)
 		OnDrawText((char*)"         V    *VV   ", 0, Height + 20, 6);
 	}
 }
+
+int ClearScene(Object* _Player, ULONGLONG _End, ULONGLONG _t)
+{
+	int Width = 60 - strlen("┎ㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡ┒") / 2;
+	int Height = 12;
+	if (_t + 50 < GetTickCount64())
+	{
+		_t = GetTickCount64();
+		system("cls");
+
+		if (_End + 250 < GetTickCount64())
+		{
+
+			OnDrawText((char*)"┎ㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡ┒", Width, Height, 14);
+			OnDrawText((char*)"ㅣ                      ______   __       ______   ___       ____     __                   ㅣ", Width, Height + 1, 14);
+			OnDrawText((char*)"ㅣ                     / ____/  / /      / ____/  /   |     / __ |   / /                   ㅣ", Width, Height + 2, 14);
+			OnDrawText((char*)"ㅣ                    / /      / /      / __/    / /| |    / /_/ /  / /                    ㅣ", Width, Height + 3, 14);
+			OnDrawText((char*)"ㅣ                   / /___   / /___   / /___   / ___ |   / _, _/  /_/                     ㅣ", Width, Height + 4, 14);
+			OnDrawText((char*)"ㅣ                  | ____/  /_____/  /_____/  /_/  |_|  /_/ |_|  (_)                      ㅣ", Width, Height + 5, 14);
+			OnDrawText((char*)"ㅣ                                                                                         ㅣ", Width, Height + 6, 14);
+			OnDrawText((char*)"ㅣ                                                                                         ㅣ", Width, Height + 7, 14);
+			OnDrawText((char*)"ㅣ                                                                                         ㅣ", Width, Height + 8, 14);
+			OnDrawText((char*)"ㅣ                                                                                         ㅣ", Width, Height + 9, 14);
+			OnDrawText((char*)"ㅣ                                                                                         ㅣ", Width, Height + 10, 14);
+			OnDrawText((char*)"ㅣ                                                                                         ㅣ", Width, Height + 11, 14);
+			OnDrawText((char*)"ㅣ                                                                                         ㅣ", Width, Height + 12, 14);
+			OnDrawText((char*)"ㅣ                                                                                         ㅣ", Width, Height + 13, 14);
+			OnDrawText((char*)"ㅣ                                                                                         ㅣ", Width, Height + 14, 14);
+			OnDrawText((char*)"ㅣ                                                                                         ㅣ", Width, Height + 15, 14);
+			OnDrawText((char*)"ㅣ                                                                                         ㅣ", Width, Height + 16, 14);
+			OnDrawText((char*)"ㅣ                                                                                         ㅣ", Width, Height + 17, 14);
+			OnDrawText((char*)"ㅣ                                                                                         ㅣ", Width, Height + 18, 14);
+			OnDrawText((char*)"ㅣ                                                                                         ㅣ", Width, Height + 19, 14);
+			OnDrawText((char*)"ㅣ                                                                                         ㅣ", Width, Height + 20, 14);
+			OnDrawText((char*)"ㅣ                                                                                         ㅣ", Width, Height + 21, 14);
+			OnDrawText((char*)"ㅣ                                                                                         ㅣ", Width, Height + 22, 14);
+			OnDrawText((char*)"ㅣ                                                                                         ㅣ", Width, Height + 23, 14);
+			OnDrawText((char*)"ㅣ                                                                                         ㅣ", Width, Height + 24, 14);
+			OnDrawText((char*)"ㅣ                                                                                         ㅣ", Width, Height + 25, 14);
+			OnDrawText((char*)"ㅣ                                                                                         ㅣ", Width, Height + 26, 14);
+			OnDrawText((char*)"ㅣ                                                                                         ㅣ", Width, Height + 27, 14);
+			OnDrawText((char*)"ㅣ                                                                                         ㅣ", Width, Height + 28, 14);
+			OnDrawText((char*)"ㅣ                                                                                         ㅣ", Width, Height + 29, 14);
+			OnDrawText((char*)"┖ㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡ┚", Width, Height + 30, 14);
+		}
+		if (_End + 1000 < GetTickCount64())
+		{
+			OnDrawText((char*)"총 점수   :", 32, Height + 8, 11);
+			if (Score < 10000)
+			{
+				OnDrawText(Score, 50, Height + 8, 15);
+			}
+			if (Score >= 10000 && Score < 100000)
+			{
+				OnDrawText(Score, 49, Height + 8, 15);
+			}
+			if (Score >= 100000 && Score < 1000000)
+			{
+				OnDrawText(Score, 48, Height + 8, 15);
+			}
+		}
+		if (_End + 1500 < GetTickCount64())
+		{
+			OnDrawText((char*)"남은 H P  :", 32, Height + 11, 11);
+			OnDrawText(_Player->HP, 44, Height + 11, 15);
+		}
+		if (_End + 2000 < GetTickCount64())
+		{
+			OnDrawText((char*)"+", 47, Height + 11, 10);
+			if (_Player->HP < 5)
+			{
+				OnDrawText(_Player->HP * 2000, 50, Height + 11, 10);
+
+			}
+			else
+			{
+				OnDrawText(_Player->HP * 2000, 49, Height + 11, 10);
+			}			
+			if (!HPP)
+			{
+				Score += _Player->HP * 2000;
+				HPP = true;
+			}
+		}
+		if (_End + 2500 < GetTickCount64())
+		{
+			OnDrawText((char*)"남은 목숨 :", 32, Height + 14, 11);
+			OnDrawText(Life, 44, Height + 14);
+		}
+		if (_End + 3000 < GetTickCount64())
+		{
+			OnDrawText((char*)"+", 47, Height + 14, 10);
+			OnDrawText(Life * 20000, 49, Height + 14, 10);
+			if (!LFP)
+			{
+				Score += Life * 20000;
+				LFP = true;
+			}
+		}
+		if (_End + 3500 < GetTickCount64())
+		{
+			OnDrawText((char*)"피격 횟수 : ", 32, Height + 19, 14);
+			if (HCount < 10)
+			{
+				OnDrawText(HCount, 50, Height + 19);
+			}
+			else
+			{
+				OnDrawText(HCount, 49, Height + 19);
+			}
+		}
+		if (_End + 3750 < GetTickCount64())
+		{
+			OnDrawText((char*)"처치한 적 :", 32, Height + 22, 14);
+			if (Kill >= 100)
+			{
+				OnDrawText(Kill, 48, Height + 22);
+			}
+			else if (Kill >= 10)
+			{
+				OnDrawText(Kill, 49, Height + 22);
+			}
+			else
+			{
+				OnDrawText(Kill, 50, Height + 22);
+			}
+		}
+		if (_End + 4000 < GetTickCount64())
+		{
+			OnDrawText((char*)"미사일 킬 :", 32, Height + 25, 14);
+			if (MKill > 99)
+			{
+				OnDrawText(MKill, 48, Height + 25);
+			}
+			else if (MKill > 10)
+			{
+				OnDrawText(MKill, 49, Height + 25);
+			}
+			else
+			{
+				OnDrawText(MKill, 50, Height + 25);
+			}
+		}
+		if (_End + 4250 < GetTickCount64())
+		{
+			OnDrawText((char*)"보스 클리어 시간 :   분   초", 32, Height + 28, 14);
+			if (CTime / 60000 >= 10)
+			{
+				OnDrawText(CTime / 60000, 51, Height + 28);				
+			}
+			else
+			{
+				OnDrawText(CTime / 60000, 52, Height + 28);
+			}
+			if ((CTime % 60000) / 1000 > 10)
+			{
+				OnDrawText((CTime % 60000) / 1000, 56, Height + 28);
+			}
+			else
+			{
+				OnDrawText((CTime % 60000) / 1000, 57, Height + 28);
+			}
+		}
+		if (HCount < 4 && Kill > 60 && MKill > 11 && CTime / 60000 < 3 && (CTime % 60000) / 1000 <= 30)
+		{
+			if (_End + 5000 < GetTickCount64())
+			{
+				if (_End + 5000 < GetTickCount64())
+				{
+					OnDrawText((char*)" ####### ", 64, 23, 14);
+					OnDrawText((char*)"##     ##", 64, 24, 14);
+					OnDrawText((char*)"##       ", 64, 25, 14);
+					OnDrawText((char*)" ####### ", 64, 26, 14);
+					OnDrawText((char*)"       ##", 64, 27, 14);
+					OnDrawText((char*)"##     ##", 64, 28, 14);
+					OnDrawText((char*)" ####### ", 64, 29, 14);
+				}
+				if (_End + 5500 < GetTickCount64())
+				{
+					OnDrawText((char*)" ####### ", 76, 26, 14);
+					OnDrawText((char*)"##     ##", 76, 27, 14);
+					OnDrawText((char*)"##       ", 76, 28, 14);
+					OnDrawText((char*)" ####### ", 76, 29, 14);
+					OnDrawText((char*)"       ##", 76, 30, 14);
+					OnDrawText((char*)"##     ##", 76, 31, 14);
+					OnDrawText((char*)" ####### ", 76, 32, 14);
+				}
+				if (_End + 6500 < GetTickCount64())
+				{
+					OnDrawText((char*)" ####### ", 88, 29, 14);
+					OnDrawText((char*)"##     ##", 88, 30, 14);
+					OnDrawText((char*)"##       ", 88, 31, 14);
+					OnDrawText((char*)" ####### ", 88, 32, 14);
+					OnDrawText((char*)"       ##", 88, 33, 14);
+					OnDrawText((char*)"##     ##", 88, 34, 14);
+					OnDrawText((char*)" ####### ", 88, 35, 14);
+				}
+				return 1;
+			}
+		}
+		else if ((HCount < 7 && HCount >= 4) && Kill > 55 && MKill > 9 && CTime / 60000 < 3 && (CTime % 60000) / 1000 <= 50)
+		{
+			if (_End + 5000 < GetTickCount64())
+			{
+				OnDrawText((char*)" ####### ", 64, 23, 14);
+				OnDrawText((char*)"##     ##", 64, 24, 14);
+				OnDrawText((char*)"##       ", 64, 25, 14);
+				OnDrawText((char*)" ####### ", 64, 26, 14);
+				OnDrawText((char*)"       ##", 64, 27, 14);
+				OnDrawText((char*)"##     ##", 64, 28, 14);
+				OnDrawText((char*)" ####### ", 64, 29, 14);
+			}
+			if (_End + 5500 < GetTickCount64())
+			{
+				OnDrawText((char*)" ####### ", 76, 26, 14);
+				OnDrawText((char*)"##     ##", 76, 27, 14);
+				OnDrawText((char*)"##       ", 76, 28, 14);
+				OnDrawText((char*)" ####### ", 76, 29, 14);
+				OnDrawText((char*)"       ##", 76, 30, 14);
+				OnDrawText((char*)"##     ##", 76, 31, 14);
+				OnDrawText((char*)" ####### ", 76, 32, 14);
+			}
+			return 2;
+		}
+		else if ((HCount < 10 && HCount >= 7) && Kill > 45 && MKill > 6 && CTime / 60000 < 4 && (CTime % 60000) / 1000 <= 20)
+		{
+			if (_End + 5500 < GetTickCount64())
+			{
+				OnDrawText((char*)" ####### ", 76, 26, 14);
+				OnDrawText((char*)"##     ##", 76, 27, 14);
+				OnDrawText((char*)"##       ", 76, 28, 14);
+				OnDrawText((char*)" ####### ", 76, 29, 14);
+				OnDrawText((char*)"       ##", 76, 30, 14);
+				OnDrawText((char*)"##     ##", 76, 31, 14);
+				OnDrawText((char*)" ####### ", 76, 32, 14);
+			}
+			return 3;
+		}
+		else if ((HCount < 14 && HCount >= 10) && Kill > 35 && MKill > 4 && CTime / 60000 < 4 && (CTime % 60000) / 1000 <= 50)
+		{
+			if (_End + 5500 < GetTickCount64())
+			{
+				OnDrawText((char*)"     ##     ", 76, 26, 12);
+				OnDrawText((char*)"    ####    ", 76, 27, 12);
+				OnDrawText((char*)"   ##  ##   ", 76, 28, 12);
+				OnDrawText((char*)"  ##    ##  ", 76, 29, 12);
+				OnDrawText((char*)" ########## ", 76, 30, 12);
+				OnDrawText((char*)"##        ##", 76, 31, 12);
+				OnDrawText((char*)"##        ##", 76, 32, 12);
+			}
+			return 4;
+		}
+		else if ((HCount < 17 && HCount >= 14) && Kill > 20 && MKill > 2 && CTime / 60000 < 5 && (CTime % 60000) / 1000 <= 30)
+		{
+			if (_End + 5500 < GetTickCount64())
+			{
+				OnDrawText((char*)"########	", 76, 26, 8);
+				OnDrawText((char*)"##     ##", 76, 27, 8);
+				OnDrawText((char*)"##     ##", 76, 28, 8);
+				OnDrawText((char*)"########	", 76, 29, 8);
+				OnDrawText((char*)"##     ##", 76, 30, 8);
+				OnDrawText((char*)"##     ##", 76, 31, 8);
+				OnDrawText((char*)"########	", 76, 32, 8);
+			}
+			return 5;
+		}
+		else
+		{
+			if (_End + 5500 < GetTickCount64())
+			{
+				 OnDrawText((char*)" ####### ", 76, 26);
+                 OnDrawText((char*)"##     ##", 76, 27);
+                 OnDrawText((char*)"##       ", 76, 28);
+                 OnDrawText((char*)"##       ", 76, 29);
+                 OnDrawText((char*)"##       ", 76, 30);
+                 OnDrawText((char*)"##     ##", 76, 31);
+                 OnDrawText((char*)" ####### ", 76, 32);
+			}
+			return 6;
+		}
+	}
+}
+				
+
+/*
+총 점수 : 
++ 기본 점수
++ 남은 HP
++ 남은 목숨
+
+랭크
+피격횟수
+보스 클리어 시간
+킬
+미사일 킬
+
+
+ ######
+ #     #
+ #     #
+ ######
+ #     #
+ #     #
+ ######
+
+
+
+*/

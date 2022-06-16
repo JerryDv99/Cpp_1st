@@ -74,13 +74,11 @@ int main(void)
 	HB[7] = new Hitbox;
 	HInitialize(HB[7], 108, 4);
 
-
-
 	BackGround* BackGround[64] = { nullptr };
 
-	int ScoreBoard[8] = {1234567};
-	char Initial[8][4] = {"ALP"};
-	char Rank[8][4] = {"SSS"};
+	int ScoreBoard[8] = {};
+	char Initial[8][4] = {};
+	char Rank[8][4] = {};
 
 	while (!Exit)
 	{
@@ -2678,8 +2676,14 @@ int main(void)
 				Item[i] = nullptr;
 			}
 		}
+		if (Boss->HP <= 0)
+		{
+			Clear = true;
+			Ending = true;
+			CTime = ClearTime;
+		}
 		Destroy = GetTickCount64();
-		while (Ending)
+		while (Clear)
 		{
 			if (Time + 50 < GetTickCount64())
 			{
@@ -2746,6 +2750,107 @@ int main(void)
 				else if(Boss->HP <= 0 && !(Player->TransInfo.Position.x == 60 && Player->TransInfo.Position.y == 50))
 					BossScene(2);
 				OnDrawObj(Player, Player->TransInfo.Position.x, Player->TransInfo.Position.y);
+				ENDING = GetTickCount64();
+				while (Destroy + 7000 < GetTickCount64() && Ending)
+				{
+					PRank = ClearScene(Player, ENDING, Time);
+					if (ENDING + 10000 < GetTickCount64())
+					{
+						Ending = false;
+					}
+				}
+				for (int i = 0; i < 8; ++i)
+				{
+					if (ScoreBoard[i] == 0)
+					{
+						OnDrawText((char*)"영문 이니셜 세글자를 적어주세요 :", 56 - strlen("영문 이니셜 세글자를 적어주세요 :") / 2, 30, 11);
+						for (int j = 0; j < 3; ++j)
+						{
+							Initial[i][j] = getchar();							
+						}
+						ScoreBoard[i] = Score;
+						if (PRank == 1)
+						{
+							Rank[i][0] = (char)"S";
+							Rank[i][1] = (char)"S";
+							Rank[i][2] = (char)"S";
+						}
+						if (PRank == 2)
+						{
+							Rank[i][0] = (char)"S";
+							Rank[i][1] = (char)"S";
+						}
+						if (PRank == 3)
+						{
+							Rank[i][0] = (char)"S";
+						}
+						if (PRank == 4)
+						{
+							Rank[i][0] = (char)"A";
+						}
+						if (PRank == 5)
+						{
+							Rank[i][0] = (char)"B";
+						}
+						if (PRank == 6)
+						{
+							Rank[i][0] = (char)"C";
+						}
+					}
+					else if (ScoreBoard[7] <= Score)
+					{
+						OnDrawText((char*)"영문으로 이니셜 세글자를 적어주세요 :", 56 - strlen("영문으로 이니셜 세글자를 적어주세요 :") / 2, 30, 11);
+						for (int j = 0; j < 3; ++j)
+						{
+							Initial[7][j] = getchar();
+						}
+						ScoreBoard[7] = Score;
+						if (PRank == 1)
+						{
+							Rank[7][0] = (char)"S";
+							Rank[7][1] = (char)"S";
+							Rank[7][2] = (char)"S";
+						}
+						if (PRank == 2)
+						{
+							Rank[7][0] = (char)"S";
+							Rank[7][1] = (char)"S";
+						}
+						if (PRank == 3)
+						{
+							Rank[7][0] = (char)"S";
+						}
+						if (PRank == 4)
+						{
+							Rank[7][0] = (char)"A";
+						}
+						if (PRank == 5)
+						{
+							Rank[7][0] = (char)"B";
+						}
+						if (PRank == 6)
+						{
+							Rank[7][0] = (char)"C";
+						}
+					}					
+				}
+				int Tempi = 0;
+				const char *TempR;
+				const char *TempI;
+				while (ScoreBoard[0] >= ScoreBoard[1] >= ScoreBoard[2] >= ScoreBoard[3] >= ScoreBoard[4] >= ScoreBoard[5] >= ScoreBoard[6] >= ScoreBoard[7])
+				{
+					for (int i = 0; i < 7; ++i)
+					{
+						if (ScoreBoard[i] <= ScoreBoard[i + 1])
+						{
+							Tempi = ScoreBoard[i];
+							ScoreBoard[i] = ScoreBoard[i + 1];
+							ScoreBoard[i + 1] = Tempi;
+
+							TempR = Rank[i];
+						}
+					}
+				}
 			}
 		}
 		
