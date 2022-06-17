@@ -76,13 +76,13 @@ int main(void)
 
 	BackGround* BackGround[64] = { nullptr };
 
-	int *ScoreBoard[8] = {};
-	char *Initial[8][4] = {};
-	char *Rank[8][4] = {};
+	int ScoreBoard[8] = { 300 };
+	char Initial[8][4] = {"AS"};
+	char Rank[8][4] = {"SS"};
 
 	while (!Exit)
 	{
-		Reset(Player, Boss);
+		Reset(Player, Boss, Icon);
 		// 로고
 		if (first)
 		{
@@ -101,13 +101,11 @@ int main(void)
 				Story1 = true;
 			}			
 		}
-		rewind(stdin);
-		cin.clear();
 		// 스토리1(튜토리얼)
 		while (Story1)
 		{
 			Tutorial(Player, Time, Enemy1, Enemy2, Enemy3);
-			if (GetAsyncKeyState(VK_TAB) && Player->Player.Name != nullptr)
+			if (GetAsyncKeyState(VK_TAB) & 0x8000 && Player->Player.Name != nullptr)
 				break;
 		}
 		Heat = 0.0f;
@@ -1538,7 +1536,7 @@ int main(void)
 		}
 		while ((StoryTime + 2100 < GetTickCount64()))
 		{
-			if (GetAsyncKeyState(VK_ESCAPE))
+			if (GetAsyncKeyState(VK_ESCAPE) & 0x8000)
 				break;
 		}
 		Heat = 0.0f;
@@ -2015,7 +2013,7 @@ int main(void)
 				}
 				if (Player->HP <= 0 && Life > 0)
 				{
-					while (!GetAsyncKeyState(0x47) && !GetAsyncKeyState(0x52))
+					while (!(GetAsyncKeyState(0x47) & 0x8000)&& !(GetAsyncKeyState(0x52) & 0x8000))
 					{
 						GoMain = RetryScene(Player);
 					}
@@ -2025,7 +2023,7 @@ int main(void)
 					FailScene();
 					while (!GoMain)
 					{
-						if (GetAsyncKeyState(0x4D))
+						if (GetAsyncKeyState(0x4D) & 0x8000)
 							GoMain = true;
 					}
 
@@ -2308,18 +2306,21 @@ int main(void)
 							}
 						}
 					}
-					if ((Player->TransInfo.Position.x >= 50 && Player->TransInfo.Position.x < 54) || (Player->TransInfo.Position.x >= 67 && Player->TransInfo.Position.x < 70))
+					if (!PSA)
 					{
-						Player->HP--;
-						SpArmorP = GetTickCount64();
-						PSA = true;
-					}
-					if (Player->TransInfo.Position.x >= 54 && Player->TransInfo.Position.x < 67)
-					{
-						Player->HP -= 3;
-						SpArmorP = GetTickCount64();
-						PSA = true;
-					}
+						if ((Player->TransInfo.Position.x >= 50 && Player->TransInfo.Position.x < 54) || (Player->TransInfo.Position.x >= 67 && Player->TransInfo.Position.x < 70))
+						{
+							Player->HP--;
+							SpArmorP = GetTickCount64();
+							PSA = true;
+						}
+						if (Player->TransInfo.Position.x >= 54 && Player->TransInfo.Position.x < 67)
+						{
+							Player->HP -= 3;
+							SpArmorP = GetTickCount64();
+							PSA = true;
+						}
+					}					
 				}
 
 				for (int i = 0; i < 64; ++i)
@@ -2680,7 +2681,7 @@ int main(void)
 		{
 			Clear = true;
 			Ending = true;
-			CTime = ClearTime;
+			CTime = GetTickCount64() - ClearTime;
 		}
 		Destroy = GetTickCount64();
 		while (Clear)
@@ -2751,123 +2752,80 @@ int main(void)
 					BossScene(2);
 				OnDrawObj(Player, Player->TransInfo.Position.x, Player->TransInfo.Position.y);
 				ENDING = GetTickCount64();
+				
 				while (Destroy + 7000 < GetTickCount64() && Ending)
 				{
+					int Temp;
+					char* TempI;
+					char* TempR;
 					PRank = ClearScene(Player, ENDING, Time);
 					if (ENDING + 10000 < GetTickCount64())
-					{
+					{						
+					/*
+						system("cls");
+						if (Score > ScoreBoard[7])
+						{
+							ScoreBoard[7] = Score;
+							OnDrawText((char*)"이니셜 세글자를 입력하세요", 20, 30);
+							TempI = SetName();
+							for (int i = 0; i < 3; ++i)
+							{
+								Initial[7][i] = TempI[i];
+							}
+							switch (PRank)
+							{
+							case 1:
+								Rank[7][0] = (char)"S";
+								Rank[7][1] = (char)"S";
+								Rank[7][2] = (char)"S";
+							case 2:
+								Rank[7][0] = (char)"S";
+								Rank[7][1] = (char)"S";
+							case 3:
+								Rank[7][0] = (char)"S";
+							case 4:
+								Rank[7][0] = (char)"A";
+							case 5:
+								Rank[7][0] = (char)"B";
+							case 6: 
+								Rank[7][0] = (char)"C";
+							}
+						}
+						while (!(ScoreBoard[0] >= ScoreBoard[1] >= ScoreBoard[2] >= ScoreBoard[3] >= ScoreBoard[4] >= ScoreBoard[4] >= ScoreBoard[5] >= ScoreBoard[6] >= ScoreBoard[7]))
+						{
+							for (int i = 0; i < 7; ++i)
+							{
+								if (ScoreBoard[i] < ScoreBoard[i + 1])
+								{
+									Temp = ScoreBoard[i];
+									ScoreBoard[i] = ScoreBoard[i + 1];
+									ScoreBoard[i + 1] = Temp;
+
+									TempI = Initial[i];
+									for (int j = 0; j < 3; ++j)
+									{
+										Initial[i][j] = Initial[i + 1][j];
+										Initial[i + 1][j] = TempI[j];
+									}
+
+									TempR = Rank[i];
+									for (int k = 0; k < 3; ++k)
+									{
+										Rank[i][k] = Rank[i + 1][k];
+										Rank[i + 1][k] = TempR[k];
+									}									
+								}								
+							}
+						}						
+					*/
 						Ending = false;
+						Clear = false;
+						CCount++;
 					}
-				}
-				for (int i = 0; i < 8; ++i)
-				{
-					if (ScoreBoard[i] == 0)
-					{
-						OnDrawText((char*)"영문 이니셜 세글자를 적어주세요 :", 56 - strlen("영문 이니셜 세글자를 적어주세요 :") / 2, 30, 11);
-						for (int j = 0; j < 3; ++j)
-						{
-							Initial[i][j] = (char*)getchar();							
-						}
-						ScoreBoard[i] = Score;
-						if (PRank == 1)
-						{
-							Rank[i][0] = (char*)"S";
-							Rank[i][1] = (char*)"S";
-							Rank[i][2] = (char*)"S";
-						}					  
-						if (PRank == 2)
-						{
-							Rank[i][0] = (char)"S";
-							Rank[i][1] = (char)"S";
-						}
-						if (PRank == 3)
-						{
-							Rank[i][0] = (char)"S";
-						}
-						if (PRank == 4)
-						{
-							Rank[i][0] = (char)"A";
-						}
-						if (PRank == 5)
-						{
-							Rank[i][0] = (char)"B";
-						}
-						if (PRank == 6)
-						{
-							Rank[i][0] = (char)"C";
-						}
-					}
-					else if (ScoreBoard[7] <= Score)
-					{
-						OnDrawText((char*)"영문으로 이니셜 세글자를 적어주세요 :", 56 - strlen("영문으로 이니셜 세글자를 적어주세요 :") / 2, 30, 11);
-						for (int j = 0; j < 3; ++j)
-						{
-							Initial[7][j] = getchar();
-						}
-						ScoreBoard[7] = Score;
-						if (PRank == 1)
-						{
-							Rank[7][0] = (char)"S";
-							Rank[7][1] = (char)"S";
-							Rank[7][2] = (char)"S";
-						}
-						if (PRank == 2)
-						{
-							Rank[7][0] = (char)"S";
-							Rank[7][1] = (char)"S";
-						}
-						if (PRank == 3)
-						{
-							Rank[7][0] = (char)"S";
-						}
-						if (PRank == 4)
-						{
-							Rank[7][0] = (char)"A";
-						}
-						if (PRank == 5)
-						{
-							Rank[7][0] = (char)"B";
-						}
-						if (PRank == 6)
-						{
-							Rank[7][0] = (char)"C";
-						}
-					}					
-				}
-				int Tempi = 0;
-				const char *TempR;
-				const char *TempI;
-				while (ScoreBoard[0] >= ScoreBoard[1] >= ScoreBoard[2] >= ScoreBoard[3] >= ScoreBoard[4] >= ScoreBoard[5] >= ScoreBoard[6] >= ScoreBoard[7])
-				{
-					for (int i = 0; i < 7; ++i)
-					{
-						if (ScoreBoard[i] <= ScoreBoard[i + 1])
-						{
-							Tempi = ScoreBoard[i];
-							ScoreBoard[i] = ScoreBoard[i + 1];
-							ScoreBoard[i + 1] = Tempi;
-
-							
-							for (int j = 0; j < 3; ++j)
-							{
-								TempR[j] = (char*)Rank[i][j];
-								Rank[i][j] = Rank[i + 1][j];
-								(char*)Rank[i + 1][j] = TempR[j];
-							}
-
-							for (int k = 0; k < 3; ++k)
-							{
-								TempI[k] = (char*)Initial[i][k];
-								Initial[i][k] = Initial[i + 1][k];
-								Initial[i + 1][k] = TempI[k];
-							}
-						}
-					}
+					
 				}
 			}
-		}
-		
-
+		}		
 	}
 	return 0;
 }

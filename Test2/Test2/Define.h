@@ -35,9 +35,9 @@ void HideCursor(const bool _Visible);
 
 void LogoScene(sLogo* _logo, ULONGLONG _t, ULONGLONG _load);
 
-void MainScene(Object* _icon, char* _rank[][4], int* _arr[], char* _name[][4]);
+void MainScene(Object* _icon, char _rank[][4], int _arr[], char _name[][4]);
 
-void ScoreBoard(char* _rank[][4], int* _arr[], char* _name[][4]);
+void SBoard(char _rank[][4], int _arr[], char _name[][4]);
 
 void Tutorial(Object* _Player, ULONGLONG _time, Object* _E1, Object* _E2, Object* _E3);
 
@@ -87,7 +87,7 @@ bool RetryScene(Object* _Player);
 
 void FailScene();
 
-void Reset(Object* _Player, BOSS* _Boss);
+void Reset(Object* _Player, BOSS* _Boss, Object* _icon);
 
 void DestroyScene(ULONGLONG _Dtime);
 
@@ -196,6 +196,7 @@ int R;
 int HCount = 0;
 int CTime = 0;
 int PRank = 0;
+int CCount = 0;
 
 float Heat = 0.0f;
 
@@ -279,9 +280,7 @@ char* SetName()
 	char Buffer[32] = "";
 
 	cout << " : "; cin >> Buffer;
-	Buffer[strlen(Buffer) - 1] = '\0';
 	char* pName = new char[strlen(Buffer) + 1];
-	pName[strlen(pName) - 1] = '\0';
 	strcpy(pName, Buffer);	
 	
 	Buffer[0] = '\0';
@@ -464,7 +463,7 @@ void LogoScene(sLogo* _logo, ULONGLONG _t, ULONGLONG _load)
 	
 }                                
 
-void MainScene(Object* _icon, char* _rank[][4], int* _arr[], char* _name[][4])
+void MainScene(Object* _icon, char _rank[][4], int _arr[], char _name[][4])
 {
 	system("cls");
 
@@ -529,7 +528,7 @@ void MainScene(Object* _icon, char* _rank[][4], int* _arr[], char* _name[][4])
 	OnDrawText((char*)"1 . START", 26, 52);
 	OnDrawText((char*)"2 . RANK", 56, 52);
 	OnDrawText((char*)"3 . EXIT", 86, 52);
-
+	
 	if (_icon->TransInfo.Position.x == 20 || _icon->TransInfo.Position.x == 50)
 	{
 		if (!RCheck && GetAsyncKeyState(VK_RIGHT) & 0x0001)
@@ -566,12 +565,12 @@ void MainScene(Object* _icon, char* _rank[][4], int* _arr[], char* _name[][4])
 
 	OnDrawText(_icon->Icon.Texture, _icon->TransInfo.Position.x, _icon->TransInfo.Position.y, 11);
 
-	if (GetAsyncKeyState(VK_RETURN))
+	if (GetAsyncKeyState(VK_RETURN) & 0x8000)
 	{
 		if (_icon->TransInfo.Position.x == 20)
 			Main = false;
 		if (_icon->TransInfo.Position.x == 50)
-			ScoreBoard(_rank, _arr, _name);
+			SBoard(_rank, _arr, _name);
 		if (_icon->TransInfo.Position.x == 80)
 			exit(NULL);
 
@@ -579,7 +578,7 @@ void MainScene(Object* _icon, char* _rank[][4], int* _arr[], char* _name[][4])
 
 }
 
-void ScoreBoard(char* _rank[][4], int* _arr[], char* _name[][4])
+void SBoard(char _rank[][4], int _arr[], char _name[][4])
 {
 	system("cls");
 	HideCursor(false);
@@ -650,37 +649,36 @@ void ScoreBoard(char* _rank[][4], int* _arr[], char* _name[][4])
 	OnDrawText((char*)"`-'", Width + 22, Height + 31, 11);
 
 	OnDrawText((char*)_rank[0], 60 - strlen((char*)_rank[0]) / 2, Height + 1, 14);
-	OnDrawText((char*)_name[0], 60 - strlen((char*)_name[0]) / 2, Height + 2, 14);
-	OnDrawText((int)_arr[0], 60 - sizeof(_arr[0]), Height + 3, 14);
+	OnDrawText((char*)_name[0], 60 - strlen((char*)_name[0]) / 2, Height + 3, 14);
+	OnDrawText((int)_arr[0], 60 - sizeof(_arr[0]), Height + 2, 14);
 	OnDrawText((char*)_rank[1], 60 - strlen((char*)_rank[1]) / 2, Height + 5, 8);
-	OnDrawText((char*)_name[1], 60 - strlen((char*)_name[1]) / 2, Height + 6, 8);
-	OnDrawText((int)_arr[1], 60 - sizeof(_arr[1]), Height + 7, 8);
+	OnDrawText((char*)_name[1], 60 - strlen((char*)_name[1]) / 2, Height + 7, 8);
+	OnDrawText((int)_arr[1], 60 - sizeof(_arr[1]), Height + 6, 8);
 	OnDrawText((char*)_rank[2], 60 - strlen((char*)_rank[2]) / 2, Height + 9, 6);
-	OnDrawText((char*)_name[2], 60 - strlen((char*)_name[2]) / 2, Height + 10, 6);
-	OnDrawText((int)_arr[2], 60 - sizeof(_arr[2]), Height + 11, 6);
+	OnDrawText((char*)_name[2], 60 - strlen((char*)_name[2]) / 2, Height + 11, 6);
+	OnDrawText((int)_arr[2], 60 - sizeof(_arr[2]), Height + 10, 6);
 	OnDrawText((char*)_rank[3], 60 - strlen((char*)_rank[3]) / 2, Height + 13, 15);
-	OnDrawText((char*)_name[3], 60 - strlen((char*)_name[3]) / 2, Height + 14, 15);
-	OnDrawText((int)_arr[3], 60 - sizeof(_arr[3]), Height + 15, 15);
+	OnDrawText((char*)_name[3], 60 - strlen((char*)_name[3]) / 2, Height + 15, 15);
+	OnDrawText((int)_arr[3], 60 - sizeof(_arr[3]), Height + 14, 15);
 	OnDrawText((char*)_rank[4], 60 - strlen((char*)_rank[4]) / 2, Height + 17, 15);
-	OnDrawText((char*)_name[4], 60 - strlen((char*)_name[4]) / 2, Height + 18, 15);
-	OnDrawText((int)_arr[4], 60 - sizeof(_arr[4]), Height + 19, 15);
+	OnDrawText((char*)_name[4], 60 - strlen((char*)_name[4]) / 2, Height + 19, 15);
+	OnDrawText((int)_arr[4], 60 - sizeof(_arr[4]), Height + 18, 15);
 	OnDrawText((char*)_rank[5], 60 - strlen((char*)_rank[5]) / 2, Height + 21, 15);
-	OnDrawText((char*)_name[5], 60 - strlen((char*)_name[5]) / 2, Height + 22, 11);
-	OnDrawText((int)_arr[5], 60 - sizeof(_arr[5]), Height + 23, 15);
+	OnDrawText((char*)_name[5], 60 - strlen((char*)_name[5]) / 2, Height + 23, 11);
+	OnDrawText((int)_arr[5], 60 - sizeof(_arr[5]), Height + 22, 15);
 	OnDrawText((char*)_rank[6], 60 - strlen((char*)_rank[6]) / 2, Height + 25, 15);
-	OnDrawText((char*)_name[6], 60 - strlen((char*)_name[6]) / 2, Height + 26, 15);
-	OnDrawText((int)_arr[6], 60 - sizeof(_arr[6]), Height + 27, 15);
+	OnDrawText((char*)_name[6], 60 - strlen((char*)_name[6]) / 2, Height + 27, 15);
+	OnDrawText((int)_arr[6], 60 - sizeof(_arr[6]), Height + 26, 15);
 	OnDrawText((char*)_rank[7], 60 - strlen((char*)_rank[7]) / 2, Height + 29, 15);
-	OnDrawText((char*)_name[7], 60 - strlen((char*)_name[7]) / 2, Height + 30, 15);
-	OnDrawText((int)_arr[7], 60 - sizeof(_arr[7]), Height + 31, 15);
+	OnDrawText((char*)_name[7], 60 - strlen((char*)_name[7]) / 2, Height + 31, 15);
+	OnDrawText((int)_arr[7], 60 - sizeof(_arr[7]), Height + 30, 15);
 
 	OnDrawText("Exit [X]", 56, 56, 10);
 	
 	while (true)
 	{
-		if (GetAsyncKeyState(0x58))
-		{
-			
+		if (GetAsyncKeyState(0x58) & 0x8000)
+		{			
 			break;
 		}
 	}   
@@ -1780,11 +1778,11 @@ bool RetryScene(Object* _Player)
 	OnDrawText(Life, 60 + strlen("남은 목숨 : ") / 2, Height + 16, 14);
 
 	
-	if (GetAsyncKeyState(0x47))
+	if (GetAsyncKeyState(0x47) & 0x8000)
 	{
 		return true;
 	}
-	else if (GetAsyncKeyState(0x52))
+	else if (GetAsyncKeyState(0x52) & 0x8000)
 	{
 		_Player->HP = 5;
 		Life--;
@@ -1828,7 +1826,7 @@ void FailScene()
 	OnDrawText((char*)"[ M ] 키를 누르면 메인 화면으로 돌아갑니다. 수고하셨습니다.", 60 - strlen("[ M ] 키를 누르면 메인 화면으로 돌아갑니다. 수고하셨습니다.") / 2, Height + 13, 10);
 }
 
-void Reset(Object* _Player, BOSS* _Boss)
+void Reset(Object* _Player, BOSS* _Boss, Object* _icon)
 {
 	system("cls");
 
@@ -1874,8 +1872,8 @@ void Reset(Object* _Player, BOSS* _Boss)
 	MBuff = false;
 	Exit = false;
 	Ending = false;
-
 	
+	_icon->TransInfo.Position.x = 20;
 	_Player->HP = 5;
 	_Player->TransInfo.Position.x = 60;
 	_Player->TransInfo.Position.y = 45;
@@ -2240,7 +2238,7 @@ int ClearScene(Object* _Player, ULONGLONG _End, ULONGLONG _t)
 				OnDrawText((CTime % 60000) / 1000, 57, Height + 28);
 			}
 		}
-		if (HCount < 4 && Kill > 60 && MKill > 11 && CTime / 60000 < 3 && (CTime % 60000) / 1000 <= 30)
+		if (HCount < 4 && Kill > 60 && MKill > 11 && CTime / 60000 < 2 && (CTime % 60000) / 1000 <= 30)
 		{
 			if (_End + 5000 < GetTickCount64())
 			{
@@ -2277,7 +2275,7 @@ int ClearScene(Object* _Player, ULONGLONG _End, ULONGLONG _t)
 				return 1;
 			}
 		}
-		else if ((HCount < 7 && HCount >= 4) && Kill > 55 && MKill > 9 && CTime / 60000 < 3 && (CTime % 60000) / 1000 <= 50)
+		else if (HCount >= 4 && Kill > 55 && MKill > 9 && CTime / 60000 < 2 && (CTime % 60000) / 1000 <= 50)
 		{
 			if (_End + 5000 < GetTickCount64())
 			{
@@ -2301,7 +2299,7 @@ int ClearScene(Object* _Player, ULONGLONG _End, ULONGLONG _t)
 			}
 			return 2;
 		}
-		else if ((HCount < 10 && HCount >= 7) && Kill > 45 && MKill > 6 && CTime / 60000 < 4 && (CTime % 60000) / 1000 <= 20)
+		else if (HCount >= 7 && Kill > 45 && MKill > 6 && CTime / 60000 < 3 && (CTime % 60000) / 1000 <= 20)
 		{
 			if (_End + 5500 < GetTickCount64())
 			{
@@ -2315,7 +2313,7 @@ int ClearScene(Object* _Player, ULONGLONG _End, ULONGLONG _t)
 			}
 			return 3;
 		}
-		else if ((HCount < 14 && HCount >= 10) && Kill > 35 && MKill > 4 && CTime / 60000 < 4 && (CTime % 60000) / 1000 <= 50)
+		else if (HCount >= 10 && Kill > 35 && MKill > 4 && CTime / 60000 < 3 && (CTime % 60000) / 1000 <= 50)
 		{
 			if (_End + 5500 < GetTickCount64())
 			{
@@ -2329,7 +2327,7 @@ int ClearScene(Object* _Player, ULONGLONG _End, ULONGLONG _t)
 			}
 			return 4;
 		}
-		else if ((HCount < 17 && HCount >= 14) && Kill > 20 && MKill > 2 && CTime / 60000 < 5 && (CTime % 60000) / 1000 <= 30)
+		else if (HCount >= 14 && Kill > 20 && MKill > 2 && CTime / 60000 < 4 && (CTime % 60000) / 1000 <= 30)
 		{
 			if (_End + 5500 < GetTickCount64())
 			{
@@ -2359,29 +2357,3 @@ int ClearScene(Object* _Player, ULONGLONG _End, ULONGLONG _t)
 		}
 	}
 }
-				
-
-/*
-총 점수 : 
-+ 기본 점수
-+ 남은 HP
-+ 남은 목숨
-
-랭크
-피격횟수
-보스 클리어 시간
-킬
-미사일 킬
-
-
- ######
- #     #
- #     #
- ######
- #     #
- #     #
- ######
-
-
-
-*/
