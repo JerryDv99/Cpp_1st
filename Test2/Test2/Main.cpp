@@ -76,9 +76,9 @@ int main(void)
 
 	BackGround* BackGround[64] = { nullptr };
 
-	int ScoreBoard[8] = {};
-	char Initial[8][4] = {};
-	char Rank[8][4] = {};
+	int *ScoreBoard[8] = {};
+	char *Initial[8][4] = {};
+	char *Rank[8][4] = {};
 
 	while (!Exit)
 	{
@@ -2766,15 +2766,15 @@ int main(void)
 						OnDrawText((char*)"영문 이니셜 세글자를 적어주세요 :", 56 - strlen("영문 이니셜 세글자를 적어주세요 :") / 2, 30, 11);
 						for (int j = 0; j < 3; ++j)
 						{
-							Initial[i][j] = getchar();							
+							Initial[i][j] = (char*)getchar();							
 						}
 						ScoreBoard[i] = Score;
 						if (PRank == 1)
 						{
-							Rank[i][0] = (char)"S";
-							Rank[i][1] = (char)"S";
-							Rank[i][2] = (char)"S";
-						}
+							Rank[i][0] = (char*)"S";
+							Rank[i][1] = (char*)"S";
+							Rank[i][2] = (char*)"S";
+						}					  
 						if (PRank == 2)
 						{
 							Rank[i][0] = (char)"S";
@@ -2847,7 +2847,20 @@ int main(void)
 							ScoreBoard[i] = ScoreBoard[i + 1];
 							ScoreBoard[i + 1] = Tempi;
 
-							TempR = Rank[i];
+							
+							for (int j = 0; j < 3; ++j)
+							{
+								TempR[j] = (char*)Rank[i][j];
+								Rank[i][j] = Rank[i + 1][j];
+								(char*)Rank[i + 1][j] = TempR[j];
+							}
+
+							for (int k = 0; k < 3; ++k)
+							{
+								TempI[k] = (char*)Initial[i][k];
+								Initial[i][k] = Initial[i + 1][k];
+								Initial[i + 1][k] = TempI[k];
+							}
 						}
 					}
 				}

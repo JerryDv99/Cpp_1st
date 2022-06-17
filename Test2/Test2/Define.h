@@ -35,9 +35,9 @@ void HideCursor(const bool _Visible);
 
 void LogoScene(sLogo* _logo, ULONGLONG _t, ULONGLONG _load);
 
-void MainScene(Object* _icon, char _rank[][4], int _arr[], char _name[][4]);
+void MainScene(Object* _icon, char* _rank[][4], int* _arr[], char* _name[][4]);
 
-void ScoreBoard(char _rank[][4], int _arr[], char _name[][4]);
+void ScoreBoard(char* _rank[][4], int* _arr[], char* _name[][4]);
 
 void Tutorial(Object* _Player, ULONGLONG _time, Object* _E1, Object* _E2, Object* _E3);
 
@@ -464,7 +464,7 @@ void LogoScene(sLogo* _logo, ULONGLONG _t, ULONGLONG _load)
 	
 }                                
 
-void MainScene(Object* _icon, char _rank[][4], int _arr[], char _name[][4])
+void MainScene(Object* _icon, char* _rank[][4], int* _arr[], char* _name[][4])
 {
 	system("cls");
 
@@ -579,7 +579,7 @@ void MainScene(Object* _icon, char _rank[][4], int _arr[], char _name[][4])
 
 }
 
-void ScoreBoard(char _rank[][4], int _arr[], char _name[][4])
+void ScoreBoard(char* _rank[][4], int* _arr[], char* _name[][4])
 {
 	system("cls");
 	HideCursor(false);
@@ -649,30 +649,30 @@ void ScoreBoard(char _rank[][4], int _arr[], char _name[][4])
 	OnDrawText((char*)":-:", Width + 22, Height + 30, 11);
 	OnDrawText((char*)"`-'", Width + 22, Height + 31, 11);
 
-	OnDrawText((char*)_rank[0], 60 - strlen(_rank[0]) / 2, Height + 1, 14);
-	OnDrawText((char*)_name[0], 60 - strlen(_name[0]) / 2, Height + 2, 14);
-	OnDrawText(_arr[0], 60 - sizeof(_arr[0]), Height + 3, 14);
-	OnDrawText((char*)_rank[1], 60 - strlen(_rank[1]) / 2, Height + 5, 8);
-	OnDrawText((char*)_name[1], 60 - strlen(_name[1]) / 2, Height + 6, 8);
-	OnDrawText(_arr[1], 60 - sizeof(_arr[1]), Height + 7, 8);
-	OnDrawText((char*)_rank[2], 60 - strlen(_rank[2]) / 2, Height + 9, 6);
-	OnDrawText((char*)_name[2], 60 - strlen(_name[2]) / 2, Height + 10, 6);
-	OnDrawText(_arr[2], 60 - sizeof(_arr[2]), Height + 11, 6);
-	OnDrawText((char*)_rank[3], 60 - strlen(_rank[3]) / 2, Height + 13, 15);
-	OnDrawText((char*)_name[3], 60 - strlen(_name[3]) / 2, Height + 14, 15);
-	OnDrawText(_arr[3], 60 - sizeof(_arr[3]), Height + 15, 15);
-	OnDrawText((char*)_rank[4], 60 - strlen(_rank[4]) / 2, Height + 17, 15);
-	OnDrawText((char*)_name[4], 60 - strlen(_name[4]) / 2, Height + 18, 15);
-	OnDrawText(_arr[4], 60 - sizeof(_arr[4]), Height + 19, 15);
-	OnDrawText((char*)_rank[5], 60 - strlen(_rank[5]) / 2, Height + 21, 15);
-	OnDrawText((char*)_name[5], 60 - strlen(_name[5]) / 2, Height + 22, 11);
-	OnDrawText(_arr[5], 60 - sizeof(_arr[5]), Height + 23, 15);
-	OnDrawText((char*)_rank[6], 60 - strlen(_rank[6]) / 2, Height + 25, 15);
-	OnDrawText((char*)_name[6], 60 - strlen(_name[6]) / 2, Height + 26, 15);
-	OnDrawText(_arr[6], 60 - sizeof(_arr[6]), Height + 27, 15);
-	OnDrawText((char*)_rank[7], 60 - strlen(_rank[7]) / 2, Height + 29, 15);
-	OnDrawText((char*)_name[7], 60 - strlen(_name[7]) / 2, Height + 30, 15);
-	OnDrawText(_arr[7], 60 - sizeof(_arr[7]), Height + 31, 15);
+	OnDrawText((char*)_rank[0], 60 - strlen((char*)_rank[0]) / 2, Height + 1, 14);
+	OnDrawText((char*)_name[0], 60 - strlen((char*)_name[0]) / 2, Height + 2, 14);
+	OnDrawText((int)_arr[0], 60 - sizeof(_arr[0]), Height + 3, 14);
+	OnDrawText((char*)_rank[1], 60 - strlen((char*)_rank[1]) / 2, Height + 5, 8);
+	OnDrawText((char*)_name[1], 60 - strlen((char*)_name[1]) / 2, Height + 6, 8);
+	OnDrawText((int)_arr[1], 60 - sizeof(_arr[1]), Height + 7, 8);
+	OnDrawText((char*)_rank[2], 60 - strlen((char*)_rank[2]) / 2, Height + 9, 6);
+	OnDrawText((char*)_name[2], 60 - strlen((char*)_name[2]) / 2, Height + 10, 6);
+	OnDrawText((int)_arr[2], 60 - sizeof(_arr[2]), Height + 11, 6);
+	OnDrawText((char*)_rank[3], 60 - strlen((char*)_rank[3]) / 2, Height + 13, 15);
+	OnDrawText((char*)_name[3], 60 - strlen((char*)_name[3]) / 2, Height + 14, 15);
+	OnDrawText((int)_arr[3], 60 - sizeof(_arr[3]), Height + 15, 15);
+	OnDrawText((char*)_rank[4], 60 - strlen((char*)_rank[4]) / 2, Height + 17, 15);
+	OnDrawText((char*)_name[4], 60 - strlen((char*)_name[4]) / 2, Height + 18, 15);
+	OnDrawText((int)_arr[4], 60 - sizeof(_arr[4]), Height + 19, 15);
+	OnDrawText((char*)_rank[5], 60 - strlen((char*)_rank[5]) / 2, Height + 21, 15);
+	OnDrawText((char*)_name[5], 60 - strlen((char*)_name[5]) / 2, Height + 22, 11);
+	OnDrawText((int)_arr[5], 60 - sizeof(_arr[5]), Height + 23, 15);
+	OnDrawText((char*)_rank[6], 60 - strlen((char*)_rank[6]) / 2, Height + 25, 15);
+	OnDrawText((char*)_name[6], 60 - strlen((char*)_name[6]) / 2, Height + 26, 15);
+	OnDrawText((int)_arr[6], 60 - sizeof(_arr[6]), Height + 27, 15);
+	OnDrawText((char*)_rank[7], 60 - strlen((char*)_rank[7]) / 2, Height + 29, 15);
+	OnDrawText((char*)_name[7], 60 - strlen((char*)_name[7]) / 2, Height + 30, 15);
+	OnDrawText((int)_arr[7], 60 - sizeof(_arr[7]), Height + 31, 15);
 
 	OnDrawText("Exit [X]", 56, 56, 10);
 	
